@@ -1,0 +1,35 @@
+﻿@startuml C1 - Contexto do Sistema FFKD
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+LAYOUT_LEFT_RIGHT()
+
+title C1 - Contexto do Sistema — FFKD Holding
+
+Person(gestor, "Gestor de Frota", "Responsável pela gestão\nde veículos e custos da frota")
+Person(consumidor, "Consumidor", "Pessoa física que deseja\nverificar o histórico de um veículo")
+
+System(easyfleet, "EasyFleet", "Plataforma integradora de gestão de frotas.\nCentraliza abastecimento, pneus, manutenção\ne calcula o TCO total da frota.")
+System(carro_verificado, "Carro Verificado", "Plataforma de consulta e verificação\nde histórico veicular — proprietários,\nrestrições, débitos, multas, sinistros.")
+
+System_Ext(ticket_log, "Ticket Log", "Provedor de cartão\nde abastecimento")
+System_Ext(truckpad, "TruckPad", "Provedor de gestão\nde abastecimento")
+System_Ext(bridgestone, "Bridgestone Connect", "Gestão de pneus")
+System_Ext(manutencao_api, "APIs de Manutenção", "Provedores de gestão\nde manutenção veicular")
+System_Ext(detran, "DETRAN / Denatran", "Situação veicular,\ndébitos e multas")
+System_Ext(seguradora, "Seguradoras", "Histórico de sinistros")
+System_Ext(recall_api, "Recall API", "Consulta de recalls\ndo fabricante")
+
+Rel(gestor, easyfleet, "Acessa via web e mobile")
+Rel(consumidor, carro_verificado, "Consulta histórico\ndo veículo via web e mobile")
+
+Rel(easyfleet, ticket_log, "Coleta transações\nde abastecimento", "REST/HTTPS")
+Rel(easyfleet, truckpad, "Coleta transações\nde abastecimento", "REST/HTTPS")
+Rel(easyfleet, bridgestone, "Coleta dados\nde pneus", "REST/HTTPS")
+Rel(easyfleet, manutencao_api, "Coleta ordens\nde serviço", "REST/HTTPS")
+
+Rel(carro_verificado, detran, "Consulta situação\nveicular", "REST/HTTPS")
+Rel(carro_verificado, seguradora, "Consulta histórico\nde sinistros", "REST/HTTPS")
+Rel(carro_verificado, recall_api, "Consulta recalls", "REST/HTTPS")
+
+@enduml

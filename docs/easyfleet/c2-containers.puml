@@ -1,4 +1,4 @@
-@startuml C2 - Containers EasyFleet
+﻿@startuml C2 - Containers EasyFleet
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 LAYOUT_WITH_LEGEND()
@@ -19,7 +19,7 @@ System_Boundary(easyfleet, "EasyFleet") {
 
     ContainerDb(mysql, "MySQL 8", "Banco Relacional", "Dados de frota, veículos,\nresultados de TCO e histórico\nde integrações.")
 
-    ContainerDb(redis, "Redis 7", "Cache / KV Store", "Cache de respostas da API.\nRefresh tokens JWT.")
+    ContainerDb(redis, "Redis 7", "Cache / KV Store", "Cache de respostas da API.\nRefresh tokens JWT.\n(uso pelo Service previsto\npara versão futura)")
 
     ContainerQueue(rabbitmq, "RabbitMQ 3", "Message Broker", "Exchange topic 'easyfleet'.\nDesacopla API do Worker.\nGarante durabilidade dos eventos.")
 }
@@ -40,7 +40,6 @@ Rel(api, redis, "Cache de\nrespostas e tokens", "TCP")
 
 Rel(service, rabbitmq, "Consome eventos", "AMQP")
 Rel(service, mysql, "Persiste resultados\nde integrações e TCO", "Prisma/TCP")
-Rel(service, redis, "Cache de\nrespostas externas", "TCP")
 
 Rel(service, ticket_log, "Busca transações\nde abastecimento", "REST/HTTPS")
 Rel(service, bridgestone, "Busca dados\nde pneus", "REST/HTTPS")

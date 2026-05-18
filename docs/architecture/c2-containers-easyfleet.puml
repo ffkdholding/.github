@@ -1,0 +1,49 @@
+@startuml C2 - Containers EasyFleet
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title C2 - Containers — EasyFleet
+
+Person(gestor, "Gestor de Frota", "Responsável pela gestão\nde veículos e custos da frota")
+
+System_Boundary(easyfleet, "EasyFleet") {
+
+    Container(web, "easyfleet_web", "Next.js 15 + TypeScript", "Portal web do gestor.\nDashboards, TCO, relatórios.")
+
+    Container(app, "easyfleet_app", "React Native + Expo", "Aplicativo mobile do gestor.\nConsultas e alertas em campo.")
+
+    Container(api, "easyfleet_backend", "NestJS + TypeScript", "API REST. Recebe requisições,\nvalida, autentica e publica\neventos no RabbitMQ.")
+
+    Container(service, "easyfleet_service", "NestJS + TypeScript", "Worker. Consome eventos,\nexecuta integrações com parceiros\ne calcula o TCO.")
+
+    ContainerDb(mysql, "MySQL 8", "Banco Relacional", "Dados de frota, veículos,\nresultados de TCO e histórico\nde integrações.")
+
+    ContainerDb(redis, "Redis 7", "Cache / KV Store", "Cache de respostas da API.\nRefresh tokens JWT.")
+
+    ContainerQueue(rabbitmq, "RabbitMQ 3", "Message Broker", "Exchange topic 'easyfleet'.\nDesacopla API do Worker.\nGarante durabilidade dos eventos.")
+}
+
+System_Ext(ticket_log, "Ticket Log", "API de abastecimento")
+System_Ext(bridgestone, "Bridgestone Connect", "API de pneus")
+System_Ext(manutencao_api, "APIs de Manutenção", "Ordens de serviço")
+
+Rel(gestor, web, "Acessa", "HTTPS")
+Rel(gestor, app, "Acessa", "HTTPS")
+
+Rel(web, api, "Consome", "REST/HTTPS")
+Rel(app, api, "Consome", "REST/HTTPS")
+
+Rel(api, rabbitmq, "Publica eventos", "AMQP")
+Rel(api, mysql, "Lê resultados\nprocessados", "Prisma/TCP")
+Rel(api, redis, "Cache de\nrespostas e tokens", "TCP")
+
+Rel(service, rabbitmq, "Consome eventos", "AMQP")
+Rel(service, mysql, "Persiste resultados\nde integrações e TCO", "Prisma/TCP")
+Rel(service, redis, "Cache de\nrespostas externas", "TCP")
+
+Rel(service, ticket_log, "Busca transações\nde abastecimento", "REST/HTTPS")
+Rel(service, bridgestone, "Busca dados\nde pneus", "REST/HTTPS")
+Rel(service, manutencao_api, "Busca ordens\nde serviço", "REST/HTTPS")
+
+@enduml

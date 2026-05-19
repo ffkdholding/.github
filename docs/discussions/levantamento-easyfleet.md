@@ -1,9 +1,15 @@
 # Posts prontos — GitHub Discussions — EasyFleet
 
-Crie as categorias abaixo em **Discussions → Categories** antes de postar:
+Crie as categorias em **Discussions → Categories** antes de postar:
 `Organização · Frota · Abastecimento · Pneus · Manutenção · TCO · Integrações · Alertas`
 
-Para cada post: cole o **Título** no campo de título, o **Corpo** no campo de texto e adicione o **Poll** usando o botão "Add poll" do GitHub Discussions.
+Cada post tem 4 campos:
+- **Título** → campo de título do Discussion
+- **Corpo** → campo de texto (descrição/contexto)
+- **Pergunta do Poll** → campo "Ask a question" dentro do Poll
+- **Opções do Poll** → cada linha é uma opção
+
+Onde aparecer **(múltipla escolha)** → ative o toggle **"Allow multiple answers"** no poll.
 
 ---
 
@@ -26,14 +32,21 @@ o banco de dados e as permissões.
 Exemplos:
 - Uma conta = um CNPJ (empresa única)
 - Uma conta = grupo empresarial com várias filiais
+- Uma conta = uma filial (cada filial tem sua própria conta)
 
-Considerem o cenário mais comum dos nossos clientes-alvo.
+Considerem o cenário mais comum dos nossos clientes-alvo e usem
+os comentários para explicar o raciocínio.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
+```
+Como uma conta se relaciona com as empresas?
+```
+
+**Opções do Poll:**
 ```
 Uma conta = uma empresa (um CNPJ)
-Uma conta pode ter múltiplas empresas/filiais
+Uma conta pode ter múltiplas empresas ou filiais
 Uma conta = uma filial (cada filial tem sua própria conta)
 ```
 
@@ -51,10 +64,16 @@ Quais perfis de acesso devem existir na plataforma?
 Quem acessa o EasyFleet e o que cada perfil pode fazer?
 
 Marquem todos os perfis que fazem sentido para o negócio.
-Usem os comentários para descrever o que cada perfil pode ou não pode fazer.
+Usem os comentários para descrever o que cada perfil pode
+ou não pode fazer dentro da plataforma.
 ```
 
-**Poll — opções (múltipla escolha):**
+**Pergunta do Poll:** **(múltipla escolha)**
+```
+Quais perfis de acesso são necessários?
+```
+
+**Opções do Poll:**
 ```
 Administrador (controle total da conta)
 Gestor de frota (gerencia veículos e relatórios)
@@ -79,16 +98,22 @@ Uma empresa pode ter múltiplas frotas?
 **Corpo:**
 ```
 Por exemplo: uma transportadora pode separar a "Frota de Caminhões"
-da "Frota de Carros Executivos" como grupos distintos?
+da "Frota de Carros Executivos" como grupos distintos com relatórios separados?
 
-Isso impacta diretamente como organizamos veículos e relatórios no banco.
+Essa decisão impacta diretamente como organizamos veículos,
+custos e relatórios de TCO no banco de dados.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Sim — cada empresa pode ter várias frotas separadas
-Não — uma empresa = uma frota única
-Ainda não sei, precisa de mais análise
+Como frotas se relacionam com a empresa?
+```
+
+**Opções do Poll:**
+```
+Uma empresa tem uma única frota
+Uma empresa pode ter múltiplas frotas separadas
+Ainda não sei — precisa de mais análise
 ```
 
 ---
@@ -105,14 +130,21 @@ Um veículo pode migrar entre frotas?
 Ex: um veículo começa na "Frota SP" e é transferido para a "Frota RJ".
 
 O que acontece com o histórico de custos (abastecimento, manutenção, TCO)
-que foi gerado quando o veículo estava na frota anterior?
+gerado quando o veículo estava na frota anterior?
+
+Usem os comentários para dar exemplos reais do negócio.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Sim — migra e mantém todo o histórico vinculado ao veículo
-Sim — migra mas o histórico fica na frota anterior
-Não — veículo é fixo na frota (deve ser desativado e recadastrado)
+O que acontece quando um veículo muda de frota?
+```
+
+**Opções do Poll:**
+```
+Migra e mantém todo o histórico vinculado ao veículo
+Migra mas o histórico fica registrado na frota anterior
+Veículo é fixo na frota — deve ser desativado e recadastrado
 ```
 
 ---
@@ -121,32 +153,68 @@ Não — veículo é fixo na frota (deve ser desativado e recadastrado)
 
 **Título:**
 ```
-Quais atributos são obrigatórios no cadastro de um veículo?
+Quais campos são obrigatórios no cadastro de um veículo?
 ```
 
 **Corpo:**
 ```
-Listem nos comentários quais campos são obrigatórios e quais são opcionais.
+Listem nos comentários quais campos são obrigatórios e quais são opcionais
+para o cadastro inicial de um veículo na plataforma.
 
-Sugestão inicial para discussão:
-- Placa (obrigatório?)
-- Chassi / RENAVAM (obrigatório?)
-- Marca, Modelo, Ano (obrigatório?)
-- Tipo de combustível (obrigatório?)
-- Capacidade do tanque (obrigatório?)
-- Km inicial (obrigatório?)
-- Cor (opcional?)
-- Foto do veículo (opcional?)
+Sugestão para discussão:
+- Placa
+- Chassi / RENAVAM
+- Marca, Modelo, Ano de fabricação
+- Tipo de combustível
+- Capacidade do tanque (litros)
+- Quilometragem inicial
+- Cor
+- Foto do veículo
 
-Votem na importância do hodômetro:
+A votação abaixo é específica sobre a quilometragem (hodômetro).
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Hodômetro é obrigatório e vem da integração com o provedor
-Hodômetro é obrigatório e é inserido manualmente pelo motorista
-Hodômetro é opcional no MVP
-Não precisamos de hodômetro
+Como o hodômetro do veículo deve ser registrado?
+```
+
+**Opções do Poll:**
+```
+Obrigatório — vem automaticamente da integração com o provedor
+Obrigatório — inserido manualmente pelo motorista
+Opcional no MVP
+Não precisamos rastrear hodômetro
+```
+
+---
+
+### Post 6
+
+**Título:**
+```
+Existe o conceito de veículo terceirizado na plataforma?
+```
+
+**Corpo:**
+```
+Algumas empresas utilizam veículos que não são próprios —
+locados, de funcionários ou de parceiros.
+
+O gestor precisa visualizar e rastrear custos de veículos
+que não pertencem à empresa?
+```
+
+**Pergunta do Poll:**
+```
+A plataforma deve suportar veículos terceirizados?
+```
+
+**Opções do Poll:**
+```
+Sim — com controle completo igual ao veículo próprio
+Sim — somente visualização de custo, sem gestão
+Não — apenas veículos próprios no MVP
 ```
 
 ---
@@ -155,7 +223,7 @@ Não precisamos de hodômetro
 
 ---
 
-### Post 6
+### Post 7
 
 **Título:**
 ```
@@ -164,46 +232,27 @@ O cartão de abastecimento é vinculado ao veículo ou ao motorista?
 
 **Corpo:**
 ```
-Essa decisão define como linkamos as transações de abastecimento
-ao histórico de custo correto.
+Essa decisão define como as transações de abastecimento
+são linkadas ao histórico de custo correto.
 
 - Vinculado à placa: qualquer motorista usa o cartão do carro
 - Vinculado ao motorista: o motorista leva o cartão para qualquer veículo
-- Ambos: o cartão tem as duas informações
+- Ambos: cada transação registra veículo e motorista
+
+Usem os comentários para explicar como funciona hoje no processo atual.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Vinculado ao veículo (placa)
-Vinculado ao motorista (CPF/matrícula)
-Vinculado aos dois (veículo + motorista por transação)
+A qual entidade o cartão de abastecimento é vinculado?
+```
+
+**Opções do Poll:**
+```
+Ao veículo (placa)
+Ao motorista (CPF ou matrícula)
+Aos dois — veículo e motorista por transação
 Depende do provedor — cada um tem um modelo diferente
-```
-
----
-
-### Post 7
-
-**Título:**
-```
-Quais provedores de abastecimento devem ser integrados?
-```
-
-**Corpo:**
-```
-Marquem os provedores prioritários para o MVP e os que ficam para depois.
-Usem os comentários para indicar se já temos documentação de API ou contato comercial com o provedor.
-```
-
-**Poll — opções (múltipla escolha):**
-```
-Ticket Log — MVP
-TruckPad — MVP
-Repom — MVP
-Ticket Log — futuro
-TruckPad — futuro
-Repom — futuro
-Outro (comentar abaixo)
 ```
 
 ---
@@ -212,19 +261,58 @@ Outro (comentar abaixo)
 
 **Título:**
 ```
-O sistema deve detectar abastecimentos suspeitos automaticamente?
+Quais provedores de abastecimento integrar no MVP?
 ```
 
 **Corpo:**
 ```
-Ex: volume abastecido maior que a capacidade do tanque do veículo,
-abastecimento em posto fora da rota habitual, dois abastecimentos
-em menos de X horas.
+Marquem os provedores prioritários para o primeiro lançamento.
 
-Isso impacta a complexidade do motor de regras no MVP.
+Usem os comentários para indicar:
+- Se já temos documentação da API do provedor
+- Se já existe contato comercial com o provedor
+- Qualquer restrição técnica conhecida
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:** **(múltipla escolha)**
+```
+Quais provedores entram no MVP?
+```
+
+**Opções do Poll:**
+```
+Ticket Log
+TruckPad
+Repom
+Sem preferência — integrar o que tiver API disponível primeiro
+```
+
+---
+
+### Post 9
+
+**Título:**
+```
+O sistema deve detectar abastecimentos suspeitos?
+```
+
+**Corpo:**
+```
+Exemplos de situações suspeitas:
+- Volume abastecido maior que a capacidade do tanque do veículo
+- Dois abastecimentos completos em menos de X horas
+- Abastecimento em posto muito distante da rota habitual
+
+Essa funcionalidade aumenta a segurança mas adiciona
+complexidade ao motor de regras do MVP.
+```
+
+**Pergunta do Poll:**
+```
+Detecção de abastecimentos suspeitos entra no MVP?
+```
+
+**Opções do Poll:**
 ```
 Sim — é essencial, entra no MVP
 Sim — importante, mas fica para depois do MVP
@@ -237,7 +325,7 @@ Não — não é necessário por enquanto
 
 ---
 
-### Post 9
+### Post 10
 
 **Título:**
 ```
@@ -246,20 +334,27 @@ Controle de pneus entra no MVP?
 
 **Corpo:**
 ```
-O bounded context de Pneus é um dos mais complexos.
-Antes de detalhar as regras, precisamos decidir se entra no primeiro lançamento.
+O bounded context de Pneus é um dos mais complexos da plataforma.
+
+Antes de detalhar as regras de negócio, precisamos alinhar
+se entra no primeiro lançamento e com qual profundidade.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Sim — entra no MVP completo
-Sim — entra no MVP de forma simplificada (só custo, sem lifecycle)
-Não — fica para a versão seguinte ao MVP
+Qual o escopo de pneus no MVP?
+```
+
+**Opções do Poll:**
+```
+MVP completo — lifecycle por pneu, eventos, alertas
+MVP simplificado — só registro de custo por veículo
+Fora do MVP — versão seguinte ao lançamento
 ```
 
 ---
 
-### Post 10
+### Post 11
 
 **Título:**
 ```
@@ -268,16 +363,24 @@ Qual nível de rastreamento de pneus é necessário?
 
 **Corpo:**
 ```
-Nível 1 — Só custo: registro de quanto foi gasto com pneus por veículo/período
-Nível 2 — Eventos: instalação, troca, descarte com data e km
-Nível 3 — Lifecycle completo: cada pneu tem ID, posição no veículo, histórico de rodízio
+Três níveis possíveis de controle:
 
-Qual nível atende o gestor de frota?
+Nível 1 — Custo: quanto foi gasto com pneus por veículo/período
+Nível 2 — Eventos: instalação, troca e descarte com data e km
+Nível 3 — Lifecycle: cada pneu tem ID próprio, posição no veículo
+            e histórico completo de rodízio e recapagem
+
+Qual nível atende o gestor de frota no dia a dia?
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Nível 1 — Só custo (mais simples)
+Qual nível de rastreamento de pneus é necessário?
+```
+
+**Opções do Poll:**
+```
+Nível 1 — Só custo
 Nível 2 — Eventos por veículo
 Nível 3 — Lifecycle completo por pneu individual
 ```
@@ -288,7 +391,7 @@ Nível 3 — Lifecycle completo por pneu individual
 
 ---
 
-### Post 11
+### Post 12
 
 **Título:**
 ```
@@ -297,20 +400,27 @@ Manutenção entra no MVP?
 
 **Corpo:**
 ```
-Assim como pneus, manutenção tem alta complexidade (OS, aprovação, fornecedores).
-Precisamos alinhar o escopo antes de modelar.
+Manutenção tem alta complexidade — Ordens de Serviço, aprovação,
+fornecedores cadastrados, planos preventivos.
+
+Precisamos alinhar o escopo antes de modelar o banco de dados.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Sim — entra no MVP completo (OS, preventiva, corretiva)
-Sim — entra no MVP simplificado (só registro de custo)
-Não — fica para depois do MVP
+Qual o escopo de manutenção no MVP?
+```
+
+**Opções do Poll:**
+```
+MVP completo — OS, preventiva, corretiva, aprovação
+MVP simplificado — só registro de custo
+Fora do MVP — versão seguinte ao lançamento
 ```
 
 ---
 
-### Post 12
+### Post 13
 
 **Título:**
 ```
@@ -319,17 +429,28 @@ O gestor precisa aprovar a Ordem de Serviço antes da execução?
 
 **Corpo:**
 ```
-Fluxo com aprovação: Oficina abre OS → Gestor aprova → Oficina executa → Gestor fecha
-Fluxo sem aprovação: Oficina executa → Registra no sistema → Gestor visualiza
+Dois fluxos possíveis:
 
-O fluxo com aprovação é mais seguro mas aumenta a complexidade do sistema.
+Com aprovação:
+Oficina identifica problema → Gestor aprova o orçamento → Oficina executa → OS fechada
+
+Sem aprovação:
+Oficina executa o serviço → Registra no sistema → Gestor visualiza e valida
+
+O fluxo com aprovação protege o gestor de custos não autorizados
+mas exige que a oficina use a plataforma antes de iniciar o serviço.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Sim — aprovação obrigatória antes de executar
-Sim — aprovação opcional (configurável por empresa)
-Não — registro pós-execução é suficiente
+Como funciona o fluxo de aprovação de OS?
+```
+
+**Opções do Poll:**
+```
+Aprovação obrigatória antes de executar
+Aprovação opcional — configurável por empresa
+Sem aprovação — registro pós-execução é suficiente
 ```
 
 ---
@@ -338,7 +459,7 @@ Não — registro pós-execução é suficiente
 
 ---
 
-### Post 13
+### Post 14
 
 **Título:**
 ```
@@ -348,13 +469,21 @@ Quais categorias de custo compõem o TCO?
 **Corpo:**
 ```
 Marquem todas as categorias que devem entrar no cálculo de TCO.
-Usem os comentários para indicar se alguma categoria tem regra especial de cálculo.
+
+Usem os comentários para:
+- Indicar se alguma categoria tem regra especial de cálculo
+- Informar se já existe essa informação nos sistemas atuais
 ```
 
-**Poll — opções (múltipla escolha):**
+**Pergunta do Poll:** **(múltipla escolha)**
+```
+Quais categorias entram no cálculo de TCO?
+```
+
+**Opções do Poll:**
 ```
 Abastecimento (combustível)
-Pneus (compra, troca, manutenção)
+Pneus (compra, troca, recapagem)
 Manutenção (OS preventiva e corretiva)
 Depreciação do veículo
 Seguro (obrigatório e opcional)
@@ -365,7 +494,7 @@ Pedágios
 
 ---
 
-### Post 14
+### Post 15
 
 **Título:**
 ```
@@ -376,10 +505,18 @@ O TCO é calculado por veículo, por frota ou pelos dois?
 ```
 - Por veículo: o gestor vê o custo total de cada veículo individualmente
 - Por frota: o gestor vê o custo agregado de toda a frota
-- Ambos: drill-down da frota até o veículo individual
+- Ambos: visão da frota com possibilidade de detalhar por veículo (drill-down)
+
+Usem os comentários para descrever como o gestor analisa
+os custos hoje, antes da plataforma.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
+```
+Como o TCO deve ser visualizado?
+```
+
+**Opções do Poll:**
 ```
 Somente por veículo
 Somente por frota (agregado)
@@ -388,7 +525,7 @@ Ambos — frota com drill-down por veículo
 
 ---
 
-### Post 15
+### Post 16
 
 **Título:**
 ```
@@ -397,14 +534,22 @@ Qual o período padrão de análise do TCO?
 
 **Corpo:**
 ```
-Como o gestor vai analisar os custos normalmente?
+Como o gestor normalmente analisa os custos da frota?
+Por mês fechado ou com liberdade de escolher qualquer período?
+
+Usem os comentários para descrever a frequência de análise atual.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
+```
+Qual o período padrão de análise do TCO?
+```
+
+**Opções do Poll:**
 ```
 Mensal fixo (janeiro, fevereiro...)
-Livre — gestor escolhe data início e fim
-Ambos — mensal como padrão, com opção de período livre
+Livre — gestor escolhe data de início e fim
+Ambos — mensal como padrão com opção de período livre
 Anual com comparativo mensal
 ```
 
@@ -414,7 +559,7 @@ Anual com comparativo mensal
 
 ---
 
-### Post 16
+### Post 17
 
 **Título:**
 ```
@@ -425,23 +570,31 @@ Como o gestor conecta um provedor na plataforma?
 ```
 Dois modelos possíveis:
 
-Modelo A — Self-service: o gestor insere a própria chave de API do contrato que tem com o provedor
-Modelo B — Centralizado: a FFKD tem contrato master com o provedor e o gestor só seleciona e autoriza
+Modelo A — Self-service:
+O gestor insere a própria chave de API do contrato que já tem com o provedor.
+Mais simples de desenvolver. Exige que o cliente já tenha contrato próprio.
 
-O Modelo A é mais simples de desenvolver mas exige que o cliente já tenha contrato com o provedor.
-O Modelo B tem mais valor mas exige acordos comerciais da FFKD com cada provedor.
+Modelo B — Centralizado:
+A FFKD tem contrato master com o provedor.
+O gestor só seleciona e autoriza. Mais valor agregado mas
+exige acordos comerciais da FFKD com cada provedor.
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Modelo A — gestor insere a própria chave de API (MVP)
-Modelo B — FFKD centraliza os contratos (MVP)
-Modelo A no MVP, migrar para Modelo B depois
+Qual modelo de conexão com provedores adotar?
+```
+
+**Opções do Poll:**
+```
+Modelo A — gestor insere a própria chave de API
+Modelo B — FFKD centraliza os contratos com os provedores
+Modelo A no MVP, evoluir para Modelo B depois
 ```
 
 ---
 
-### Post 17
+### Post 18
 
 **Título:**
 ```
@@ -450,16 +603,25 @@ A sincronização com os provedores deve ser automática ou manual?
 
 **Corpo:**
 ```
-- Automática: o sistema sincroniza periodicamente sem ação do gestor (ex: todo dia às 2h)
-- Manual: o gestor clica em "Sincronizar agora" quando quiser atualizar os dados
-- Ambos: automática com opção de forçar sync manual
+- Automática: o sistema sincroniza periodicamente sem ação do gestor
+  (ex: todo dia às 2h da manhã)
+- Manual: o gestor clica em "Sincronizar agora" quando quiser atualizar
+- Ambos: sincronização automática com opção de forçar manualmente
+
+Usem os comentários para indicar a frequência ideal de atualização
+dos dados (a cada hora, diário, semanal?).
 ```
 
-**Poll — opções:**
+**Pergunta do Poll:**
 ```
-Automática (agendada, sem ação do gestor)
-Manual (gestor aciona quando quiser)
-Ambos — automática + opção de sync manual
+Como deve funcionar a sincronização com provedores?
+```
+
+**Opções do Poll:**
+```
+Automática — agendada sem ação do gestor
+Manual — gestor aciona quando precisar
+Ambos — automática com opção de sync manual
 ```
 
 ---
@@ -468,7 +630,7 @@ Ambos — automática + opção de sync manual
 
 ---
 
-### Post 18
+### Post 19
 
 **Título:**
 ```
@@ -477,10 +639,18 @@ Por quais canais o gestor deve receber alertas?
 
 **Corpo:**
 ```
-Marquem os canais que são essenciais para o MVP.
+Marquem os canais essenciais para o MVP.
+
+Usem os comentários para indicar qual canal o público-alvo
+usa no dia a dia (WhatsApp? E-mail? App?).
 ```
 
-**Poll — opções (múltipla escolha):**
+**Pergunta do Poll:** **(múltipla escolha)**
+```
+Quais canais de alerta são essenciais no MVP?
+```
+
+**Opções do Poll:**
 ```
 Notificação dentro da plataforma web
 Push notification no app mobile
@@ -491,7 +661,7 @@ SMS
 
 ---
 
-### Post 19
+### Post 20
 
 **Título:**
 ```
@@ -500,16 +670,25 @@ Quais situações devem gerar alerta automático?
 
 **Corpo:**
 ```
-Marquem as situações prioritárias. Usem os comentários para sugerir
-limites/thresholds (ex: "custo acima de quanto?").
+Marquem as situações prioritárias.
+
+Usem os comentários para sugerir limites e thresholds:
+- "Custo acima de quanto?"
+- "Quantos dias sem conclusão da OS?"
+- "A quantos km do limite avisar sobre o pneu?"
 ```
 
-**Poll — opções (múltipla escolha):**
+**Pergunta do Poll:** **(múltipla escolha)**
 ```
-Custo mensal do veículo acima do orçamento definido
+Quais situações geram alerta automático?
+```
+
+**Opções do Poll:**
+```
+Custo do veículo acima do orçamento definido
 Abastecimento suspeito detectado
-Pneu próximo do limite de troca (por km)
+Pneu próximo do limite de troca por km
 Manutenção preventiva vencida ou próxima do vencimento
 Falha na sincronização com um provedor
-OS sem conclusão após X dias
+OS sem conclusão após prazo definido
 ```

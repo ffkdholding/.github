@@ -837,6 +837,85 @@ Não — só registro e custo são suficientes
 
 **Título:**
 ```
+A consulta de multas deve ser feita por placa ou por CNPJ?
+```
+
+**Corpo:**
+```
+No Brasil existem dois tipos de consulta:
+
+Por placa (DETRAN/SENATRAN):
+Retorna multas de trânsito do veículo — infrações de velocidade,
+estacionamento, semáforo, documentação do veículo, etc.
+
+Por CNPJ (ANTT):
+Retorna multas aplicadas à empresa transportadora — infrações
+de peso, excesso de jornada do motorista, documentação de carga,
+falta de licença de operação, etc.
+
+Frotas de transportadoras precisam monitorar os dois tipos.
+Frotas corporativas (carros leves) geralmente só precisam da consulta por placa.
+```
+
+**Pergunta do Poll:**
+```
+Qual tipo de consulta de multas é necessário?
+```
+
+**Opções do Poll:**
+```
+Somente por placa (multas de trânsito — DETRAN)
+Somente por CNPJ (multas de transporte — ANTT)
+Ambos — por placa e por CNPJ
+```
+
+---
+
+### Post 26
+
+**Título:**
+```
+A frota precisa monitorar multas da ANTT?
+```
+
+**Corpo:**
+```
+A ANTT (Agência Nacional de Transportes Terrestres) fiscaliza
+o transporte rodoviário de cargas e passageiros.
+
+Multas comuns da ANTT:
+- Excesso de peso do veículo
+- Motorista sem descanso obrigatório (jornada)
+- Documentação de carga irregular
+- Transporte sem autorização ou licença
+- Tacógrafo adulterado ou ausente
+
+Essas multas são aplicadas à empresa (CNPJ), não ao veículo,
+e podem ser de valores muito mais altos que multas de trânsito comuns.
+
+Esse tipo de controle é mais relevante para transportadoras
+do que para frotas corporativas de carros leves.
+```
+
+**Pergunta do Poll:**
+```
+Monitoramento de multas ANTT entra no escopo?
+```
+
+**Opções do Poll:**
+```
+Sim — essencial para nosso perfil de cliente, entra no MVP
+Sim — importante, mas fica para depois do MVP
+Não — nossos clientes não são transportadoras
+Depende — oferecer como módulo opcional
+```
+
+---
+
+### Post 27
+
+**Título:**
+```
 Multas entram no cálculo de TCO?
 ```
 

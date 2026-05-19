@@ -555,6 +555,144 @@ Anual com comparativo mensal
 
 ---
 
+## CATEGORIA: Pedágios
+
+---
+
+### Post 17
+
+**Título:**
+```
+Controle de pedágios entra no MVP?
+```
+
+**Corpo:**
+```
+O EasyFleet pode integrar com provedores de tag de pedágio
+(Sem Parar, Veloe, ConectCar) para importar automaticamente
+os gastos com pedágios por veículo.
+
+Sem integração, o gestor precisaria lançar os custos manualmente.
+
+Essa decisão impacta o cálculo de TCO e a completude dos relatórios de custo.
+```
+
+**Pergunta do Poll:**
+```
+Pedágios entram no MVP?
+```
+
+**Opções do Poll:**
+```
+Sim — integração automática com provedor de tag no MVP
+Sim — lançamento manual no MVP, integração depois
+Não — fica para versão seguinte ao MVP
+```
+
+---
+
+### Post 18
+
+**Título:**
+```
+Quais provedores de pedágio devem ser integrados?
+```
+
+**Corpo:**
+```
+Provedores de tag de pedágio disponíveis no Brasil:
+
+- Sem Parar — maior base de clientes, aceito em todas as praças
+- Veloe — forte em SP e RJ, boa API
+- ConectCar — forte em frotas corporativas
+- TagPlus — regional
+
+Usem os comentários para indicar qual provedor a empresa já utiliza
+e se já temos documentação de API ou contato comercial.
+```
+
+**Pergunta do Poll:** **(múltipla escolha)**
+```
+Quais provedores de pedágio integrar?
+```
+
+**Opções do Poll:**
+```
+Sem Parar
+Veloe
+ConectCar
+TagPlus
+Sem preferência — integrar o que tiver API disponível primeiro
+```
+
+---
+
+### Post 19
+
+**Título:**
+```
+A tag de pedágio é vinculada ao veículo ou ao motorista?
+```
+
+**Corpo:**
+```
+Assim como o cartão de abastecimento, a tag pode estar
+associada ao veículo ou ao motorista.
+
+- Vinculada ao veículo: a tag fica fixada no para-brisa do carro
+- Vinculada ao motorista: o motorista leva a tag para qualquer veículo
+
+Essa decisão define como os custos de pedágio são atribuídos
+no histórico e no TCO.
+```
+
+**Pergunta do Poll:**
+```
+A tag de pedágio é vinculada a qual entidade?
+```
+
+**Opções do Poll:**
+```
+Ao veículo (tag fixada no carro)
+Ao motorista (tag pessoal)
+Depende do provedor — cada um tem um modelo diferente
+```
+
+---
+
+### Post 20
+
+**Título:**
+```
+O gestor precisa ver o detalhamento de cada passagem de pedágio?
+```
+
+**Corpo:**
+```
+Dois níveis de detalhe possíveis:
+
+Nível 1 — Resumo: total gasto em pedágios por veículo/período
+Nível 2 — Detalhado: cada passagem com data, hora, praça e valor
+
+O nível detalhado permite auditar rotas e identificar
+desvios de percurso, mas exige mais armazenamento e
+depende da granularidade da API do provedor.
+```
+
+**Pergunta do Poll:**
+```
+Qual nível de detalhe de pedágios é necessário?
+```
+
+**Opções do Poll:**
+```
+Nível 1 — Só o total por veículo/período
+Nível 2 — Detalhamento por passagem (data, praça, valor)
+Ambos — resumo com opção de drill-down por passagem
+```
+
+---
+
 ## CATEGORIA: Integrações
 
 ---

@@ -693,6 +693,178 @@ Ambos — resumo com opção de drill-down por passagem
 
 ---
 
+## CATEGORIA: Multas
+
+---
+
+### Post 21
+
+**Título:**
+```
+Controle de multas de trânsito entra no MVP?
+```
+
+**Corpo:**
+```
+O EasyFleet pode integrar com plataformas de gestão de multas
+para importar automaticamente as infrações por veículo,
+identificar o condutor responsável e acompanhar o status de pagamento.
+
+Dois players disponíveis no mercado:
+- Frota 162 — gestão de multas para transportadoras
+- Beemon / Bee2Go — plataforma de autogestão de multas para frotas
+
+Sem integração, o gestor precisaria acompanhar multas
+manualmente via DETRAN, o que é ineficiente para frotas grandes.
+```
+
+**Pergunta do Poll:**
+```
+Gestão de multas entra no MVP?
+```
+
+**Opções do Poll:**
+```
+Sim — integração automática com provedor no MVP
+Sim — consulta manual no MVP, integração depois
+Não — fica para versão seguinte ao MVP
+```
+
+---
+
+### Post 22
+
+**Título:**
+```
+Quais provedores de gestão de multas integrar?
+```
+
+**Corpo:**
+```
+Players identificados no mercado:
+
+- Frota 162: focado em transportadoras, gestão completa de multas
+- Beemon / Bee2Go: autogestão de multas, indicação do condutor, recursos
+
+Usem os comentários para indicar:
+- Se a empresa já usa algum desses serviços hoje
+- Se existe contato comercial ou documentação de API disponível
+- Outros provedores que conhecem
+```
+
+**Pergunta do Poll:** **(múltipla escolha)**
+```
+Quais provedores de multas integrar?
+```
+
+**Opções do Poll:**
+```
+Frota 162
+Beemon / Bee2Go
+Consulta direta ao DETRAN (sem provedor intermediário)
+Sem preferência — avaliar conforme disponibilidade de API
+```
+
+---
+
+### Post 23
+
+**Título:**
+```
+A multa é atribuída ao veículo ou ao condutor responsável?
+```
+
+**Corpo:**
+```
+Quando uma multa é identificada, ela pode ser:
+
+- Atribuída ao veículo: o custo fica no histórico do carro independente de quem dirigia
+- Atribuída ao condutor: o sistema identifica quem estava dirigindo no momento
+  da infração e registra a responsabilidade no perfil do motorista
+
+A atribuição ao condutor exige cruzamento de dados
+(quem usou o veículo naquele horário) e impacta o fluxo de indicação.
+```
+
+**Pergunta do Poll:**
+```
+Como a multa deve ser atribuída?
+```
+
+**Opções do Poll:**
+```
+Ao veículo (custo no histórico do carro)
+Ao condutor responsável (identificado pelo sistema)
+Ao veículo com opção de indicar o condutor manualmente
+```
+
+---
+
+### Post 24
+
+**Título:**
+```
+O sistema deve gerenciar o recurso de multas?
+```
+
+**Corpo:**
+```
+Além de registrar a multa, o sistema pode apoiar o processo de recurso:
+
+- Alerta de prazo para recurso antes de vencer
+- Registro do status (aguardando julgamento, deferido, indeferido)
+- Histórico de recursos por veículo
+
+Esse fluxo aumenta o valor da plataforma mas adiciona
+complexidade ao bounded context de Multas.
+```
+
+**Pergunta do Poll:**
+```
+Gestão de recursos de multas entra no escopo?
+```
+
+**Opções do Poll:**
+```
+Sim — essencial, entra no MVP
+Sim — importante, mas fica para depois do MVP
+Não — só registro e custo são suficientes
+```
+
+---
+
+### Post 25
+
+**Título:**
+```
+Multas entram no cálculo de TCO?
+```
+
+**Corpo:**
+```
+As multas de trânsito representam um custo real da operação da frota.
+
+Incluir no TCO permite ao gestor visualizar o impacto financeiro
+das infrações e comparar o comportamento de diferentes veículos ou condutores.
+
+Usem os comentários para indicar se existe orçamento previsto
+para multas ou se é tratado como custo extraordinário.
+```
+
+**Pergunta do Poll:**
+```
+Multas entram no cálculo de TCO?
+```
+
+**Opções do Poll:**
+```
+Sim — entra como categoria de custo no TCO
+Não — é tratado separadamente, fora do TCO
+Sim, mas só como informativo (não soma no TCO principal)
+```
+
+---
+
 ## CATEGORIA: Integrações
 
 ---

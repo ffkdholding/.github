@@ -562,6 +562,210 @@
       flex-shrink: 0;
     }
 
+    /* ── AI CHAT ── */
+    .ai-layout {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - var(--header-h) - 48px);
+      min-height: 500px;
+    }
+
+    .ai-header { margin-bottom: 16px; }
+
+    .ai-provider-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    .ai-provider-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .ai-provider-dot.unconfigured { background: var(--muted); }
+
+    .ai-provider-name { font-weight: 600; }
+    .ai-provider-model { color: var(--muted); }
+    .ai-provider-link  { margin-left: auto; font-size: 12px; color: var(--accent); cursor: pointer; }
+
+    .chat-window {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 4px 0 16px;
+    }
+
+    .chat-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .chat-empty-icon { font-size: 40px; margin-bottom: 16px; }
+    .chat-empty-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .chat-empty-sub { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 400px; }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .quick-action {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .quick-action:hover {
+      border-color: var(--border-strong);
+      background: rgba(0,198,255,0.07);
+      color: var(--accent);
+    }
+
+    .msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      max-width: 820px;
+    }
+
+    .msg.user { flex-direction: row-reverse; margin-left: auto; }
+
+    .msg-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .msg.assistant .msg-avatar { background: linear-gradient(135deg,#00c6ff,#00e676); font-size: 13px; }
+    .msg.user      .msg-avatar { background: rgba(0,198,255,0.15); border: 1px solid var(--border); }
+
+    .msg-bubble {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13px;
+      line-height: 1.65;
+      max-width: 640px;
+    }
+
+    .msg.user .msg-bubble {
+      background: rgba(0,198,255,0.1);
+      border-color: rgba(0,198,255,0.2);
+    }
+
+    .msg-bubble strong { color: var(--accent); }
+    .msg-bubble ul { padding-left: 18px; margin-top: 6px; }
+    .msg-bubble li { margin-bottom: 4px; }
+
+    .inline-chart {
+      margin-top: 12px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .inline-chart-title { font-size: 11px; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .inline-bars { display: flex; flex-direction: column; gap: 8px; }
+
+    .inline-bar-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+    .inline-bar-label { width: 140px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+    .inline-bar-track { flex: 1; height: 8px; background: rgba(0,198,255,0.08); border-radius: 4px; overflow: hidden; }
+    .inline-bar-fill  { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #00c6ff, #00e676); }
+    .inline-bar-val   { width: 80px; text-align: right; color: var(--text); font-weight: 600; font-size: 11px; }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 6px 0;
+    }
+
+    .typing-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: blink 1.2s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(1); }
+      40% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      resize: none;
+      line-height: 1.5;
+      font-family: inherit;
+      min-height: 44px;
+      max-height: 120px;
+    }
+
+    .chat-input:focus { border-color: var(--border-strong); }
+    .chat-input::placeholder { color: var(--muted); }
+
+    .send-btn {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--accent);
+      border: none;
+      color: #060d1a;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+
+    .send-btn:hover { opacity: 0.9; }
+    .send-btn:disabled { opacity: 0.4; cursor: default; }
+
     /* HAMBURGER */
     .hamburger {
       display: none;
@@ -650,6 +854,10 @@
     </div>
 
     <div class="nav-section-label" style="margin-top:6px">Análise</div>
+    <div class="nav-item" data-screen="ia" onclick="go('ia')">
+      <span class="nav-icon">✨</span> Análise IA
+      <span class="nav-badge" style="background:linear-gradient(135deg,#00c6ff,#00e676);color:#060d1a">NEW</span>
+    </div>
     <div class="nav-item" data-screen="relatorios" onclick="go('relatorios')">
       <span class="nav-icon">📈</span> Relatórios
     </div>
@@ -769,6 +977,7 @@ function go(screen, vid) {
     pneus:         renderPneus,
     pedagios:      renderPedagios,
     multas:        renderMultas,
+    ia:            renderIA,
     relatorios:    renderRelatorios,
     configuracoes: renderConfig,
   };
@@ -1556,7 +1765,279 @@ function renderConfig() {
         </div>
       `).join('')}
     </div>
+
+    <div class="settings-section">
+      <div class="settings-title" style="display:flex;align-items:center;gap:8px">
+        ✨ Inteligência Artificial
+        <span class="badge b-blue" style="font-size:10px">BYOK</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px">
+        Use sua própria chave de LLM para análise inteligente da frota.
+        A EasyFleet monta o contexto com os dados da sua frota — você paga apenas os tokens do seu provedor.
+        <br/><span style="font-size:11px">A chave é salva criptografada e nunca é exposta.</span>
+      </div>
+
+      <div class="form-group" style="margin-bottom:16px">
+        <label class="form-label">Provedor de LLM</label>
+        <select class="form-input" id="llm-provider" onchange="updateModelOptions()">
+          <option value="openai"    ${aiConfig.provider==='openai'    ? 'selected':''}>OpenAI (ChatGPT)</option>
+          <option value="anthropic" ${aiConfig.provider==='anthropic' ? 'selected':''}>Anthropic (Claude)</option>
+          <option value="google"    ${aiConfig.provider==='google'    ? 'selected':''}>Google (Gemini)</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Modelo</label>
+          <select class="form-input" id="llm-model">
+            <option>gpt-4o-mini</option>
+            <option>gpt-4o</option>
+            <option>gpt-3.5-turbo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">API Key</label>
+          <input class="form-input" type="password" id="llm-key"
+            placeholder="${aiConfig.configured ? '••••••••••••••••' : 'sk-... ou ghp_...'}"
+            value="${aiConfig.configured ? '••••••••••••••••' : ''}" />
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+        <button class="btn btn-primary" style="font-size:13px" onclick="saveLLMConfig()">
+          Salvar e testar conexão
+        </button>
+        ${aiConfig.configured
+          ? `<span id="llm-status" class="badge b-green">● Conectado · ${aiConfig.provider === 'openai' ? 'OpenAI' : aiConfig.provider === 'anthropic' ? 'Anthropic' : 'Google'}</span>`
+          : `<span id="llm-status" style="font-size:12px;color:var(--muted)">Não configurado</span>`
+        }
+      </div>
+    </div>
   `;
+}
+
+// ── IA SCREEN ──────────────────────────────────────────────────────────────
+
+const aiConfig = { provider: 'openai', model: 'gpt-4o-mini', configured: false };
+
+const mockResponses = {
+  'resumo': {
+    text: `Aqui está o resumo da sua frota em <strong>Maio 2026</strong>:\n\n<strong>TCO Total: R$ 45.530/mês</strong>\n\n<ul><li>O veículo com maior custo é o <strong>Scania R450</strong> (R$ 15.320/mês, R$ 0,94/km) — acima da média da frota</li><li>O <strong>Sprinter 415 CDI</strong> tem o melhor custo/km da frota: <strong>R$ 0,63/km</strong></li><li>A <strong>Mercedes Actros</strong> está em manutenção há 2 dias — risco de atraso operacional</li><li>3 alertas ativos requerem atenção imediata</li></ul>`,
+    chart: {
+      title: 'TCO por veículo (R$/mês)',
+      bars: [
+        { label: 'Scania R450',         val: 15320, pct: 100 },
+        { label: 'Volvo FH 540',        val: 12840, pct: 84 },
+        { label: 'Mercedes Actros',     val: 9870,  pct: 64 },
+        { label: 'Sprinter 415 CDI',    val: 4320,  pct: 28 },
+        { label: 'Hilux 2.8 TDI',       val: 3180,  pct: 21 },
+      ]
+    }
+  },
+  'mais caro': {
+    text: `O veículo com maior custo total é o <strong>Scania R450 (DEF-2E56)</strong>.\n\n<strong>TCO: R$ 15.320/mês</strong> — 14% acima da média da frota (R$ 13.440).\n\n<ul><li><strong>Combustível:</strong> R$ 6.434/mês (42% do TCO) — maior consumidor da frota</li><li><strong>Manutenção:</strong> R$ 3.370/mês — troca de óleo realizada em 10/05</li><li><strong>Pneus:</strong> 78.200 km rodados — próximos do limite (80.000 km)</li><li><strong>Multa pendente:</strong> R$ 195,23 com prazo 04/06/2026</li></ul>\n\nRecomendação: avaliar renovação do veículo ao atingir 150.000 km dado o custo/km crescente.`,
+    chart: null
+  },
+  'renovar': {
+    text: `Analisando o custo/km histórico da frota, o candidato prioritário para renovação é a <strong>Mercedes Actros 2651 (GHI-3F90)</strong>.\n\n<strong>Motivo:</strong> custo/km de <strong>R$ 1,12</strong> — 26% acima da média da frota (R$ 0,89). Com apenas 45.200 km, este índice elevado indica problemas recorrentes de manutenção.\n\n<ul><li>Manutenção atual: revisão de freios (R$ 2.800) em andamento</li><li>Custo de manutenção representa 28% do TCO — anormal para um veículo 2023</li></ul>\n\nO <strong>Scania R450</strong> também merece atenção a médio prazo dado o volume de km (124.500) e os pneus próximos do limite.`,
+    chart: null
+  },
+  'default': {
+    text: `Entendido. Com base nos dados atuais da sua frota (<strong>5 veículos · TCO R$ 45.530/mês</strong>), analisei o ponto solicitado.\n\nPara uma análise mais específica, você pode perguntar:\n<ul><li>"Qual veículo tem o maior custo?"</li><li>"Quando devo trocar os pneus do Scania?"</li><li>"Compare o custo do Volvo com a média da frota"</li><li>"Quais alertas são mais urgentes?"</li></ul>`,
+    chart: null
+  }
+};
+
+let chatHistory = [];
+let isTyping = false;
+
+function renderIA() {
+  const configured = aiConfig.configured;
+  return `
+    <div class="ai-layout">
+      <div class="ai-header">
+        <div class="page-header" style="margin-bottom:12px">
+          <div>
+            <div class="page-title">Análise IA <span style="font-size:13px;color:var(--muted);font-weight:400">· BYOK</span></div>
+            <div class="page-subtitle">Consulte sua frota em linguagem natural usando sua própria chave de LLM</div>
+          </div>
+        </div>
+        <div class="ai-provider-bar">
+          <div class="ai-provider-dot ${configured ? '' : 'unconfigured'}"></div>
+          ${configured
+            ? `<span class="ai-provider-name">${aiConfig.provider === 'openai' ? 'OpenAI' : aiConfig.provider === 'anthropic' ? 'Anthropic' : 'Google Gemini'}</span>
+               <span class="ai-provider-model">· ${aiConfig.model}</span>`
+            : `<span style="color:var(--muted)">Nenhuma LLM configurada</span>`
+          }
+          <span class="ai-provider-link" onclick="go('configuracoes')">${configured ? '⚙ Trocar' : '+ Configurar LLM →'}</span>
+        </div>
+      </div>
+
+      <div class="chat-window" id="chat-window">
+        ${chatHistory.length === 0 ? renderChatEmpty() : chatHistory.map(renderMsg).join('')}
+      </div>
+
+      <div class="chat-input-row">
+        <textarea
+          class="chat-input"
+          id="chat-input"
+          placeholder="Ex: Qual veículo tem o maior custo? / Gere um resumo da frota / Quando devo renovar a frota?"
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()" ${!configured ? 'disabled' : ''}>➤</button>
+      </div>
+      ${!configured ? `<div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px">Configure sua chave de LLM em <span style="color:var(--accent);cursor:pointer" onclick="go('configuracoes')">Configurações → Inteligência Artificial</span></div>` : ''}
+    </div>
+  `;
+}
+
+function renderChatEmpty() {
+  return `
+    <div class="chat-empty">
+      <div class="chat-empty-icon">✨</div>
+      <div class="chat-empty-title">Análise inteligente da sua frota</div>
+      <div class="chat-empty-sub">
+        Faça perguntas em português sobre custos, veículos, alertas e tendências.
+        A IA usa os dados reais da sua frota como contexto.
+        <br/><br/>
+        <span style="color:var(--muted);font-size:11px">Seus tokens de LLM · Seus dados · Seu controle</span>
+      </div>
+      <div class="quick-actions">
+        <div class="quick-action" onclick="sendQuick('Gere um resumo da frota')">📊 Resumo da frota</div>
+        <div class="quick-action" onclick="sendQuick('Qual veículo tem o maior custo?')">💰 Veículo mais caro</div>
+        <div class="quick-action" onclick="sendQuick('Quais veículos devo considerar renovar?')">🔄 Renovação de frota</div>
+        <div class="quick-action" onclick="sendQuick('Quais são os alertas mais urgentes?')">🚨 Alertas urgentes</div>
+        <div class="quick-action" onclick="sendQuick('Compare o custo por km de todos os veículos')">📈 Custo por km</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderMsg(m) {
+  if (m.role === 'typing') return `
+    <div class="msg assistant">
+      <div class="msg-avatar">✨</div>
+      <div class="msg-bubble">
+        <div class="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const isUser = m.role === 'user';
+  const chartHtml = (!isUser && m.chart) ? `
+    <div class="inline-chart">
+      <div class="inline-chart-title">${m.chart.title}</div>
+      <div class="inline-bars">
+        ${m.chart.bars.map(b => `
+          <div class="inline-bar-row">
+            <div class="inline-bar-label" title="${b.label}">${b.label}</div>
+            <div class="inline-bar-track"><div class="inline-bar-fill" style="width:${b.pct}%"></div></div>
+            <div class="inline-bar-val">R$ ${b.val.toLocaleString('pt-BR')}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  ` : '';
+
+  return `
+    <div class="msg ${isUser ? 'user' : 'assistant'}">
+      <div class="msg-avatar">${isUser ? '👤' : '✨'}</div>
+      <div class="msg-bubble">
+        ${isUser ? m.content : m.content.replace(/\n/g, '<br/>')}
+        ${chartHtml}
+      </div>
+    </div>
+  `;
+}
+
+function sendQuick(text) {
+  document.getElementById('chat-input').value = text;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text || isTyping) return;
+
+  chatHistory.push({ role: 'user', content: text });
+  input.value = '';
+  input.style.height = 'auto';
+  isTyping = true;
+
+  refreshChat();
+
+  // Simula latência de LLM
+  setTimeout(() => {
+    chatHistory.push({ role: 'typing' });
+    refreshChat();
+
+    setTimeout(() => {
+      chatHistory = chatHistory.filter(m => m.role !== 'typing');
+      const key = text.toLowerCase().includes('resumo') ? 'resumo'
+                : text.toLowerCase().includes('caro') || text.toLowerCase().includes('custo') ? 'mais caro'
+                : text.toLowerCase().includes('renov') ? 'renovar'
+                : 'default';
+      const resp = mockResponses[key];
+      chatHistory.push({ role: 'assistant', content: resp.text, chart: resp.chart });
+      isTyping = false;
+      refreshChat();
+    }, 1800);
+  }, 200);
+}
+
+function refreshChat() {
+  const win = document.getElementById('chat-window');
+  if (!win) return;
+  win.innerHTML = chatHistory.map(renderMsg).join('');
+  win.scrollTop = win.scrollHeight;
+}
+
+// LLM CONFIG
+const modelsByProvider = {
+  openai:    ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'],
+  anthropic: ['claude-3-5-haiku-20241022', 'claude-sonnet-4-5', 'claude-opus-4-5'],
+  google:    ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash'],
+};
+
+function updateModelOptions() {
+  const provider = document.getElementById('llm-provider').value;
+  const sel = document.getElementById('llm-model');
+  if (!sel) return;
+  sel.innerHTML = modelsByProvider[provider].map(m => `<option>${m}</option>`).join('');
+}
+
+function saveLLMConfig() {
+  const provider = document.getElementById('llm-provider')?.value;
+  const model    = document.getElementById('llm-model')?.value;
+  const key      = document.getElementById('llm-key')?.value;
+  if (!key || key.startsWith('•')) return;
+
+  aiConfig.provider   = provider;
+  aiConfig.model      = model;
+  aiConfig.configured = true;
+
+  const status = document.getElementById('llm-status');
+  if (status) {
+    status.className  = 'badge b-green';
+    status.textContent = `● Conectado · ${provider === 'openai' ? 'OpenAI' : provider === 'anthropic' ? 'Anthropic' : 'Google'}`;
+  }
+  document.getElementById('llm-key').value = '••••••••••••••••';
 }
 
 // SIDEBAR MOBILE

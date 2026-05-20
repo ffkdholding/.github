@@ -308,7 +308,15 @@
     /* RESPONSIVE */
     @media (max-width: 640px) {
       .ba-grid { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
+      .nav-links {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px;
+        scrollbar-width: none;
+      }
+      .nav-links::-webkit-scrollbar { display: none; }
+      .nav-links a { white-space: nowrap; font-size: 12px; padding: 4px 10px; }
     }
   </style>
 </head>

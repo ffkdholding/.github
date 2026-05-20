@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyFleet — Status das Discussões</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; }
+
+    header {
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #2ea043, #1a7f37);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    h1 { font-size: 22px; font-weight: 600; color: #f0f6fc; }
+    .subtitle { font-size: 14px; color: #7d8590; margin-top: 4px; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #f0f6fc;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label { font-size: 13px; color: #7d8590; }
+
+    .stat-card.green .stat-value { color: #3fb950; }
+    .stat-card.yellow .stat-value { color: #d29922; }
+    .stat-card.blue .stat-value { color: #58a6ff; }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #7d8590;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .categories { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+
+    .category-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .category-name { font-size: 15px; font-weight: 600; color: #e6edf3; }
+
+    .category-meta { display: flex; gap: 12px; align-items: center; }
+
+    .badge {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .badge-posts { background: #1f2937; color: #9ca3af; border: 1px solid #374151; }
+    .badge-votes { background: #0d2a1a; color: #3fb950; border: 1px solid #1a4a2a; }
+
+    .progress-bar {
+      height: 6px;
+      background: #21262d;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #238636, #3fb950);
+      transition: width 0.6s ease;
+    }
+
+    .progress-fill.empty { background: #21262d; }
+
+    .category-posts {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .post-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: #0d1117;
+      font-size: 13px;
+    }
+
+    .post-title { color: #c9d1d9; flex: 1; margin-right: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .post-votes { color: #3fb950; font-weight: 600; white-space: nowrap; font-size: 12px; }
+    .post-votes.zero { color: #484f58; }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+
+    .dot.voted { background: #3fb950; }
+    .dot.pending { background: #484f58; }
+
+    .last-updated {
+      text-align: center;
+      font-size: 12px;
+      color: #484f58;
+      margin-top: 24px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 80px 0;
+      color: #7d8590;
+      font-size: 15px;
+    }
+
+    .error-msg {
+      background: #1a0a0a;
+      border: 1px solid #6e2a2a;
+      border-radius: 8px;
+      padding: 16px;
+      color: #f85149;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .category-posts { display: none; }
+      .category-card.expanded .category-posts { display: flex; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🚛</div>
+        <h1>EasyFleet</h1>
+      </div>
+      <div class="subtitle">Status do levantamento de requisitos — GitHub Discussions</div>
+    </header>
+
+    <div id="app">
+      <div class="loading">Carregando dados das discussões...</div>
+    </div>
+
+    <div class="last-updated" id="last-updated"></div>
+  </div>
+
+  <script>
+    const OWNER = 'ffkd-org';
+    const REPO = '.github';
+
+    function getToken() {
+      return localStorage.getItem('ffkd_gh_token') || '';
+    }
+
+    function saveToken(token) {
+      localStorage.setItem('ffkd_gh_token', token.trim());
+    }
+
+    async function fetchDiscussions() {
+      const TOKEN = getToken();
+      const query = `{
+        repository(owner: "${OWNER}", name: "${REPO}") {
+          discussions(first: 100) {
+            nodes {
+              number
+              title
+              url
+              category { name }
+              poll { totalVoteCount }
+              comments { totalCount }
+            }
+          }
+        }
+      }`;
+
+      const res = await fetch('https://api.github.com/graphql', {
+        method: 'POST',
+        headers: {
+          'Authorization': `bearer ${TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      if (json.errors) throw new Error(json.errors[0].message);
+      return json.data.repository.discussions.nodes;
+    }
+
+    function groupByCategory(discussions) {
+      const map = {};
+      for (const d of discussions) {
+        const cat = d.category.name;
+        if (!map[cat]) map[cat] = [];
+        map[cat].push(d);
+      }
+      return map;
+    }
+
+    function render(discussions) {
+      const skip = ['Welcome'];
+      const filtered = discussions.filter(d => !skip.includes(d.category.name));
+
+      const total = filtered.length;
+      const voted = filtered.filter(d => d.poll && d.poll.totalVoteCount > 0).length;
+      const totalVotes = filtered.reduce((acc, d) => acc + (d.poll?.totalVoteCount || 0), 0);
+      const pct = total > 0 ? Math.round((voted / total) * 100) : 0;
+
+      const byCategory = groupByCategory(filtered);
+      const categories = Object.entries(byCategory).sort((a, b) => a[0].localeCompare(b[0]));
+
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">${total}</div>
+            <div class="stat-label">Discussões abertas</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-value">${voted}</div>
+            <div class="stat-label">Com votos</div>
+          </div>
+          <div class="stat-card yellow">
+            <div class="stat-value">${total - voted}</div>
+            <div class="stat-label">Aguardando votação</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-value">${pct}%</div>
+            <div class="stat-label">Progresso geral</div>
+          </div>
+        </div>
+
+        <div class="section-title">Por categoria</div>
+        <div class="categories">
+          ${categories.map(([cat, posts]) => {
+            const catVoted = posts.filter(p => p.poll && p.poll.totalVoteCount > 0).length;
+            const catPct = Math.round((catVoted / posts.length) * 100);
+            const catTotalVotes = posts.reduce((acc, p) => acc + (p.poll?.totalVoteCount || 0), 0);
+
+            return `
+              <div class="category-card">
+                <div class="category-header">
+                  <span class="category-name">${cat}</span>
+                  <div class="category-meta">
+                    <span class="badge badge-posts">${posts.length} posts</span>
+                    <span class="badge badge-votes">🗳 ${catTotalVotes} votos</span>
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill ${catPct === 0 ? 'empty' : ''}" style="width: ${catPct}%"></div>
+                </div>
+                <div class="category-posts">
+                  ${posts.map(p => {
+                    const votes = p.poll?.totalVoteCount || 0;
+                    return `
+                      <div class="post-item">
+                        <div class="dot ${votes > 0 ? 'voted' : 'pending'}"></div>
+                        <a href="${p.url}" target="_blank" class="post-title" title="${p.title}">${p.title}</a>
+                        <span class="post-votes ${votes === 0 ? 'zero' : ''}">${votes > 0 ? `${votes}v` : '—'}</span>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      document.getElementById('last-updated').textContent =
+        `Atualizado em ${new Date().toLocaleString('pt-BR')}`;
+    }
+
+    function renderTokenForm() {
+      document.getElementById('app').innerHTML = `
+        <div class="stat-card" style="max-width:480px;margin:0 auto;padding:32px;">
+          <div style="font-size:32px;text-align:center;margin-bottom:16px;">🔑</div>
+          <div style="font-size:17px;font-weight:600;color:#f0f6fc;margin-bottom:8px;text-align:center;">Acesso ao dashboard</div>
+          <div style="font-size:13px;color:#7d8590;margin-bottom:24px;text-align:center;">
+            Cole o token do GitHub da organização FFKD.<br>Ele fica salvo só no seu browser.
+          </div>
+          <input
+            id="token-input"
+            type="password"
+            placeholder="ghp_..."
+            style="width:100%;padding:10px 14px;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;font-size:14px;margin-bottom:16px;outline:none;"
+          />
+          <button
+            onclick="handleTokenSubmit()"
+            style="width:100%;padding:10px;background:#238636;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;"
+          >
+            Entrar
+          </button>
+          <div id="token-error" style="color:#f85149;font-size:13px;margin-top:12px;text-align:center;display:none;"></div>
+        </div>
+      `;
+    }
+
+    async function handleTokenSubmit() {
+      const token = document.getElementById('token-input').value.trim();
+      if (!token) return;
+      saveToken(token);
+      await main();
+    }
+
+    async function main() {
+      if (!getToken()) {
+        renderTokenForm();
+        return;
+      }
+      try {
+        const discussions = await fetchDiscussions();
+        render(discussions);
+      } catch (err) {
+        if (err.message.includes('401') || err.message.includes('Bad credentials')) {
+          localStorage.removeItem('ffkd_gh_token');
+          renderTokenForm();
+          document.getElementById('token-error').style.display = 'block';
+          document.getElementById('token-error').textContent = 'Token inválido. Tente novamente.';
+        } else {
+          document.getElementById('app').innerHTML = `
+            <div class="error-msg">Erro ao carregar dados: ${err.message}</div>
+          `;
+        }
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>

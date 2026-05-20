@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyFleet — Roadmap</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+
+    .container { max-width: 780px; margin: 0 auto; }
+
+    header { margin-bottom: 48px; }
+
+    nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-size: 13px;
+      color: #7d8590;
+      text-decoration: none;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #30363d;
+      transition: all 0.15s;
+    }
+
+    nav a:hover { color: #e6edf3; border-color: #58a6ff; }
+    nav a.active { color: #58a6ff; border-color: #58a6ff; background: #0d2137; }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #2ea043, #1a7f37);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    h1 { font-size: 22px; font-weight: 600; color: #f0f6fc; }
+    .subtitle { font-size: 14px; color: #7d8590; margin-top: 4px; }
+
+    .timeline { position: relative; padding-left: 32px; }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 8px;
+      bottom: 0;
+      width: 2px;
+      background: #21262d;
+    }
+
+    .phase { position: relative; margin-bottom: 48px; }
+
+    .phase-dot {
+      position: absolute;
+      left: -32px;
+      top: 6px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #30363d;
+      background: #0d1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      z-index: 1;
+    }
+
+    .phase-dot.done { background: #238636; border-color: #238636; }
+    .phase-dot.current { background: #1f6feb; border-color: #1f6feb; box-shadow: 0 0 0 4px #0d2137; }
+    .phase-dot.pending { background: #21262d; border-color: #30363d; }
+
+    .phase-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .phase-title { font-size: 18px; font-weight: 600; color: #f0f6fc; flex: 1; }
+
+    .phase-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+
+    .badge-done { background: #0d2a1a; color: #3fb950; border: 1px solid #1a4a2a; }
+    .badge-current { background: #0d2137; color: #58a6ff; border: 1px solid #1a4a50; }
+    .badge-pending { background: #161b22; color: #484f58; border: 1px solid #30363d; }
+
+    .phase-desc {
+      font-size: 14px;
+      color: #8b949e;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .deliverables {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+
+    .deliverables-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #7d8590;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .deliverable-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #21262d;
+      font-size: 13px;
+    }
+
+    .deliverable-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .deliverable-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+    .deliverable-content { flex: 1; }
+    .deliverable-name { color: #e6edf3; font-weight: 500; }
+    .deliverable-detail { color: #7d8590; font-size: 12px; margin-top: 2px; }
+
+    .deliverable-status {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .status-done { background: #0d2a1a; color: #3fb950; }
+    .status-progress { background: #0d2137; color: #58a6ff; }
+    .status-pending { background: #161b22; color: #484f58; }
+
+    .phase-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #58a6ff;
+      text-decoration: none;
+    }
+
+    .phase-link:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .phase-title { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🚛</div>
+        <h1>EasyFleet</h1>
+      </div>
+      <div class="subtitle">Processo de desenvolvimento — do levantamento ao produto</div>
+    </header>
+
+    <nav>
+      <a href="index.html">Discussions</a>
+      <a href="roadmap.html" class="active">Roadmap</a>
+    </nav>
+
+    <div class="timeline">
+
+      <!-- FASE 1 -->
+      <div class="phase">
+        <div class="phase-dot current">1</div>
+        <div class="phase-header">
+          <div class="phase-title">Levantamento de Requisitos</div>
+          <span class="phase-badge badge-current">Em andamento</span>
+        </div>
+        <div class="phase-desc">
+          Entender o que o produto precisa fazer antes de qualquer linha de código.
+          O time responde perguntas sobre o negócio via GitHub Discussions com polls e comentários.
+          Cada resposta vai definir o que entra no MVP e o que fica para versões futuras.
+        </div>
+        <div class="deliverables">
+          <div class="deliverables-title">Entregas desta fase</div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">💬</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">GitHub Discussions</div>
+              <div class="deliverable-detail">45 perguntas sobre o produto abertas para votação do time</div>
+            </div>
+            <span class="deliverable-status status-progress">Votando</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">📊</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Dashboard de status</div>
+              <div class="deliverable-detail">Acompanhamento visual do progresso das votações</div>
+            </div>
+            <span class="deliverable-status status-done">Feito</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">📋</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Decisões documentadas (ADRs)</div>
+              <div class="deliverable-detail">Cada votação fechada vira um registro permanente de decisão</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+        </div>
+        <a href="index.html" class="phase-link">→ Ver status das Discussions</a>
+      </div>
+
+      <!-- FASE 2 -->
+      <div class="phase">
+        <div class="phase-dot pending">2</div>
+        <div class="phase-header">
+          <div class="phase-title">User Stories</div>
+          <span class="phase-badge badge-pending">Próxima fase</span>
+        </div>
+        <div class="phase-desc">
+          Com os requisitos definidos, descrevemos o produto do ponto de vista de quem vai usar.
+          Para cada perfil (Gestor de Frota, Motorista, Financeiro) escrevemos as histórias:
+          <em>"Como gestor, quero ver o TCO do mês para tomar decisões de renovação da frota."</em>
+          Essas histórias guiam o design e o desenvolvimento.
+        </div>
+        <div class="deliverables">
+          <div class="deliverables-title">Entregas desta fase</div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">👤</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Personas</div>
+              <div class="deliverable-detail">Perfis detalhados de cada tipo de usuário da plataforma</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">📝</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">User Stories do MVP</div>
+              <div class="deliverable-detail">Lista priorizada do que cada perfil precisa fazer na plataforma</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">🗺️</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Fluxos de uso</div>
+              <div class="deliverable-detail">Passo a passo de como cada perfil navega pela plataforma</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 3 -->
+      <div class="phase">
+        <div class="phase-dot pending">3</div>
+        <div class="phase-header">
+          <div class="phase-title">Design das Telas</div>
+          <span class="phase-badge badge-pending">Próxima fase</span>
+        </div>
+        <div class="phase-desc">
+          Transformar as user stories em telas reais. Sem Figma — as telas são geradas
+          diretamente em código (HTML/React) e validadas no browser pelo time.
+          O resultado é o guia visual para o desenvolvimento do frontend.
+        </div>
+        <div class="deliverables">
+          <div class="deliverables-title">Entregas desta fase</div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">🖥️</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Telas do portal web</div>
+              <div class="deliverable-detail">Dashboard, frota, veículos, TCO, relatórios, configurações</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">📱</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Telas do app mobile</div>
+              <div class="deliverable-detail">Consultas rápidas, alertas e abastecimento em campo</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 4 -->
+      <div class="phase">
+        <div class="phase-dot pending">4</div>
+        <div class="phase-header">
+          <div class="phase-title">Arquitetura Técnica</div>
+          <span class="phase-badge badge-pending">Próxima fase</span>
+        </div>
+        <div class="phase-desc">
+          Com o produto definido e validado visualmente, detalhamos a arquitetura técnica:
+          schema do banco de dados, contratos das APIs, filas de mensagens e integrações externas.
+          Essa fase produz os documentos que guiam toda a implementação.
+        </div>
+        <div class="deliverables">
+          <div class="deliverables-title">Entregas desta fase</div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">🗄️</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Schema do banco (Prisma)</div>
+              <div class="deliverable-detail">Modelo de dados completo do EasyFleet</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">🔌</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Contratos das APIs</div>
+              <div class="deliverable-detail">Endpoints, payloads e autenticação do easyfleet_backend</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">📐</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">Diagramas C3/C4</div>
+              <div class="deliverable-detail">Detalhamento dos componentes internos de cada serviço</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 5 -->
+      <div class="phase">
+        <div class="phase-dot pending">5</div>
+        <div class="phase-header">
+          <div class="phase-title">Implementação do MVP</div>
+          <span class="phase-badge badge-pending">Próxima fase</span>
+        </div>
+        <div class="phase-desc">
+          Com toda a base definida, começa o desenvolvimento. Backend, frontend web e app mobile
+          são implementados em paralelo seguindo os contratos e o design aprovado.
+          Claude Code atua como desenvolvedor principal, repo por repo.
+        </div>
+        <div class="deliverables">
+          <div class="deliverables-title">Entregas desta fase</div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">⚙️</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">easyfleet_backend</div>
+              <div class="deliverable-detail">API REST + Worker + integrações com provedores</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">🌐</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">easyfleet_web</div>
+              <div class="deliverable-detail">Portal web do gestor de frota (Next.js)</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+          <div class="deliverable-item">
+            <div class="deliverable-icon">📱</div>
+            <div class="deliverable-content">
+              <div class="deliverable-name">easyfleet_app</div>
+              <div class="deliverable-detail">Aplicativo mobile (React Native + Expo)</div>
+            </div>
+            <span class="deliverable-status status-pending">Pendente</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

@@ -157,6 +157,26 @@
     .dot.voted { background: #3fb950; }
     .dot.pending { background: #484f58; }
 
+    nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-size: 13px;
+      color: #7d8590;
+      text-decoration: none;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #30363d;
+      transition: all 0.15s;
+    }
+
+    nav a:hover { color: #e6edf3; border-color: #58a6ff; }
+    nav a.active { color: #58a6ff; border-color: #58a6ff; background: #0d2137; }
+
     .last-updated {
       text-align: center;
       font-size: 12px;
@@ -196,6 +216,11 @@
       </div>
       <div class="subtitle">Status do levantamento de requisitos — GitHub Discussions</div>
     </header>
+
+    <nav>
+      <a href="index.html" class="active">Discussions</a>
+      <a href="roadmap.html">Roadmap</a>
+    </nav>
 
     <div id="app">
       <div class="loading">Carregando dados das discussões...</div>

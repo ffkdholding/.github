@@ -30,3 +30,11 @@ Repositório de referência da organização. Documenta a arquitetura, os produt
 ## Governança
 
 > Em construção. As políticas de branching, code review e deploy serão documentadas aqui conforme a organização evolui.
+
+---
+
+## Contexto para Claude Code
+
+Ao clonar qualquer repositório da organização, carregue o onboarding guide no Claude Code:
+
+**https://claude.ai/claude-code/onboard/G0IVm9NOsbBU**

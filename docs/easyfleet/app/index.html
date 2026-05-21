@@ -1010,6 +1010,95 @@ function vehicleIcon(tipo) {
 
 function renderDashboard() {
   const totalTco = vehicles.reduce((a,v) => a + v.tco, 0);
+  const maxTco   = Math.max(...vehicles.map(v => v.tco));
+
+  // Line chart: TCO últimos 6 meses
+  const months  = ['Dez','Jan','Fev','Mar','Abr','Mai'];
+  const tcoHist = [41200, 43500, 42100, 44800, 43200, 45530];
+  const W = 340, H = 90, padL = 8, padR = 8, padT = 10, padB = 22;
+  const minV = 38000, maxV = 48000;
+  const xs = months.map((_,i) => padL + (i/(months.length-1))*(W-padL-padR));
+  const ys = tcoHist.map(v => padT + (1-(v-minV)/(maxV-minV))*(H-padT-padB));
+  const linePts  = xs.map((x,i) => `${x},${ys[i]}`).join(' ');
+  const areaPath = `M ${xs[0]},${ys[0]} ${xs.slice(1).map((x,i)=>`L ${x},${ys[i+1]}`).join(' ')} L ${xs[xs.length-1]},${H-padB} L ${xs[0]},${H-padB} Z`;
+
+  const gridLines = [0,33,66,100].map(p => {
+    const gy = padT + (1-p/100)*(H-padT-padB);
+    return `<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="rgba(0,198,255,0.07)" stroke-width="1"/>`;
+  }).join('');
+  const dots = xs.map((x,i) =>
+    `<circle cx="${x}" cy="${ys[i]}" r="3.5" fill="#00c6ff" stroke="var(--card)" stroke-width="2"/>`
+  ).join('');
+  const xlabels = xs.map((x,i) =>
+    `<text x="${x}" y="${H-4}" text-anchor="middle" font-size="9" fill="#7a8fa8">${months[i]}</text>`
+  ).join('');
+
+  const lineChart = `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:90px;overflow:visible">
+      <defs>
+        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#00c6ff" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#00c6ff" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      ${gridLines}
+      <path d="${areaPath}" fill="url(#areaGrad)"/>
+      <polyline points="${linePts}" fill="none" stroke="#00c6ff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+      ${xlabels}
+      <text x="${xs[xs.length-1]}" y="${ys[ys.length-1]-8}" text-anchor="middle" font-size="9" font-weight="600" fill="#00c6ff">R$45,5k</text>
+    </svg>
+  `;
+
+  // Donut: composição do custo
+  const slices = [
+    { label:'Combustível', pct:42, color:'#00c6ff' },
+    { label:'Manutenção',  pct:22, color:'#ffb300' },
+    { label:'Pneus',       pct:12, color:'#00e676' },
+    { label:'Pedágios',    pct:8,  color:'#9b59b6' },
+    { label:'Multas',      pct:3,  color:'#ff4d4d' },
+    { label:'Outros',      pct:13, color:'#7a8fa8' },
+  ];
+  let acc = 0;
+  const conicStops = slices.map(s => { const f=acc; acc+=s.pct; return `${s.color} ${f}% ${acc}%`; }).join(', ');
+  const donutLegend = slices.map(s =>
+    `<div style="display:flex;align-items:center;gap:7px;font-size:11px">
+       <div style="width:8px;height:8px;border-radius:2px;background:${s.color};flex-shrink:0"></div>
+       <span style="flex:1;color:var(--muted)">${s.label}</span>
+       <span style="font-weight:600">${s.pct}%</span>
+     </div>`
+  ).join('');
+
+  // TCO bars por veículo
+  const tcoBars = vehicles.map(v => {
+    const pct = Math.round((v.tco / maxTco) * 100);
+    return `
+      <div onclick="go('veiculo',${v.id})" style="cursor:pointer">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="font-size:14px">${vehicleIcon(v.tipo)}</span>
+            <span style="font-size:12px;font-weight:500">${v.modelo}</span>
+            ${badge(v.status)}
+          </div>
+          <span style="font-size:12px;font-weight:700;color:var(--accent)">${R(v.tco)}</span>
+        </div>
+        <div style="height:10px;background:rgba(0,198,255,0.07);border-radius:5px;overflow:hidden">
+          <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#00c6ff,#00e676);border-radius:5px"></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">R$ ${v.tco_km}/km · ${v.condutor}</div>
+      </div>`;
+  }).join('');
+
+  // Últimos abastecimentos
+  const fuelRows = fuel.slice(0,5).map(f => `
+    <tr onclick="go('abastecimento')">
+      <td style="color:var(--muted)">${f.data}</td>
+      <td><div style="font-weight:500">${f.veiculo}</div><div style="font-size:11px;color:var(--muted);font-family:monospace">${f.placa}</div></td>
+      <td style="font-weight:500">${f.litros}L</td>
+      <td style="font-weight:600;color:var(--accent)">${R(f.valor)}</td>
+      <td style="color:var(--green)">R$ ${(f.valor/f.litros).toFixed(2)}</td>
+      <td style="color:var(--muted);font-size:12px">${f.posto}</td>
+    </tr>`).join('');
 
   return `
     <div class="page-header">
@@ -1032,11 +1121,11 @@ function renderDashboard() {
       <div class="stat-card">
         <div class="stat-label">TCO total / mês</div>
         <div class="stat-value accent" style="font-size:22px">${R(totalTco)}</div>
-        <div class="stat-sub">todos os veículos</div>
+        <div class="stat-sub">+5,4% vs. abril</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Custo médio / km</div>
-        <div class="stat-value green">R$ 0,89</div>
+        <div class="stat-value green">R$ 0,89</div>
         <div class="stat-sub">frota completa</div>
       </div>
       <div class="stat-card">
@@ -1046,60 +1135,77 @@ function renderDashboard() {
       </div>
     </div>
 
-    <div class="grid-2">
+    <!-- Linha TCO + Donut -->
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:20px;margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">Evolução do TCO <span style="font-size:11px;color:var(--muted);font-weight:400">últimos 6 meses</span></div>
+        ${lineChart}
+        <div style="display:flex;justify-content:space-between;margin-top:4px">
+          <span style="font-size:10px;color:var(--muted)">Dez 2025</span>
+          <span style="font-size:10px;color:var(--green)">▲ +10,5% no período</span>
+          <span style="font-size:10px;color:var(--muted)">Mai 2026</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Composição do custo</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+          <div style="position:relative;width:110px;height:110px;flex-shrink:0">
+            <div style="width:110px;height:110px;border-radius:50%;background:conic-gradient(${conicStops})"></div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <div style="font-size:10px;color:var(--muted)">TCO/mês</div>
+              <div style="font-size:11px;font-weight:700;color:var(--accent)">R$45,5k</div>
+            </div>
+          </div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:5px">${donutLegend}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barras TCO + Alertas compactos -->
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:20px;margin-bottom:20px">
       <div class="card">
         <div class="card-title">TCO por veículo <span class="card-action" onclick="go('frota')">Ver frota →</span></div>
-        ${vehicles.map(v => {
-          const pct = Math.round((v.tco / totalTco) * 100);
-          return `
-            <div class="tco-row" onclick="go('veiculo',${v.id})" style="cursor:pointer">
-              <div class="tco-icon" style="background:rgba(0,198,255,0.08)">${vehicleIcon(v.tipo)}</div>
-              <div style="flex:1;min-width:0">
-                <div style="display:flex;justify-content:space-between;align-items:baseline">
-                  <span style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">${v.modelo}</span>
-                  <span style="font-size:13px;font-weight:600;margin-left:8px">${R(v.tco)}</span>
-                </div>
-                <div style="font-size:11px;color:var(--muted);margin-bottom:4px">${v.placa} · ${pct}%</div>
-                <div class="bar-bg"><div class="bar-fg" style="width:${pct}%;background:linear-gradient(90deg,#00c6ff,#00e676)"></div></div>
-              </div>
-            </div>
-          `;
-        }).join('')}
+        <div style="display:flex;flex-direction:column;gap:14px">${tcoBars}</div>
       </div>
-
-      <div class="card">
-        <div class="card-title">Alertas <span class="card-action">Ver todos →</span></div>
-        <div class="alert-item">
-          <div class="adot r"></div>
-          <div class="alert-body">
-            <div class="alert-title">Manutenção em atraso — Mercedes Actros</div>
-            <div class="alert-desc">Revisão dos freios traseiros venceu há 2 dias</div>
-          </div>
-          <div class="alert-time">2d</div>
+      <div class="card" style="padding:16px">
+        <div class="card-title" style="margin-bottom:10px;font-size:12px">
+          Alertas
+          <span style="background:rgba(255,179,0,0.15);color:var(--warning);font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600">3</span>
+          <span class="card-action" style="font-size:11px">Ver todos →</span>
         </div>
-        <div class="alert-item">
-          <div class="adot y"></div>
-          <div class="alert-body">
-            <div class="alert-title">Pneus próximos do limite — Scania R450</div>
-            <div class="alert-desc">Dianteiros com 78.200 km · limite 80.000 km</div>
+        <div style="display:flex;flex-direction:column">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid rgba(0,198,255,0.06)">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--danger);flex-shrink:0;margin-top:4px"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:500;line-height:1.3">Freios — Mercedes Actros</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:1px">Revisão atrasada 2 dias</div>
+            </div>
+            <div style="font-size:10px;color:var(--danger);white-space:nowrap;font-weight:600">URGENTE</div>
           </div>
-          <div class="alert-time">hoje</div>
-        </div>
-        <div class="alert-item">
-          <div class="adot y"></div>
-          <div class="alert-body">
-            <div class="alert-title">Multa pendente — Scania R450</div>
-            <div class="alert-desc">Prazo: 04/06/2026 · ${R(195.23)}</div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid rgba(0,198,255,0.06)">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--warning);flex-shrink:0;margin-top:4px"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:500;line-height:1.3">Pneus — Scania R450</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:1px">78.200 km · limite 80k</div>
+            </div>
+            <div style="font-size:10px;color:var(--warning);white-space:nowrap">2.000 km</div>
           </div>
-          <div class="alert-time">15d</div>
-        </div>
-        <div class="alert-item">
-          <div class="adot b"></div>
-          <div class="alert-body">
-            <div class="alert-title">Revisão programada — Volvo FH 540</div>
-            <div class="alert-desc">Revisão 90.000 km agendada para 25/05</div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid rgba(0,198,255,0.06)">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--warning);flex-shrink:0;margin-top:4px"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:500;line-height:1.3">Multa — Scania R450</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:1px">R$ 195,23 · vence 04/06</div>
+            </div>
+            <div style="font-size:10px;color:var(--warning);white-space:nowrap">15 dias</div>
           </div>
-          <div class="alert-time">em 6d</div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:500;line-height:1.3">Revisão — Volvo FH 540</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:1px">90.000 km em 25/05</div>
+            </div>
+            <div style="font-size:10px;color:var(--accent);white-space:nowrap">6 dias</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1107,24 +1213,8 @@ function renderDashboard() {
     <div class="card">
       <div class="card-title">Últimos abastecimentos <span class="card-action" onclick="go('abastecimento')">Ver todos →</span></div>
       <table class="data-table">
-        <thead>
-          <tr><th>Data</th><th>Veículo</th><th>Litros</th><th>Valor</th><th>Custo/L</th><th>Posto</th></tr>
-        </thead>
-        <tbody>
-          ${fuel.slice(0,5).map(f => `
-            <tr onclick="go('abastecimento')">
-              <td style="color:var(--muted)">${f.data}</td>
-              <td>
-                <div style="font-weight:500">${f.veiculo}</div>
-                <div style="font-size:11px;color:var(--muted);font-family:monospace">${f.placa}</div>
-              </td>
-              <td style="font-weight:500">${f.litros}L</td>
-              <td style="font-weight:600;color:var(--accent)">${R(f.valor)}</td>
-              <td style="color:var(--green)">R$ ${(f.valor/f.litros).toFixed(2)}</td>
-              <td style="color:var(--muted);font-size:12px">${f.posto}</td>
-            </tr>
-          `).join('')}
-        </tbody>
+        <thead><tr><th>Data</th><th>Veículo</th><th>Litros</th><th>Valor</th><th>Custo/L</th><th>Posto</th></tr></thead>
+        <tbody>${fuelRows}</tbody>
       </table>
     </div>
   `;

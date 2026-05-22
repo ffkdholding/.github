@@ -19,6 +19,8 @@
       --danger: #ff4d4d;
       --text: #e2eaf4;
       --muted: #7a8fa8;
+      --sidebar-text: #e2eaf4;
+      --sidebar-muted: #7a8fa8;
       --sidebar-w: 224px;
       --header-h: 52px;
     }
@@ -70,14 +72,14 @@
       font-size: 16px;
       font-weight: 800;
       letter-spacing: 1px;
-      color: var(--text);
+      color: var(--sidebar-text);
     }
 
     .sidebar-logo-text span { color: var(--accent); }
 
     .sidebar-logo-sub {
       font-size: 10px;
-      color: var(--muted);
+      color: var(--sidebar-muted);
       margin-top: 3px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -95,7 +97,7 @@
     .nav-section-label {
       font-size: 10px;
       font-weight: 600;
-      color: var(--muted);
+      color: var(--sidebar-muted);
       text-transform: uppercase;
       letter-spacing: 0.12em;
       padding: 10px 10px 4px;
@@ -108,7 +110,7 @@
       padding: 9px 10px;
       border-radius: 8px;
       cursor: pointer;
-      color: var(--muted);
+      color: var(--sidebar-muted);
       font-size: 13px;
       font-weight: 500;
       transition: all 0.15s;
@@ -117,7 +119,7 @@
       margin-bottom: 2px;
     }
 
-    .nav-item:hover { background: rgba(0,198,255,0.07); color: var(--text); }
+    .nav-item:hover { background: rgba(0,198,255,0.07); color: var(--sidebar-text); }
 
     .nav-item.active {
       background: rgba(0,198,255,0.12);
@@ -175,8 +177,8 @@
       flex-shrink: 0;
     }
 
-    .user-name { font-size: 12px; font-weight: 600; color: var(--text); }
-    .user-role { font-size: 10px; color: var(--muted); }
+    .user-name { font-size: 12px; font-weight: 600; color: var(--sidebar-text); }
+    .user-role { font-size: 10px; color: var(--sidebar-muted); }
 
     /* LAYOUT */
     .layout {
@@ -848,6 +850,39 @@
       50% { transform: scale(1.5); opacity: 0.5; }
     }
 
+    /* THEME PICKER */
+    .theme-picker { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+    .theme-card {
+      flex: 1; min-width: 130px; max-width: 180px;
+      border-radius: 12px; border: 2px solid transparent;
+      overflow: hidden; cursor: pointer; transition: all 0.2s;
+      position: relative;
+    }
+    .theme-card:hover { transform: translateY(-2px); }
+    .theme-card.active { border-color: var(--accent); }
+    .theme-card.active::after {
+      content: '✓';
+      position: absolute; top: 8px; right: 8px;
+      background: var(--accent); color: #000;
+      font-size: 11px; font-weight: 700;
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+    .tc-preview {
+      height: 64px; display: flex;
+    }
+    .tc-sidebar { width: 32px; }
+    .tc-main { flex: 1; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .tc-bar { height: 8px; border-radius: 3px; opacity: 0.7; }
+    .tc-bar2 { height: 5px; border-radius: 3px; opacity: 0.4; width: 70%; }
+    .tc-label {
+      font-size: 12px; font-weight: 600;
+      padding: 8px 10px 6px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .tc-sub { font-size: 10px; opacity: 0.6; margin-top: 1px; }
+
   </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -993,6 +1028,62 @@ const fines = [
 
 let trackingState = { placa: 'ABC-1D23', period: 'hoje' };
 let _trackingMapInstance = null;
+
+// ── THEME SYSTEM ───────────────────────────────────────────────────────────
+const THEMES = {
+  escuro: {
+    label: 'Escuro', sub: 'Padrão',
+    vars: {
+      '--bg':'#080f1e','--sidebar':'#060d1a','--card':'#0d1f38',
+      '--border':'rgba(0,198,255,0.1)','--border-strong':'rgba(0,198,255,0.25)',
+      '--accent':'#00c6ff','--text':'#e2eaf4','--muted':'#7a8fa8',
+      '--sidebar-text':'#e2eaf4','--sidebar-muted':'#7a8fa8',
+    },
+    tileUrl: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    preview: { sidebar:'#060d1a', bg:'#080f1e', card:'#0d1f38', bar:'#00c6ff', text:'#e2eaf4', label:'#e2eaf4' },
+  },
+  claro: {
+    label: 'Claro', sub: 'Modo diurno',
+    vars: {
+      '--bg':'#f0f4f8','--sidebar':'#1b2d4f','--card':'#ffffff',
+      '--border':'rgba(0,102,204,0.12)','--border-strong':'rgba(0,102,204,0.3)',
+      '--accent':'#0066cc','--text':'#111827','--muted':'#6b7280',
+      '--sidebar-text':'#e2eaf4','--sidebar-muted':'#8ba3c1',
+    },
+    tileUrl: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    preview: { sidebar:'#1b2d4f', bg:'#f0f4f8', card:'#ffffff', bar:'#0066cc', text:'#111827', label:'#e2eaf4' },
+  },
+  floresta: {
+    label: 'Floresta', sub: 'Verde profundo',
+    vars: {
+      '--bg':'#061712','--sidebar':'#030e0a','--card':'#0b2318',
+      '--border':'rgba(0,200,83,0.1)','--border-strong':'rgba(0,200,83,0.25)',
+      '--accent':'#00c853','--text':'#d4f5e5','--muted':'#5fa87a',
+      '--sidebar-text':'#d4f5e5','--sidebar-muted':'#5fa87a',
+    },
+    tileUrl: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    preview: { sidebar:'#030e0a', bg:'#061712', card:'#0b2318', bar:'#00c853', text:'#d4f5e5', label:'#d4f5e5' },
+  },
+};
+
+let currentTheme = 'escuro';
+
+function applyTheme(name) {
+  const t = THEMES[name];
+  if (!t) return;
+  currentTheme = name;
+  const root = document.documentElement;
+  Object.entries(t.vars).forEach(([k, v]) => root.style.setProperty(k, v));
+  localStorage.setItem('ef_theme', name);
+  // refresh map tiles if map is active
+  if (_trackingMapInstance) {
+    _trackingMapInstance.eachLayer(l => { if (l._url) _trackingMapInstance.removeLayer(l); });
+    L.tileLayer(t.tileUrl, { attribution:'© OpenStreetMap © CARTO', subdomains:'abcd', maxZoom:20 }).addTo(_trackingMapInstance);
+  }
+  // re-render config if it's the active screen to update theme card highlight
+  const configEl = document.querySelector('[data-screen="configuracoes"].active');
+  if (configEl) go('configuracoes');
+}
 
 const trackingData = [
   {
@@ -1354,8 +1445,8 @@ function initTrackingMap() {
   const map = L.map('tracking-map', { center, zoom: 10, zoomControl: true });
   _trackingMapInstance = map;
 
-  // CartoDB Dark Matter — dark tiles, nenhuma API key necessária
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  const tileUrl = (THEMES[currentTheme] || THEMES.escuro).tileUrl;
+  L.tileLayer(tileUrl, {
     attribution: '© OpenStreetMap contributors © CARTO',
     subdomains: 'abcd',
     maxZoom: 20,
@@ -2165,6 +2256,27 @@ function renderConfig() {
     { icon:'📡', name:'GPS / Telemetria', desc:'Localização e telemetria em tempo real', connected:false },
   ];
 
+  const themeCards = Object.entries(THEMES).map(([key, t]) => {
+    const p = t.preview;
+    const isActive = currentTheme === key;
+    return `
+      <div class="theme-card${isActive ? ' active' : ''}" onclick="applyTheme('${key}')" title="${t.label}">
+        <div class="tc-preview" style="background:${p.bg}">
+          <div class="tc-sidebar" style="background:${p.sidebar}"></div>
+          <div class="tc-main" style="background:${p.bg}">
+            <div class="tc-bar"  style="background:${p.bar}"></div>
+            <div class="tc-bar2" style="background:${p.bar}"></div>
+            <div class="tc-bar2" style="background:${p.text}"></div>
+          </div>
+        </div>
+        <div class="tc-label" style="background:${p.sidebar};color:${p.label}">
+          ${t.label}
+          <div class="tc-sub">${t.sub}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
   return `
     <div class="page-header">
       <div>
@@ -2172,6 +2284,12 @@ function renderConfig() {
         <div class="page-subtitle">Conta e preferências da plataforma</div>
       </div>
       <button class="btn btn-primary">Salvar alterações</button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-title">Aparência</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Escolha o tema da interface. A seleção é salva automaticamente.</div>
+      <div class="theme-picker">${themeCards}</div>
     </div>
 
     <div class="settings-section">
@@ -2542,6 +2660,10 @@ function closeSidebar() {
 }
 
 // Init
+(function() {
+  const saved = localStorage.getItem('ef_theme');
+  if (saved && THEMES[saved]) applyTheme(saved);
+})();
 go('dashboard');
 </script>
 </body>

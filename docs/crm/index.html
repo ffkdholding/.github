@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Easy Fleet & Carro Verificado · CRM Enterprise</title>
+<style>/* DM Sans fallback */ body,input,select,textarea,button{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif} .mono,#uPIN,#uPINConfirm,.pin-input{font-family:'Courier New',Courier,monospace}</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F3F4F6;--bg2:#E9EAEC;--bg3:#D8DADF;
+  --surface:#FFF;--surface2:#F8F9FA;--surface3:#F0F1F3;
+  --border:#D1D5DB;--border2:#E5E7EB;--border3:#F3F4F6;
+  --text:#111827;--text2:#374151;--text3:#6B7280;--text4:#9CA3AF;
+  --accent:#0066CC;--accent2:#0052A3;--accent3:#E8F0FB;
+  --success:#15803D;--success2:#DCFCE7;
+  --warning:#B45309;--warning2:#FEF3C7;
+  --danger:#B91C1C;--danger2:#FEE2E2;
+  --info:#1D4ED8;--info2:#DBEAFE;
+  --purple:#6D28D9;--purple2:#EDE9FE;
+  --header:#1B2A47;
+  --r:6px;--rlg:10px;--rxl:14px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --sh2:0 4px 12px rgba(0,0,0,.10);
+  --sh3:0 10px 30px rgba(0,0,0,.14);
+}
+body{font-family:'DM Sans',sans-serif;font-size:13px;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+input,select,textarea{font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--text);height:34px;width:100%;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,102,204,.12)}
+textarea{height:auto;resize:vertical}
+button{font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
+.btn{font-size:12px;font-weight:500;padding:0 14px;border-radius:var(--r);height:34px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid var(--border);background:var(--surface);color:var(--text2)}
+.btn:hover{background:var(--bg2)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.primary:hover{background:var(--accent2)}
+.btn.success{background:var(--success);color:#fff;border-color:var(--success)}.btn.success:hover{opacity:.9}
+.btn.danger{background:var(--danger);color:#fff;border-color:var(--danger)}.btn.danger:hover{opacity:.9}
+.btn.warning{background:var(--warning);color:#fff;border-color:var(--warning)}.btn.warning:hover{opacity:.9}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--text3)}.btn.ghost:hover{background:var(--bg2)}
+.btn.sm{height:28px;font-size:11px;padding:0 10px}
+.btn.xs{height:22px;font-size:10px;padding:0 8px;border-radius:4px}
+.tag{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;border:1px solid;white-space:nowrap}
+.tag.blue{background:var(--info2);color:var(--info);border-color:#BFDBFE}
+.tag.green{background:var(--success2);color:var(--success);border-color:#BBF7D0}
+.tag.red{background:var(--danger2);color:var(--danger);border-color:#FECACA}
+.tag.amber{background:var(--warning2);color:var(--warning);border-color:#FDE68A}
+.tag.purple{background:var(--purple2);color:var(--purple);border-color:#DDD6FE}
+.tag.gray{background:var(--bg2);color:var(--text3);border-color:var(--border)}
+.tag.navy{background:#E0E7FF;color:#3730A3;border-color:#C7D2FE}
+
+/* LAYOUT */
+.app{display:none}.app.on{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topnav{background:var(--header);height:52px;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.logo{font-size:15px;font-weight:700;color:#fff;margin-right:4px;white-space:nowrap}
+.logo span{color:#60A5FA;font-weight:300}
+.nav-tabs{display:flex;gap:1px;flex:1;overflow-x:auto;height:100%;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{font-size:12px;font-weight:500;padding:0 14px;background:transparent;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.55);height:100%;white-space:nowrap;display:flex;align-items:center;gap:5px;cursor:pointer;transition:all .15s}
+.nav-tab:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05)}
+.nav-tab.active{color:#fff;border-bottom-color:#60A5FA;background:rgba(255,255,255,.05)}
+.tbadge{background:#EF4444;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:99px;min-width:16px;text-align:center}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.user-chip{display:flex;align-items:center;gap:7px;padding:4px 10px;border-radius:var(--r);background:rgba(255,255,255,.08);cursor:pointer}
+.user-chip:hover{background:rgba(255,255,255,.14)}
+.avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.avatar.lg{width:36px;height:36px;font-size:13px}
+.uname{font-size:12px;font-weight:500;color:rgba(255,255,255,.8)}
+.urole{font-size:10px;color:rgba(255,255,255,.4)}
+.saved-ind{font-size:11px;color:#34D399;display:none;align-items:center;gap:4px}
+.saved-ind.on{display:flex}
+.auto-badge{background:#EF4444;color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;cursor:pointer;animation:pulse 2s infinite;white-space:nowrap}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* TOOLBAR */
+.toolbar{background:var(--surface);border-bottom:1px solid var(--border2);padding:8px 20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0}
+.tsearch{position:relative;flex:1;min-width:200px}
+.tsearch input{padding-left:32px;height:32px}
+.tsicon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text4);pointer-events:none}
+.toolbar select{height:32px;font-size:12px;width:auto}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:20px;background:var(--bg)}
+.view{display:none}.view.active{display:block}
+
+/* METRICS */
+.mgrid{display:grid;gap:12px;margin-bottom:18px}
+.mg4{grid-template-columns:repeat(4,1fr)}.mg5{grid-template-columns:repeat(5,1fr)}.mg3{grid-template-columns:repeat(3,1fr)}.mg6{grid-template-columns:repeat(6,1fr)}
+.mc{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rlg);padding:15px 18px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.mc.acc::before{background:var(--accent)}.mc.suc::before{background:var(--success)}.mc.war::before{background:var(--warning)}.mc.dan::before{background:var(--danger)}.mc.pur::before{background:var(--purple)}.mc.inf::before{background:var(--info)}
+.mc-label{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.mc-val{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.03em;line-height:1}
+.mc-sub{font-size:11px;color:var(--text4);margin-top:4px}
+
+/* CHARTS */
+.cgrid{display:grid;gap:14px;margin-bottom:14px}
+.cg2{grid-template-columns:1fr 1fr}.cg3{grid-template-columns:1fr 1fr 1fr}.cg21{grid-template-columns:2fr 1fr}.cg12{grid-template-columns:1fr 2fr}
+.ccard{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rlg);padding:16px;box-shadow:var(--sh)}
+.ctitle{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
+
+/* KANBAN */
+.kanban-wrap{display:grid;grid-template-columns:repeat(6,minmax(200px,1fr));gap:10px;align-items:start}
+.kcol-head{display:flex;justify-content:space-between;align-items:center;padding:0 2px 8px;border-bottom:2px solid var(--border2);margin-bottom:4px}
+.kcol-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.kcol-meta{display:flex;align-items:center;gap:6px}
+.kcol-cnt{background:var(--bg2);color:var(--text3);padding:1px 7px;border-radius:99px;font-size:10px;font-weight:700}
+.kcol-val{font-size:10px;color:var(--text4)}
+.ocard{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:11px;margin-bottom:8px;box-shadow:var(--sh);cursor:pointer;transition:all .15s;position:relative}
+.ocard:hover{border-color:var(--accent);box-shadow:var(--sh2);transform:translateY(-1px)}
+.ocard.overdue{border-left:3px solid var(--danger)}
+.ocard.stale{border-left:3px solid var(--warning)}
+.ocard-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:1px}
+.ocard-co{font-size:11px;color:var(--text3);margin-bottom:6px}
+.ocard-tags{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}
+.ocard-footer{display:flex;justify-content:space-between;align-items:center}
+.ocard-val{font-size:12px;font-weight:700;color:var(--text)}
+.oprob{font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
+.ph{background:#DCFCE7;color:#15803D}.pm{background:#FEF3C7;color:#B45309}.pl{background:#FEE2E2;color:#B91C1C}
+.ocard-acts{display:flex;gap:3px;margin-top:8px;padding-top:7px;border-top:1px solid var(--border3);flex-wrap:wrap}
+.oact{font-size:10px;padding:2px 7px;height:22px;border-radius:4px;border:1px solid var(--border2);background:var(--surface2);color:var(--text3);display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.oact:hover{background:var(--bg2);color:var(--text)}
+.stale-badge{position:absolute;top:7px;right:7px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:var(--warning2);color:var(--warning)}
+
+/* TABELAS */
+.twrap{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh)}
+.twrap table{width:100%;border-collapse:collapse}
+.twrap th{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.07em;padding:10px 14px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border)}
+.twrap td{font-size:12px;padding:10px 14px;border-bottom:1px solid var(--border2);vertical-align:middle;color:var(--text)}
+.twrap tr:last-child td{border-bottom:none}
+.twrap tr:hover td{background:var(--surface2);cursor:pointer}
+.mono{font-family:'DM Mono',monospace;font-size:11px}
+
+/* SECTION HEADER */
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;flex-wrap:wrap}
+.stitle{font-size:16px;font-weight:700;color:var(--text)}
+.ssub{font-size:12px;color:var(--text4);margin-top:2px}
+.psel{display:flex;background:var(--bg2);border-radius:var(--r);border:1px solid var(--border);padding:2px;gap:2px}
+.pbtn{font-size:11px;font-weight:500;padding:4px 10px;border:none;background:transparent;border-radius:4px;color:var(--text3);cursor:pointer;transition:all .15s}
+.pbtn.active{background:var(--surface);color:var(--accent);font-weight:600;box-shadow:var(--sh)}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--rxl);border:1px solid var(--border);width:min(820px,100%);box-shadow:var(--sh3);margin:auto;overflow:hidden}
+.mhead{padding:16px 22px;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center;background:var(--surface2)}
+.mtitle{font-size:15px;font-weight:700;color:var(--text)}
+.mbody{padding:22px;max-height:78vh;overflow-y:auto}
+.mfooter{padding:14px 22px;border-top:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--surface2)}
+.mtabs{display:flex;border-bottom:1px solid var(--border2);padding:0 22px;background:var(--surface2)}
+.mtab{font-size:12px;font-weight:500;padding:10px 13px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all .15s}
+.mtab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.mpane{display:none}.mpane.active{display:block}
+
+/* FORM */
+.fsec{margin-bottom:18px}
+.fsec-title{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border2)}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+.fl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.fi{height:34px}
+textarea.fi{height:auto}
+.fi-ro{background:var(--surface2);color:var(--accent);font-weight:600}
+.fgrid{display:grid;gap:11px}
+.fc2{grid-template-columns:1fr 1fr}.fc3{grid-template-columns:1fr 1fr 1fr}.fc4{grid-template-columns:1fr 1fr 1fr 1fr}
+
+/* MISC */
+.prog-wrap{background:var(--bg2);border-radius:99px;height:5px;overflow:hidden;border:1px solid var(--border2)}
+.prog-bar{height:5px;border-radius:99px;transition:width .4s}
+.cnpj-row{display:flex;gap:8px}.cnpj-row input{flex:1}
+.cnpj-status{font-size:11px;margin-top:3px}
+.cnpj-ok{color:var(--success)}.cnpj-err{color:var(--danger)}.cnpj-loading{color:var(--text4)}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.calc-box{border-radius:var(--r);padding:12px;border:1px solid}
+.calc-box.blue{background:#EFF6FF;border-color:#BFDBFE}.calc-box.green{background:#F0FDF4;border-color:#BBF7D0}
+.crow{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px}
+.crow .lbl{color:var(--text3)}.crow .val{font-weight:600;color:var(--text)}
+.crow.total{border-top:1px solid var(--border2);padding-top:7px;margin-top:4px}
+.crow.total .lbl{font-weight:700;font-size:13px;color:var(--text)}.crow.total .val{font-size:16px;font-weight:700;color:var(--accent)}
+.vig-box{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:var(--r);padding:12px;margin-top:8px}
+.alert-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;margin-top:6px;border:1px solid}
+.at-r{background:var(--danger2);color:var(--danger);border-color:#FECACA}
+.at-a{background:var(--warning2);color:var(--warning);border-color:#FDE68A}
+.at-g{background:var(--success2);color:var(--success);border-color:#BBF7D0}
+.wa-preview{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--r);padding:10px 12px;font-size:12px;color:#14532D;white-space:pre-wrap;line-height:1.5;display:none;margin-top:6px}
+.int-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s}
+.int-btn:hover{background:var(--bg2)}
+.int-btn.wa{border-color:#25D366;color:#25D366;background:#F0FDF4}.int-btn.wa:hover{background:#DCFCE7}
+.int-btn.maps{border-color:#4285F4;color:#4285F4;background:#EFF6FF}.int-btn.maps:hover{background:#DBEAFE}
+.int-btn.mail{border-color:var(--danger);color:var(--danger);background:var(--danger2)}.int-btn.mail:hover{opacity:.85}
+.hist-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.hist-icon{width:30px;height:30px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.hist-text{font-size:12px;color:var(--text);flex:1}.hist-meta{font-size:10px;color:var(--text4);margin-top:2px}
+.funnel-row{display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--border2)}
+.fstage{font-size:12px;color:var(--text2);width:100px;flex-shrink:0}
+.fbar-w{flex:1;background:var(--bg2);border-radius:99px;height:8px;overflow:hidden}
+.fbar{height:8px;border-radius:99px;transition:width .5s}
+.fcnt{font-size:12px;font-weight:600;color:var(--text);width:28px;text-align:right}
+.fval{font-size:11px;color:var(--text4);width:80px;text-align:right}
+.rank-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--border2)}
+.rank-medal{font-size:18px;width:28px;text-align:center}
+.empty{text-align:center;padding:48px 24px;color:var(--text4)}
+.empty .eicon{font-size:36px;margin-bottom:10px}.empty .etitle{font-size:14px;font-weight:600;color:var(--text3);margin-bottom:4px}
+
+/* AUTOMATION PANEL */
+.ap{position:fixed;right:20px;top:60px;width:340px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);box-shadow:var(--sh3);z-index:500;display:none}
+.ap.open{display:block}
+.ap-head{padding:13px 16px;background:var(--header);border-radius:var(--rlg) var(--rlg) 0 0;display:flex;justify-content:space-between;align-items:center}
+.ap-title{font-size:13px;font-weight:700;color:#fff}
+.ap-item{padding:11px 16px;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start}
+.ap-icon{width:30px;height:30px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ap-icon.r{background:var(--danger2)}.ap-icon.y{background:var(--warning2)}.ap-icon.b{background:var(--info2)}.ap-icon.g{background:var(--success2)}
+.ap-t{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.ap-s{font-size:11px;color:var(--text3)}
+.ap-a{font-size:11px;color:var(--accent);cursor:pointer;margin-top:3px;display:inline-block}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;box-shadow:var(--sh3);display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text);min-width:270px;animation:sIn .3s ease;pointer-events:all}
+.toast.success{border-left:3px solid var(--success)}.toast.warning{border-left:3px solid var(--warning)}.toast.error{border-left:3px solid var(--danger)}.toast.info{border-left:3px solid var(--accent)}
+@keyframes sIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes sOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}
+
+/* LOGIN */
+.login-bg{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0A1628 0%,#1B2A47 60%,#243355 100%)}
+.login-box{background:var(--surface);border-radius:var(--rxl);padding:38px;width:min(430px,100%);box-shadow:0 20px 60px rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07)}
+.login-logo{font-size:22px;font-weight:700;color:var(--accent);margin-bottom:3px}
+.login-logo span{color:var(--text3);font-weight:300}
+.login-tagline{font-size:11px;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:28px}
+.lp{display:flex;align-items:center;gap:12px;padding:11px 13px;border:2px solid var(--border2);border-radius:var(--r);cursor:pointer;transition:all .15s;background:var(--surface2);margin-bottom:7px}
+.lp:hover,.lp.sel{border-color:var(--accent);background:var(--accent3)}
+.lp-name{font-size:13px;font-weight:600;color:var(--text)}.lp-role{font-size:11px;color:var(--text3)}.lp-desc{font-size:10px;color:var(--text4);margin-top:1px}
+.pin-input{height:44px;font-size:20px;letter-spacing:.5em;text-align:center;font-weight:700;font-family:'DM Mono',monospace;margin-top:6px}
+.login-err{background:var(--danger2);color:var(--danger);font-size:12px;padding:8px 12px;border-radius:var(--r);margin-bottom:14px;display:none;border:1px solid #FECACA}
+.venc-badge{font-size:10px;padding:3px 8px;border-radius:4px;font-weight:600;border:1px solid;display:inline-block}
+.vb-e{background:var(--danger2);color:var(--danger);border-color:#FECACA}
+.vb-a{background:var(--warning2);color:var(--warning);border-color:#FDE68A}
+.vb-w{background:var(--info2);color:var(--info);border-color:#BFDBFE}
+.vb-s{background:var(--success2);color:var(--success);border-color:#BBF7D0}
+
+/* ADMIN USUARIOS */
+.user-admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.ucard{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rlg);padding:18px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:10px;transition:box-shadow .15s}
+.ucard:hover{box-shadow:var(--sh2)}
+.ucard-header{display:flex;align-items:center;gap:12px}
+.ucard-info{flex:1}
+.ucard-name{font-size:14px;font-weight:700;color:var(--text)}
+.ucard-role{font-size:11px;color:var(--text3)}
+.ucard-email{font-size:11px;color:var(--text4);margin-top:1px}
+.ucard-body{display:flex;flex-direction:column;gap:6px}
+.ucard-row{display:flex;justify-content:space-between;font-size:11px;align-items:center}
+.ucard-label{color:var(--text4)}
+.ucard-value{font-weight:600;color:var(--text2)}
+.ucard-footer{display:flex;gap:6px;padding-top:10px;border-top:1px solid var(--border2)}
+.perf-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;border:1px solid}
+.perf-gestor{background:#E0E7FF;color:#3730A3;border-color:#C7D2FE}
+.perf-consultor{background:var(--success2);color:var(--success);border-color:#BBF7D0}
+.perf-diretoria{background:var(--danger2);color:var(--danger);border-color:#FECACA}
+.perf-admin{background:#FEF3C7;color:#92400E;border-color:#FDE68A}
+.status-active{color:var(--success);font-weight:700;font-size:11px}
+.status-inactive{color:var(--danger);font-weight:700;font-size:11px}
+.avatar-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.avatar-color{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
+.avatar-color.selected{border-color:var(--text);transform:scale(1.15);box-shadow:0 0 0 2px rgba(0,0,0,.15)}
+.pin-display{font-family:'DM Mono',monospace;font-size:18px;letter-spacing:.4em;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:8px 14px;text-align:center;color:var(--text);font-weight:700}
+.pin-toggle{font-size:11px;color:var(--accent);cursor:pointer;margin-top:3px;display:inline-block}
+.strength-bar{height:4px;border-radius:99px;margin-top:5px;transition:all .3s}
+.strength-label{font-size:10px;margin-top:3px;font-weight:600}
+
+/* IA COMERCIAL & INTEGRAÇÕES */
+.ia-chat{display:flex;flex-direction:column;gap:10px;min-height:280px;max-height:420px;overflow-y:auto;padding-right:4px}
+.ia-bubble{display:flex;gap:8px;align-items:flex-start}
+.ia-bubble.user{flex-direction:row-reverse}
+.ia-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.ia-text{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rlg);padding:10px 13px;max-width:85%;font-size:12px;color:var(--text);line-height:1.6;white-space:pre-wrap}
+.ia-bubble.user .ia-text{background:var(--accent3);color:var(--accent);border-color:#BFDBFE}
+.ia-bubble.system .ia-text{background:var(--surface2);color:var(--text3)}
+.ia-action-btn{display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px 12px;height:auto;white-space:normal;line-height:1.4;width:100%}
+.ia-action-btn .ia-btn-title{font-weight:600;font-size:12px}
+.ia-action-btn .ia-btn-sub{font-size:10px;color:var(--text4);margin-top:2px}
+.api-status-ok{font-size:11px;font-weight:700;color:var(--success)}
+.api-status-err{font-size:11px;font-weight:700;color:var(--danger)}
+.int-section{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rlg);padding:18px;box-shadow:var(--sh)}
+.int-section-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border2)}
+.int-note{font-size:10px;color:var(--text4);margin-top:10px;padding-top:8px;border-top:1px solid var(--border2);line-height:1.5}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+<div class="login-bg">
+<div class="login-box">
+  <div class="login-logo">Easy Fleet <span>&amp; Carro Verificado</span></div>
+  <div class="login-tagline">Enterprise · Gestão Comercial</div>
+  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Selecione seu perfil</div>
+  <div id="loginProfiles"></div>
+  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;margin-top:16px">PIN de acesso</div>
+  <input type="password" class="pin-input" id="pinInput" maxlength="4" placeholder="••••" onkeydown="if(event.key==='Enter')doLogin()">
+  <div class="login-err" id="loginErr"></div>
+  <button class="btn primary" style="width:100%;height:42px;justify-content:center;font-size:14px;font-weight:600;margin-top:14px" onclick="doLogin()">Entrar</button>
+</div>
+</div>
+</div>
+
+<!-- APP -->
+<div class="app" id="appWrap">
+  <div class="topnav">
+    <div class="logo">Easy Fleet <span>&amp; Carro Verificado</span></div>
+    <div class="nav-tabs" id="navTabs"></div>
+    <div class="nav-right">
+      <span class="saved-ind" id="savedInd">✓ Salvo</span>
+      <div class="auto-badge" id="autoBadge" onclick="toggleAP()">0 alertas</div>
+      <div class="user-chip" onclick="doLogout()">
+        <div class="avatar" id="navAvatar"></div>
+        <div><div class="uname" id="navName"></div><div class="urole" id="navRole"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="tsearch"><span class="tsicon">🔍</span><input id="searchQ" placeholder="Buscar empresa, contato, CNPJ, cidade..." oninput="applyFilters()"></div>
+    <select id="fEtapa" onchange="applyFilters()" style="height:32px;font-size:12px"><option value="">Etapa</option><option value="0">Prospecção</option><option value="1">Qualificação</option><option value="2">Proposta</option><option value="3">Negociação</option><option value="4">Fechado</option><option value="5">Perdido</option></select>
+    <select id="fProd" onchange="applyFilters()" style="height:32px;font-size:12px"><option value="">Produto</option><option value="easyfleet">Easy Fleet</option><option value="carrocheck">Carro Verificado</option></select>
+    <select id="fCons" onchange="applyFilters()" style="height:32px;font-size:12px"><option value="">Consultor</option></select>
+    <select id="fTemp" onchange="applyFilters()" style="height:32px;font-size:12px"><option value="">Temperatura</option><option>hot</option><option>warm</option><option>cold</option></select>
+    <button class="btn primary" onclick="openOppModal()">+ Nova oportunidade</button>
+    <button class="btn" onclick="exportCSV()">↓ CSV</button>
+  </div>
+
+  <div class="main" id="mainContent">
+    <!-- PIPELINE -->
+    <div class="view active" id="view-pipeline">
+      <div class="sh">
+        <div><div class="stitle" id="pipelineTitle">Pipeline</div><div class="ssub" id="pipelineSub"></div></div>
+        <div style="display:flex;gap:7px">
+          <button class="btn sm" id="vKanban" onclick="swView('kanban',this)" style="background:var(--accent3);color:var(--accent);border-color:var(--accent)">Kanban</button>
+          <button class="btn sm" id="vLista" onclick="swView('lista',this)">Lista</button>
+        </div>
+      </div>
+      <div id="kanbanView"><div class="kanban-wrap" id="board"></div></div>
+      <div id="listaView" style="display:none"><div class="twrap" id="listaTable"></div></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="view" id="view-dashboard">
+      <div class="sh">
+        <div><div class="stitle">Dashboard Executivo</div><div class="ssub" id="dashPL"></div></div>
+        <div class="psel" id="dashPS">
+          <button class="pbtn active" onclick="setPeriod('dash','month',this)">Mês</button>
+          <button class="pbtn" onclick="setPeriod('dash','quarter',this)">Trimestre</button>
+          <button class="pbtn" onclick="setPeriod('dash','semester',this)">Semestre</button>
+          <button class="pbtn" onclick="setPeriod('dash','year',this)">Ano</button>
+        </div>
+      </div>
+      <div class="mgrid mg5" id="dashMetrics"></div>
+      <div class="cgrid cg2" style="margin-bottom:14px">
+        <div class="ccard"><div class="ctitle">Funil de vendas — valor e quantidade</div><div id="funnelRows"></div></div>
+        <div class="ccard"><div class="ctitle">Receita prevista vs realizada</div><canvas id="cForecast" height="200"></canvas></div>
+      </div>
+      <div class="cgrid cg3" style="margin-bottom:14px">
+        <div class="ccard"><div class="ctitle">Temperatura do pipeline</div><canvas id="cTemp" height="180"></canvas></div>
+        <div class="ccard"><div class="ctitle">Conversão por consultor (%)</div><canvas id="cConvCons" height="180"></canvas></div>
+        <div class="ccard"><div class="ctitle">Ticket médio por produto</div><canvas id="cTicketProd" height="180"></canvas></div>
+      </div>
+      <div class="cgrid cg2">
+        <div class="ccard"><div class="ctitle">MRR por consultor</div><canvas id="cMRRCons" height="150"></canvas></div>
+        <div class="ccard"><div class="ctitle">Oportunidades por produto e etapa</div><canvas id="cProdEtapa" height="150"></canvas></div>
+      </div>
+    </div>
+
+    <!-- RANKING -->
+    <div class="view" id="view-ranking">
+      <div class="sh">
+        <div><div class="stitle">Ranking Comercial</div></div>
+        <div class="psel" id="rankPS">
+          <button class="pbtn active" onclick="setPeriod('rank','month',this)">Mês</button>
+          <button class="pbtn" onclick="setPeriod('rank','quarter',this)">Trimestre</button>
+          <button class="pbtn" onclick="setPeriod('rank','semester',this)">Semestre</button>
+          <button class="pbtn" onclick="setPeriod('rank','year',this)">Ano</button>
+        </div>
+      </div>
+      <div class="mgrid mg4" id="rankMetrics"></div>
+      <div class="cgrid cg2" style="margin-bottom:14px">
+        <div class="ccard"><div class="ctitle">Ranking por receita fechada</div><div id="rankList"></div></div>
+        <div class="ccard"><div class="ctitle">Atingimento de meta (%)</div><canvas id="cMetaAting" height="200"></canvas></div>
+      </div>
+      <div class="ccard"><div class="ctitle">Evolução mensal por consultor</div><canvas id="cEvolucao" height="130"></canvas></div>
+    </div>
+
+    <!-- FORECAST -->
+    <div class="view" id="view-forecast">
+      <div class="sh">
+        <div><div class="stitle">Forecast Comercial</div><div class="ssub" id="forecastSub"></div></div>
+        <div class="psel" id="forecastPS">
+          <button class="pbtn active" onclick="setPeriod('forecast','month',this)">Mês</button>
+          <button class="pbtn" onclick="setPeriod('forecast','quarter',this)">Trimestre</button>
+        </div>
+      </div>
+      <div class="mgrid mg4" id="forecastMetrics"></div>
+      <div class="cgrid cg2" style="margin-bottom:14px">
+        <div class="ccard"><div class="ctitle">Forecast por etapa</div><canvas id="cForecastEtapa" height="200"></canvas></div>
+        <div class="ccard"><div class="ctitle">Distribuição por probabilidade</div><canvas id="cProbFech" height="200"></canvas></div>
+      </div>
+      <div class="sh" style="margin-top:4px"><div class="stitle" style="font-size:14px">Oportunidades no forecast</div></div>
+      <div class="twrap" id="forecastTable"></div>
+    </div>
+
+    <!-- LEADS -->
+    <div class="view" id="view-leads">
+      <div class="sh">
+        <div><div class="stitle">Dashboard de Leads</div><div class="ssub" id="leadsPL"></div></div>
+        <div class="psel" id="leadsPS">
+          <button class="pbtn active" onclick="setPeriod('leads','month',this)">Mês</button>
+          <button class="pbtn" onclick="setPeriod('leads','quarter',this)">Trimestre</button>
+          <button class="pbtn" onclick="setPeriod('leads','semester',this)">Semestre</button>
+          <button class="pbtn" onclick="setPeriod('leads','year',this)">Ano</button>
+        </div>
+      </div>
+      <div class="mgrid mg5" id="leadsMetrics"></div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px" id="leadsFunnel"></div>
+      <div class="cgrid cg2">
+        <div class="ccard"><div class="ctitle">Novos leads por semana</div><canvas id="cLeadsWeek" height="180"></canvas></div>
+        <div class="ccard"><div class="ctitle">Origem dos leads</div><canvas id="cLeadsOrigem" height="180"></canvas></div>
+      </div>
+    </div>
+
+    <!-- PROPOSTAS -->
+    <div class="view" id="view-propostas">
+      <div class="sh">
+        <div><div class="stitle">Controle de Propostas</div><div class="ssub" id="propPL"></div></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="psel" id="propPS">
+            <button class="pbtn active" onclick="setPeriod('prop','month',this)">Mês</button>
+            <button class="pbtn" onclick="setPeriod('prop','quarter',this)">Trimestre</button>
+            <button class="pbtn" onclick="setPeriod('prop','semester',this)">Semestre</button>
+            <button class="pbtn" onclick="setPeriod('prop','year',this)">Ano</button>
+          </div>
+          <button class="btn success sm" onclick="openPropModal()">+ Nova proposta</button>
+        </div>
+      </div>
+      <div class="mgrid mg4" id="propMetrics"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px" id="propDonuts"></div>
+      <div class="ccard" style="margin-bottom:14px"><div class="ctitle">Evolução mensal por status</div><canvas id="cPropEvolucao" height="130"></canvas></div>
+      <div class="sh"><div class="stitle" style="font-size:14px">Lista de propostas</div>
+        <select id="propFilter" onchange="renderPropostas()" style="height:30px;font-size:12px;width:auto"><option value="">Todos</option><option value="sent">Enviadas</option><option value="approved">Ganhas</option><option value="negotiation">Em negociação</option><option value="rejected">Perdidas</option><option value="expired">Expiradas</option></select>
+      </div>
+      <div class="twrap" id="propTable"></div>
+    </div>
+
+    <!-- VENCIMENTOS -->
+    <div class="view" id="view-vencimentos">
+      <div class="sh"><div><div class="stitle">Controle de Vencimentos</div><div class="ssub">Contratos com vigência cadastrada</div></div></div>
+      <div class="mgrid mg4" id="vencMetrics"></div>
+      <div id="vencSections"></div>
+    </div>
+
+    <!-- FOLLOWUP -->
+    <div class="view" id="view-followup">
+      <div class="sh"><div><div class="stitle">Follow-ups & Tarefas</div></div><button class="btn primary sm" onclick="openTaskModal()">+ Nova tarefa</button></div>
+      <div class="mgrid mg4" id="fuMetrics"></div>
+      <div id="fuList"></div>
+    </div>
+
+    <!-- HISTORICO -->
+    <div class="view" id="view-historico">
+      <div class="sh"><div><div class="stitle">Histórico de Atividades</div></div></div>
+      <div class="twrap"><table><thead><tr><th>Atividade</th><th>Empresa</th><th>Consultor</th><th>Data/hora</th></tr></thead><tbody id="histBody"></tbody></table></div>
+    </div>
+
+    <!-- USUARIOS (admin only) -->
+    <div class="view" id="view-usuarios">
+      <div class="sh">
+        <div><div class="stitle">Gestão de Usuários</div><div class="ssub">Administração de acesso ao sistema</div></div>
+        <button class="btn primary" onclick="openUserModal()">+ Novo usuário</button>
+      </div>
+      <div class="mgrid mg4" id="userMetrics"></div>
+      <div class="user-admin-grid" id="userGrid"></div>
+    </div>
+
+    <!-- INTEGRAÇÕES -->
+    <div class="view" id="view-integracoes">
+      <div class="sh"><div><div class="stitle">Integrações & APIs</div><div class="ssub">Configure conexões com serviços externos e token de IA</div></div></div>
+      <div id="integracoesContent"></div>
+    </div>
+
+    <!-- IA COMERCIAL -->
+    <div class="view" id="view-ia">
+      <div class="sh">
+        <div><div class="stitle">IA Comercial</div><div class="ssub">Assistente com contexto completo do seu pipeline</div></div>
+        <div id="iaConfigStatus"></div>
+      </div>
+      <div id="iaContent"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- AUTOMATION PANEL -->
+<div class="ap" id="autoPanel">
+  <div class="ap-head"><div class="ap-title">⚡ Automações ativas</div><button class="btn ghost sm" style="color:rgba(255,255,255,.6)" onclick="toggleAP()">✕</button></div>
+  <div id="apItems"></div>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- MODAL OPORTUNIDADE -->
+<div class="overlay" id="oppOverlay" onclick="if(event.target===this)closeOppModal()">
+<div class="modal">
+  <div class="mhead"><div class="mtitle" id="oppTitle">Nova oportunidade</div><button class="btn ghost sm" onclick="closeOppModal()">✕</button></div>
+  <div class="mtabs">
+    <button class="mtab active" onclick="switchTab('dados',this)">Dados</button>
+    <button class="mtab" onclick="switchTab('contrato',this)">Contrato & Pricing</button>
+    <button class="mtab" onclick="switchTab('negociacao',this)">Negociação</button>
+    <button class="mtab" onclick="switchTab('hist',this)">Histórico</button>
+    <button class="mtab" onclick="switchTab('integracoes',this)">Integrações</button>
+  </div>
+  <div class="mbody">
+
+    <!-- DADOS -->
+    <div class="mpane active" id="tab-dados">
+      <div class="fsec"><div class="fsec-title">Empresa</div>
+        <div class="fgrid fc2" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Empresa / Razão social</div><input class="fi" id="oEmpresa"></div>
+          <div class="fg"><div class="fl">CNPJ</div>
+            <div class="cnpj-row"><input class="fi" id="oCNPJ" placeholder="00.000.000/0001-00" oninput="maskCNPJ(this)" style="height:34px"><button class="btn primary sm" id="btnCNPJ" onclick="consultarCNPJ()"><span id="cnpjTxt">🔍</span></button></div>
+            <div class="cnpj-status" id="cnpjStatus"></div>
+          </div>
+        </div>
+        <div class="fgrid fc3" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Segmento</div><input class="fi" id="oSegmento" placeholder="Logística, Transporte..."></div>
+          <div class="fg"><div class="fl">Cidade</div><input class="fi" id="oCidade"></div>
+          <div class="fg"><div class="fl">Estado</div><select class="fi" id="oEstado"><option value="">UF</option><option>AC</option><option>AL</option><option>AM</option><option>AP</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MG</option><option>MS</option><option>MT</option><option>PA</option><option>PB</option><option>PE</option><option>PI</option><option>PR</option><option>RJ</option><option>RN</option><option>RO</option><option>RR</option><option>RS</option><option>SC</option><option>SE</option><option>SP</option><option>TO</option></select></div>
+        </div>
+        <div class="fgrid fc2">
+          <div class="fg"><div class="fl">Região</div><select class="fi" id="oRegiao"><option value="">Selecione</option><option>Norte</option><option>Nordeste</option><option>Centro-Oeste</option><option>Sudeste</option><option>Sul</option></select></div>
+          <div class="fg"><div class="fl">Concorrente atual</div><input class="fi" id="oConcorrente" placeholder="Samsara, Omnilink..."></div>
+        </div>
+      </div>
+      <div class="fsec"><div class="fsec-title">Contato principal</div>
+        <div class="fgrid fc3" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Nome completo</div><input class="fi" id="oNome"></div>
+          <div class="fg"><div class="fl">Cargo</div><input class="fi" id="oCargo" placeholder="Diretor, Gerente de Frota..."></div>
+          <div class="fg"><div class="fl">Telefone / WhatsApp</div><input class="fi" id="oTelefone" placeholder="(11) 99999-9999"></div>
+        </div>
+        <div class="fgrid fc2">
+          <div class="fg"><div class="fl">E-mail</div><input class="fi" id="oEmail" type="email"></div>
+          <div class="fg"><div class="fl">LinkedIn</div><input class="fi" id="oLinkedIn" placeholder="linkedin.com/in/..."></div>
+        </div>
+      </div>
+      <div class="fsec"><div class="fsec-title">Informações operacionais</div>
+        <div class="fgrid fc3" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Produto</div><select class="fi" id="oProduto"><option value="">Selecione</option><option value="easyfleet">Easy Fleet — Gestão de Frotas</option><option value="carrocheck">Carro Verificado — Histórico Veicular</option></select></div>
+          <div class="fg"><div class="fl">Quantidade de veículos</div><input class="fi" id="oVeiculos" type="number" placeholder="0" oninput="calcOpp()"></div>
+          <div class="fg"><div class="fl">Tipo de operação</div><select class="fi" id="oTipoOp"><option value="">Selecione</option><option>Frota própria</option><option>Terceirizada</option><option>Mista</option><option>Revenda veicular</option><option>Financiamento</option></select></div>
+        </div>
+        <div class="fgrid fc2">
+          <div class="fg"><div class="fl">Origem do lead</div><select class="fi" id="oOrigem"><option value="">Selecione</option><option>Inbound</option><option>Indicação</option><option>Prospecção ativa</option><option>LinkedIn</option><option>Instagram</option><option>Google Ads</option><option>Evento / Feira</option><option>WhatsApp</option><option>Reativação</option><option>Outro</option></select></div>
+          <div class="fg"><div class="fl">Data de entrada</div><input class="fi" id="oDataEntrada" type="date"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTRATO -->
+    <div class="mpane" id="tab-contrato">
+      <div class="fsec"><div class="fsec-title">Precificação</div>
+        <div class="fgrid fc4" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Tipo de contrato</div><select class="fi" id="oTipoContrato"><option value="">Selecione</option><option value="novo">Novo</option><option value="renovacao">Renovação</option><option value="aditivo">Aditivo</option></select></div>
+          <div class="fg"><div class="fl">Mensalidade / veículo (R$)</div><input class="fi" id="oMensalidade" type="number" oninput="calcOpp()"></div>
+          <div class="fg"><div class="fl">Setup / Implantação (R$)</div><input class="fi" id="oSetup" type="number" oninput="calcOpp()"></div>
+          <div class="fg"><div class="fl">Prazo contratual (meses)</div><input class="fi" id="oPrazo" type="number" oninput="calcOpp()"></div>
+        </div>
+        <div class="fgrid fc3" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Custo variável / veículo (R$)</div><input class="fi" id="oCustoVar" type="number" oninput="calcOpp()"></div>
+          <div class="fg"><div class="fl">Custo fixo / mês (R$)</div><input class="fi" id="oCustoFix" type="number" oninput="calcOpp()"></div>
+          <div class="fg"><div class="fl">Valor da proposta (manual)</div><input class="fi" id="oValorProposta" type="number"></div>
+        </div>
+        <div class="calc-grid" id="calcGrid" style="display:none">
+          <div class="calc-box blue">
+            <div style="font-size:10px;font-weight:700;color:var(--info);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Receita do contrato</div>
+            <div class="crow"><span class="lbl">MRR / mês</span><span class="val" id="cMRR">—</span></div>
+            <div class="crow"><span class="lbl">MRR anual</span><span class="val" id="cMRRano">—</span></div>
+            <div class="crow"><span class="lbl">Setup</span><span class="val" id="cSetup">—</span></div>
+            <div class="crow total"><span class="lbl">Total contrato</span><span class="val" id="cTotal">—</span></div>
+          </div>
+          <div class="calc-box green">
+            <div style="font-size:10px;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Rentabilidade</div>
+            <div class="crow"><span class="lbl">Custo total / mês</span><span class="val" id="cCusto">—</span></div>
+            <div class="crow"><span class="lbl">Lucro bruto / mês</span><span class="val" id="cLucro">—</span></div>
+            <div class="crow"><span class="lbl">Margem bruta</span><span class="val" id="cMargem">—</span></div>
+            <div class="crow total"><span class="lbl">Payback estimado</span><span class="val" id="cPayback">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="fsec"><div class="fsec-title">Vigência do contrato</div>
+        <div class="fgrid fc3" style="margin-bottom:0">
+          <div class="fg"><div class="fl">Início da vigência</div><input class="fi" id="oVigStart" type="date" oninput="calcVigOpp()"></div>
+          <div class="fg"><div class="fl">Fim da vigência (calculado)</div><input class="fi fi-ro" id="oVigEnd" type="date" readonly></div>
+          <div class="fg"><div class="fl">Alerta 30 dias antes</div><input class="fi fi-ro" id="oVigAlert" type="date" readonly></div>
+        </div>
+        <div class="vig-box" id="vigBoxOpp" style="display:none">
+          <div style="font-size:10px;font-weight:700;color:var(--info);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Status da vigência</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text3)">Início</span><span id="vigST" style="font-weight:600">—</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text3)">Fim</span><span id="vigET" style="font-weight:600">—</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text3)">Dias restantes</span><span id="vigDT" style="font-weight:600">—</span></div>
+          <div id="vigTag"></div>
+        </div>
+      </div>
+      <div class="fsec"><div class="fsec-title">Demo gratuita — 30 dias</div>
+        <div class="fgrid fc3">
+          <div class="fg"><div class="fl">Início da demo</div><input class="fi" id="oDemoStart" type="date" oninput="calcDemoOpp()"></div>
+          <div class="fg"><div class="fl">Fim da demo (automático)</div><input class="fi fi-ro" id="oDemoEnd" type="date" readonly></div>
+          <div class="fg"><div class="fl">Follow-up pós-demo</div><input class="fi" id="oDemoFollowup" type="date"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEGOCIAÇÃO -->
+    <div class="mpane" id="tab-negociacao">
+      <div class="fsec"><div class="fsec-title">Status comercial</div>
+        <div class="fgrid fc4" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Etapa</div><select class="fi" id="oEtapa" onchange="autoProb()"><option value="0">Prospecção</option><option value="1">Qualificação</option><option value="2">Proposta enviada</option><option value="3">Negociação</option><option value="4">Fechado</option><option value="5">Perdido</option></select></div>
+          <div class="fg"><div class="fl">Temperatura</div><select class="fi" id="oTemp"><option value="hot">🔥 Hot</option><option value="warm">🌡 Warm</option><option value="cold">❄ Cold</option></select></div>
+          <div class="fg"><div class="fl">Probabilidade (%)</div><input class="fi" id="oProb" type="number" min="0" max="100"></div>
+          <div class="fg"><div class="fl">Data prevista fechamento</div><input class="fi" id="oDataFech" type="date"></div>
+        </div>
+        <div class="fgrid fc3" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Consultor responsável</div><select class="fi" id="oCons"></select></div>
+          <div class="fg"><div class="fl">Data próximo follow-up</div><input class="fi" id="oFollowup" type="date"></div>
+          <div class="fg"><div class="fl">Lembrete</div><input class="fi" id="oLembrete" placeholder="Ex: Ligar após apresentação"></div>
+        </div>
+        <div class="fgrid fc2" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Status comercial</div><select class="fi" id="oStatusCom"><option value="">Selecione</option><option>Em contato inicial</option><option>Proposta apresentada</option><option>Aguardando decisão</option><option>Negociando desconto</option><option>Aprovado internamente</option><option>Assinatura pendente</option><option>Contrato assinado</option><option>Perdido — preço</option><option>Perdido — concorrência</option><option>Perdido — timing</option><option>Perdido — sem orçamento</option></select></div>
+          <div class="fgrid fc2">
+            <div class="fg"><div class="fl">Nº de visitas</div><input class="fi" id="oVisitas" type="number" value="0"></div>
+            <div class="fg"><div class="fl">Nº de follow-ups</div><input class="fi" id="oFUCount" type="number" value="0"></div>
+          </div>
+        </div>
+        <div class="fg"><div class="fl">Observações</div><textarea class="fi" id="oObs" rows="3" placeholder="Contexto, próximos passos..."></textarea></div>
+      </div>
+      <div class="fsec"><div class="fsec-title">Mensagem WhatsApp</div>
+        <div class="fg"><div class="fl" style="display:flex;justify-content:space-between;align-items:center">Mensagem personalizada<button class="btn sm" id="btnGerarMsgIA" onclick="gerarMsgWAComIA()" style="height:22px;font-size:10px;padding:0 8px;border-radius:4px">✨ Gerar com IA</button></div>
+          <textarea class="fi" id="oWaMsg" rows="2" placeholder="Olá, [Nome]! Aqui é da Easy Fleet..." oninput="updateWaPreview()"></textarea>
+          <div class="wa-preview" id="waPrev"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTÓRICO DE INTERAÇÕES -->
+    <div class="mpane" id="tab-hist">
+      <div class="fsec"><div class="fsec-title">Registrar interação</div>
+        <div class="fgrid fc3" style="margin-bottom:11px">
+          <div class="fg"><div class="fl">Tipo</div><select class="fi" id="intTipo"><option>Ligação</option><option>Visita presencial</option><option>Reunião online</option><option>E-mail</option><option>WhatsApp</option><option>Proposta enviada</option><option>Contrato assinado</option><option>Nota interna</option></select></div>
+          <div class="fg"><div class="fl">Data</div><input class="fi" id="intData" type="date"></div>
+          <div class="fg"><div class="fl">Duração (min)</div><input class="fi" id="intDur" type="number" placeholder="30"></div>
+        </div>
+        <div class="fg" style="margin-bottom:11px"><div class="fl">Descrição</div><textarea class="fi" id="intDesc" rows="2" placeholder="O que aconteceu? Próximos passos..."></textarea></div>
+        <button class="btn primary sm" onclick="addInteracao()">Registrar interação</button>
+      </div>
+      <div class="fsec"><div class="fsec-title">Histórico</div><div id="intHistList"></div></div>
+    </div>
+
+    <!-- INTEGRAÇÕES -->
+    <div class="mpane" id="tab-integracoes">
+      <div class="fsec"><div class="fsec-title">WhatsApp</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="int-btn wa" onclick="openWhatsAppOpp()">💬 Abrir WhatsApp Web</button>
+          <button class="int-btn wa" onclick="openWhatsAppOpp('proposta')">📄 Enviar proposta via WhatsApp</button>
+        </div>
+        <div style="font-size:11px;color:var(--text4)">Abre o WhatsApp Web com mensagem pré-preenchida. Requer WhatsApp Web autenticado.</div>
+      </div>
+      <div class="fsec"><div class="fsec-title">Google Maps</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="int-btn maps" onclick="openMaps()">📍 Ver localização da empresa</button>
+          <button class="int-btn maps" onclick="openMapsRoute()">🗺️ Traçar rota até o cliente</button>
+        </div>
+        <div style="font-size:11px;color:var(--text4)">Abre o Google Maps com o endereço cadastrado.</div>
+      </div>
+      <div class="fsec"><div class="fsec-title">E-mail (Outlook / Gmail)</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="int-btn mail" onclick="openEmail()">✉️ Novo e-mail</button>
+          <button class="int-btn mail" onclick="openEmail('followup')">📧 E-mail de follow-up</button>
+          <button class="int-btn mail" onclick="openEmail('proposta')">📋 Enviar proposta por e-mail</button>
+        </div>
+        <div style="font-size:11px;color:var(--text4)">Abre seu cliente de e-mail padrão com destinatário e assunto pré-preenchidos.</div>
+      </div>
+      <div class="fsec"><div class="fsec-title">Gerar PDF da proposta</div>
+        <button class="btn warning" onclick="gerarPDFOpp()">📄 Gerar proposta em PDF</button>
+        <div style="font-size:11px;color:var(--text4);margin-top:6px">Gera proposta profissional em nova aba para imprimir ou salvar.</div>
+      </div>
+    </div>
+  </div>
+  <div class="mfooter">
+    <button class="btn danger" id="oppDelBtn" onclick="deleteOpp()" style="display:none">🗑 Excluir</button>
+    <div style="display:flex;gap:8px;margin-left:auto">
+      <button class="btn" onclick="closeOppModal()">Cancelar</button>
+      <button class="btn primary" onclick="saveOpp()">Salvar oportunidade</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL PROPOSTA -->
+<div class="overlay" id="propOverlay" onclick="if(event.target===this)closePropModal()">
+<div class="modal" style="max-width:640px">
+  <div class="mhead"><div class="mtitle" id="propTitle">Nova proposta</div><button class="btn ghost sm" onclick="closePropModal()">✕</button></div>
+  <div class="mbody">
+    <div class="fgrid fc2" style="margin-bottom:11px">
+      <div class="fg"><div class="fl">Número</div><input class="fi" id="pNum" placeholder="PROP-001"></div>
+      <div class="fg"><div class="fl">Oportunidade</div><select class="fi" id="pOpp"></select></div>
+    </div>
+    <div class="fgrid fc3" style="margin-bottom:11px">
+      <div class="fg"><div class="fl">Consultor</div><select class="fi" id="pCons"></select></div>
+      <div class="fg"><div class="fl">Valor (R$)</div><input class="fi" id="pValor" type="number"></div>
+      <div class="fg"><div class="fl">Status</div><select class="fi" id="pStatus"><option value="draft">Rascunho</option><option value="sent">Enviada</option><option value="negotiation">Em negociação</option><option value="approved">Aprovada</option><option value="rejected">Recusada</option></select></div>
+    </div>
+    <div class="fgrid fc2" style="margin-bottom:11px">
+      <div class="fg"><div class="fl">Data de envio</div><input class="fi" id="pDataEnvio" type="date"></div>
+      <div class="fg"><div class="fl">Validade até</div><input class="fi" id="pValidade" type="date"></div>
+    </div>
+    <div class="fg" style="margin-bottom:11px"><div class="fl">Escopo / Descrição</div><textarea class="fi" id="pDesc" rows="2"></textarea></div>
+    <div class="fg"><div class="fl">Observações internas</div><textarea class="fi" id="pObs" rows="2"></textarea></div>
+  </div>
+  <div class="mfooter">
+    <button class="btn danger" id="propDelBtn" onclick="deleteProp()" style="display:none">🗑 Excluir</button>
+    <div style="display:flex;gap:8px;margin-left:auto">
+      <button class="btn warning" onclick="gerarPDFPropModal()">📄 PDF</button>
+      <button class="btn" onclick="closePropModal()">Cancelar</button>
+      <button class="btn primary" onclick="saveProp()">Salvar</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL TAREFA -->
+<div class="overlay" id="taskOverlay" onclick="if(event.target===this)closeTaskModal()">
+<div class="modal" style="max-width:520px">
+  <div class="mhead"><div class="mtitle">Nova tarefa</div><button class="btn ghost sm" onclick="closeTaskModal()">✕</button></div>
+  <div class="mbody">
+    <div class="fg" style="margin-bottom:11px"><div class="fl">Título</div><input class="fi" id="tTitulo"></div>
+    <div class="fgrid fc2" style="margin-bottom:11px">
+      <div class="fg"><div class="fl">Tipo</div><select class="fi" id="tTipo"><option>Follow-up</option><option>Ligação</option><option>Visita</option><option>Proposta</option><option>Reunião</option><option>Renovação</option><option>Outro</option></select></div>
+      <div class="fg"><div class="fl">Vencimento</div><input class="fi" id="tData" type="date"></div>
+    </div>
+    <div class="fgrid fc2" style="margin-bottom:11px">
+      <div class="fg"><div class="fl">Oportunidade</div><select class="fi" id="tOpp"><option value="">Nenhuma</option></select></div>
+      <div class="fg"><div class="fl">Consultor</div><select class="fi" id="tCons"></select></div>
+    </div>
+    <div class="fg"><div class="fl">Descrição</div><textarea class="fi" id="tDesc" rows="2"></textarea></div>
+  </div>
+  <div class="mfooter"><div style="margin-left:auto;display:flex;gap:8px"><button class="btn" onclick="closeTaskModal()">Cancelar</button><button class="btn primary" onclick="saveTask()">Criar tarefa</button></div></div>
+</div>
+</div>
+
+<!-- MODAL USUÁRIO -->
+<div class="overlay" id="userOverlay" onclick="if(event.target===this)closeUserModal()">
+<div class="modal" style="max-width:660px">
+  <div class="mhead">
+    <div class="mtitle" id="userModalTitle">Novo usuário</div>
+    <button class="btn ghost sm" onclick="closeUserModal()">✕ Fechar</button>
+  </div>
+  <div class="mbody">
+
+    <!-- DADOS PESSOAIS -->
+    <div class="fsec"><div class="fsec-title">Dados pessoais</div>
+      <div class="fgrid fc2" style="margin-bottom:11px">
+        <div class="fg"><div class="fl">Nome completo</div><input class="fi" id="uNome" placeholder="Nome e sobrenome"></div>
+        <div class="fg"><div class="fl">CPF</div><input class="fi" id="uCPF" placeholder="000.000.000-00" oninput="maskCPF(this)" maxlength="14"></div>
+      </div>
+      <div class="fgrid fc2" style="margin-bottom:11px">
+        <div class="fg"><div class="fl">E-mail corporativo</div><input class="fi" id="uEmail" type="email" placeholder="nome@empresa.com.br"></div>
+        <div class="fg"><div class="fl">Telefone / WhatsApp</div><input class="fi" id="uTelefone" placeholder="(11) 99999-9999" oninput="maskTelUser(this)"></div>
+      </div>
+      <div class="fgrid fc3" style="margin-bottom:11px">
+        <div class="fg"><div class="fl">Data de nascimento</div><input class="fi" id="uNascimento" type="date"></div>
+        <div class="fg"><div class="fl">Cargo / Função</div><input class="fi" id="uCargo" placeholder="Diretor, Consultor..."></div>
+        <div class="fg"><div class="fl">Departamento</div><input class="fi" id="uDepto" placeholder="Comercial, TI..."></div>
+      </div>
+      <div class="fgrid fc2">
+        <div class="fg"><div class="fl">Região de atuação</div><select class="fi" id="uRegiao"><option value="">Selecione</option><option>Norte</option><option>Nordeste</option><option>Centro-Oeste</option><option>Sudeste</option><option>Sul</option><option>Nacional</option></select></div>
+        <div class="fg"><div class="fl">Data de admissão</div><input class="fi" id="uAdmissao" type="date"></div>
+      </div>
+    </div>
+
+    <!-- ACESSO AO SISTEMA -->
+    <div class="fsec"><div class="fsec-title">Acesso ao sistema</div>
+      <div class="fgrid fc2" style="margin-bottom:11px">
+        <div class="fg">
+          <div class="fl">Perfil de acesso</div>
+          <select class="fi" id="uPerfil" onchange="updatePerfilDesc()">
+            <option value="">Selecione o perfil</option>
+            <option value="gestor">Gestor Comercial — acesso completo</option>
+            <option value="consultor">Consultor Comercial — acesso operacional</option>
+            <option value="diretoria">Diretoria — visão estratégica</option>
+            <option value="admin">Administrador do sistema</option>
+          </select>
+          <div id="perfilDesc" style="font-size:11px;color:var(--text4);margin-top:4px"></div>
+        </div>
+        <div class="fg">
+          <div class="fl">Status</div>
+          <select class="fi" id="uStatus">
+            <option value="active">Ativo</option>
+            <option value="inactive">Inativo</option>
+          </select>
+        </div>
+      </div>
+      <div class="fgrid fc2" style="margin-bottom:11px">
+        <div class="fg">
+          <div class="fl">PIN de acesso (4 dígitos)</div>
+          <input class="fi" id="uPIN" type="password" maxlength="4" placeholder="••••" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4);checkPINStrength()" style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:.4em;font-weight:700;text-align:center">
+          <div id="pinStrength" style="font-size:10px;color:var(--text4);margin-top:4px"></div>
+        </div>
+        <div class="fg">
+          <div class="fl">Confirmar PIN</div>
+          <input class="fi" id="uPINConfirm" type="password" maxlength="4" placeholder="••••" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4);checkPINMatch()" style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:.4em;font-weight:700;text-align:center">
+          <div id="pinMatch" style="font-size:10px;margin-top:4px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COR DO AVATAR -->
+    <div class="fsec"><div class="fsec-title">Avatar & identificação visual</div>
+      <div class="fgrid fc2">
+        <div class="fg">
+          <div class="fl">Cor do avatar</div>
+          <div class="avatar-picker" id="avatarPicker"></div>
+          <input type="hidden" id="uColor" value="#0066CC">
+        </div>
+        <div class="fg">
+          <div class="fl">Preview do avatar</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+            <div class="avatar lg" id="userAvatarPreview" style="background:#0066CC;width:48px;height:48px;font-size:16px">??</div>
+            <div>
+              <div id="userNamePreview" style="font-size:14px;font-weight:700;color:var(--text)">Nome do usuário</div>
+              <div id="userRolePreview" style="font-size:11px;color:var(--text3)">Perfil de acesso</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBSERVAÇÕES -->
+    <div class="fsec"><div class="fsec-title">Observações</div>
+      <div class="fg">
+        <div class="fl">Notas internas</div>
+        <textarea class="fi" id="uObs" rows="2" placeholder="Informações adicionais sobre o usuário, restrições de acesso, etc."></textarea>
+      </div>
+    </div>
+
+    <!-- PERMISSÕES DETALHADAS -->
+    <div class="fsec"><div class="fsec-title">Permissões por módulo</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="permissoesGrid">
+        <!-- Gerado dinamicamente -->
+      </div>
+    </div>
+
+  </div>
+  <div class="mfooter">
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn danger" id="userDelBtn" onclick="deleteUser()" style="display:none">🗑 Excluir usuário</button>
+      <button class="btn" id="userDeactBtn" onclick="toggleUserStatus()" style="display:none">⏸ Desativar</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-left:auto">
+      <button class="btn" onclick="closeUserModal()">Cancelar</button>
+      <button class="btn primary" onclick="saveUser()">Salvar usuário</button>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<script>
+// ═══ CONSTANTES ═══
+const STAGES=['Prospecção','Qualificação','Proposta','Negociação','Fechado','Perdido'];
+const STAGE_COLORS=['#3B82F6','#8B5CF6','#F59E0B','#EF4444','#10B981','#6B7280'];
+const STAGE_PROBS=[10,30,50,75,100,0];
+const CONS_COLORS=['#0066CC','#15803D','#B45309','#6D28D9','#B91C1C','#0891B2'];
+const PROD_LABEL={easyfleet:'Easy Fleet',carrocheck:'Carro Verificado'};
+const PSTATUS_LABEL={draft:'Rascunho',sent:'Enviada',negotiation:'Em negociação',approved:'Aprovada',rejected:'Recusada',expired:'Expirada'};
+const PSTATUS_CLS={draft:'gray',sent:'blue',negotiation:'amber',approved:'green',rejected:'red',expired:'purple'};
+const TIPO_ICONS={Ligação:'📞','Visita presencial':'🤝','Reunião online':'💻','E-mail':'📧',WhatsApp:'💬','Proposta enviada':'📄','Contrato assinado':'✍️','Nota interna':'📝'};
+
+let USERS=[
+  {id:'g',name:'Felipe Andrade',role:'Gestor Comercial',pin:'1234',color:'#0066CC',perfil:'gestor',
+   tabs:['pipeline','dashboard','ranking','forecast','leads','propostas','vencimentos','followup','historico','usuarios'],
+   desc:'Acesso completo — Dashboard, Forecast, Relatórios, Metas, Ranking'},
+  {id:'c1',name:'Marina Souza',role:'Consultora',pin:'2222',color:'#15803D',perfil:'consultor',
+   tabs:['pipeline','leads','propostas','followup','historico'],
+   desc:'Acesso operacional — Leads, Oportunidades, Propostas, Follow-ups'},
+  {id:'c2',name:'Rafael Costa',role:'Consultor',pin:'3333',color:'#B45309',perfil:'consultor',
+   tabs:['pipeline','leads','propostas','followup','historico'],
+   desc:'Acesso operacional — Leads, Oportunidades, Propostas, Follow-ups'},
+  {id:'c3',name:'Juliana Lima',role:'Consultora',pin:'4444',color:'#6D28D9',perfil:'consultor',
+   tabs:['pipeline','leads','propostas','followup','historico'],
+   desc:'Acesso operacional — Leads, Oportunidades, Propostas, Follow-ups'},
+  {id:'d',name:'Roberto Campos',role:'Diretor',pin:'9999',color:'#B91C1C',perfil:'diretoria',
+   tabs:['dashboard','ranking','forecast','vencimentos'],
+   desc:'Visão estratégica — Receita, Pipeline, Projeções, Performance'},
+];
+
+const TAB_LABELS={pipeline:'Pipeline',dashboard:'Dashboard',ranking:'Ranking',forecast:'Forecast',leads:'Leads',propostas:'Propostas',vencimentos:'Vencimentos',followup:'Follow-ups',historico:'Histórico',usuarios:'👤 Usuários',integracoes:'⚙️ Integrações',ia:'🤖 IA Comercial'};
+
+const DEMO_OPP=[
+  {id:1,empresa:'Transportadora Rápida',cnpj:'12.345.678/0001-90',segmento:'Logística',cidade:'São Paulo',estado:'SP',regiao:'Sudeste',concorrente:'Omnilink',nome:'Ricardo Alves',cargo:'Diretor Operacional',telefone:'11987654321',email:'r.alves@transp.com',linkedin:'',produto:'easyfleet',veiculos:42,tipoOp:'Frota própria',origem:'Prospecção ativa',dataEntrada:'2026-05-10',mensalidade:85,setup:2000,prazo:12,custoVar:30,custoFix:500,valorProposta:0,etapa:0,temp:'hot',prob:10,dataFech:'2026-06-30',cons:'Marina Souza',followup:'2026-05-24',lembrete:'Enviar apresentação',statusCom:'Em contato inicial',obs:'Lead qualificado, frota própria',waMsg:'',vigStart:'',vigEnd:'',vigAlert:'',demoStart:'',demoEnd:'',demoFollowup:'',visitas:1,fuCount:2,closedAt:'',interacoes:[{tipo:'Ligação',data:'2026-05-10',dur:20,desc:'Apresentação inicial, diretor interessado em demo'}]},
+  {id:2,empresa:'Grupo Fortaleza',cnpj:'98.765.432/0001-10',segmento:'Frota',cidade:'Fortaleza',estado:'CE',regiao:'Nordeste',concorrente:'Samsara',nome:'Camila Souza',cargo:'Gerente de Frota',telefone:'85998765432',email:'c.souza@fortaleza.com',linkedin:'',produto:'easyfleet',veiculos:110,tipoOp:'Frota própria',origem:'Inbound',dataEntrada:'2026-05-01',mensalidade:90,setup:5000,prazo:24,custoVar:35,custoFix:1000,valorProposta:0,etapa:1,temp:'hot',prob:30,dataFech:'2026-06-15',cons:'Felipe Andrade',followup:'2026-05-23',lembrete:'Enviar proposta',statusCom:'Proposta apresentada',obs:'Diagnóstico concluído',waMsg:'',vigStart:'',vigEnd:'',vigAlert:'',demoStart:'2026-05-01',demoEnd:'2026-05-31',demoFollowup:'2026-05-28',visitas:2,fuCount:4,closedAt:'',interacoes:[{tipo:'Reunião online',data:'2026-05-05',dur:60,desc:'Diagnóstico técnico realizado'}]},
+  {id:3,empresa:'Distribuidora Central',cnpj:'11.222.333/0001-44',segmento:'Distribuição',cidade:'Curitiba',estado:'PR',regiao:'Sul',concorrente:'Rastreador',nome:'Marcos Lima',cargo:'CEO',telefone:'41976543210',email:'m.lima@distrib.com',linkedin:'',produto:'easyfleet',veiculos:67,tipoOp:'Mista',origem:'Indicação',dataEntrada:'2026-04-20',mensalidade:75,setup:3000,prazo:12,custoVar:28,custoFix:700,valorProposta:0,etapa:1,temp:'warm',prob:30,dataFech:'2026-07-01',cons:'Rafael Costa',followup:'2026-05-26',lembrete:'Confirmar reunião',statusCom:'Em contato inicial',obs:'Indicação pelo Eduardo Farias',waMsg:'',vigStart:'',vigEnd:'',vigAlert:'',demoStart:'',demoEnd:'',demoFollowup:'',visitas:1,fuCount:2,closedAt:'',interacoes:[]},
+  {id:4,empresa:'Agro Nortec',cnpj:'55.666.777/0001-88',segmento:'Agronegócio',cidade:'Campo Grande',estado:'MS',regiao:'Centro-Oeste',concorrente:'Onix',nome:'Fernanda Costa',cargo:'Diretora Operacional',telefone:'67988887777',email:'f.costa@agronortec.com',linkedin:'',produto:'easyfleet',veiculos:200,tipoOp:'Frota própria',origem:'LinkedIn',dataEntrada:'2026-04-15',mensalidade:80,setup:8000,prazo:36,custoVar:32,custoFix:2000,valorProposta:0,etapa:2,temp:'hot',prob:50,dataFech:'2026-06-01',cons:'Felipe Andrade',followup:'2026-05-22',lembrete:'Follow-up da proposta',statusCom:'Aguardando decisão',obs:'Proposta enviada, aguardando diretoria financeira',waMsg:'',vigStart:'',vigEnd:'',vigAlert:'',demoStart:'',demoEnd:'',demoFollowup:'',visitas:3,fuCount:6,closedAt:'',interacoes:[{tipo:'Visita presencial',data:'2026-04-28',dur:120,desc:'Visita à fazenda, mapeamento de rotas'}]},
+  {id:5,empresa:'Construções Meridional',cnpj:'77.888.999/0001-22',segmento:'Construção Civil',cidade:'Belo Horizonte',estado:'MG',regiao:'Sudeste',concorrente:'Telemetria BR',nome:'Ana Paula Mendes',cargo:'Diretora de Operações',telefone:'31954321098',email:'a.mendes@constrid.com',linkedin:'',produto:'easyfleet',veiculos:88,tipoOp:'Mista',origem:'Evento / Feira',dataEntrada:'2026-03-10',mensalidade:95,setup:4000,prazo:24,custoVar:38,custoFix:900,valorProposta:0,etapa:3,temp:'hot',prob:75,dataFech:'2026-05-31',cons:'Marina Souza',followup:'2026-05-23',lembrete:'Fechar condições finais',statusCom:'Negociando desconto',obs:'Nego final, cliente quer 10% de desconto no setup',waMsg:'',vigStart:'',vigEnd:'',vigAlert:'',demoStart:'',demoEnd:'',demoFollowup:'',visitas:4,fuCount:8,closedAt:'',interacoes:[{tipo:'Reunião online',data:'2026-05-12',dur:90,desc:'Negociação de condições'},{tipo:'Proposta enviada',data:'2026-04-15',dur:0,desc:'Proposta revisada enviada'}]},
+  {id:6,empresa:'Petroquímica Sul',cnpj:'66.777.888/0001-99',segmento:'Químico/Petróleo',cidade:'Salvador',estado:'BA',regiao:'Nordeste',concorrente:'',nome:'Eduardo Farias',cargo:'Diretor Geral',telefone:'71921098765',email:'e.farias@petro.com',linkedin:'',produto:'easyfleet',veiculos:150,tipoOp:'Frota própria',origem:'Prospecção ativa',dataEntrada:'2025-05-01',mensalidade:90,setup:7000,prazo:36,custoVar:35,custoFix:1500,valorProposta:0,etapa:4,temp:'hot',prob:100,dataFech:'',cons:'Felipe Andrade',followup:'',lembrete:'',statusCom:'Contrato assinado',obs:'Onboarding iniciado',waMsg:'',vigStart:'2025-06-01',vigEnd:'2028-05-31',vigAlert:'2028-04-30',demoStart:'',demoEnd:'',demoFollowup:'',visitas:6,fuCount:12,closedAt:'2026-04-10',interacoes:[{tipo:'Contrato assinado',data:'2026-04-10',dur:0,desc:'Contrato assinado, vigência 01/06/2025'}]},
+  {id:7,empresa:'Supermercados União',cnpj:'88.999.000/0001-11',segmento:'Varejo/Alimentos',cidade:'Florianópolis',estado:'SC',regiao:'Sul',concorrente:'',nome:'Larissa Gomes',cargo:'Gerente Administrativo',telefone:'48910987654',email:'l.gomes@super.com',linkedin:'',produto:'easyfleet',veiculos:72,tipoOp:'Terceirizada',origem:'Indicação',dataEntrada:'2025-03-01',mensalidade:80,setup:3000,prazo:12,custoVar:30,custoFix:700,valorProposta:0,etapa:4,temp:'warm',prob:100,dataFech:'',cons:'Juliana Lima',followup:'',lembrete:'',statusCom:'Contrato assinado',obs:'Renovação em andamento',waMsg:'',vigStart:'2025-04-01',vigEnd:'2026-03-31',vigAlert:'2026-03-01',demoStart:'',demoEnd:'',demoFollowup:'',visitas:3,fuCount:6,closedAt:'2026-03-22',interacoes:[]},
+  {id:8,empresa:'Grupo Alfa',cnpj:'12.999.888/0001-77',segmento:'Indústria',cidade:'São Paulo',estado:'SP',regiao:'Sudeste',concorrente:'',nome:'Carlos Teixeira',cargo:'Diretor de TI',telefone:'11944445555',email:'c.teixeira@alfa.com',linkedin:'',produto:'easyfleet',veiculos:95,tipoOp:'Frota própria',origem:'Google Ads',dataEntrada:'2026-01-10',mensalidade:90,setup:4500,prazo:24,custoVar:36,custoFix:950,valorProposta:0,etapa:4,temp:'hot',prob:100,dataFech:'',cons:'Felipe Andrade',followup:'',lembrete:'',statusCom:'Contrato assinado',obs:'',waMsg:'',vigStart:'2026-03-01',vigEnd:'2028-02-28',vigAlert:'2028-01-29',demoStart:'',demoEnd:'',demoFollowup:'',visitas:4,fuCount:7,closedAt:'2026-02-15',interacoes:[]},
+  {id:9,empresa:'Transporte Sul',cnpj:'55.111.222/0001-33',segmento:'Transporte Rodoviário',cidade:'Porto Alegre',estado:'RS',regiao:'Sul',concorrente:'',nome:'Patrícia Nunes',cargo:'Gerente de Frota',telefone:'51988887777',email:'p.nunes@trsul.com',linkedin:'',produto:'easyfleet',veiculos:60,tipoOp:'Frota própria',origem:'WhatsApp',dataEntrada:'2025-12-15',mensalidade:85,setup:2500,prazo:12,custoVar:32,custoFix:600,valorProposta:0,etapa:4,temp:'hot',prob:100,dataFech:'',cons:'Marina Souza',followup:'',lembrete:'',statusCom:'Contrato assinado',obs:'',waMsg:'',vigStart:'2026-02-01',vigEnd:'2027-01-31',vigAlert:'2027-01-01',demoStart:'',demoEnd:'',demoFollowup:'',visitas:2,fuCount:5,closedAt:'2026-01-28',interacoes:[]},
+  {id:10,empresa:'LogBR Transportes',cnpj:'23.456.789/0001-01',segmento:'Logística',cidade:'Curitiba',estado:'PR',regiao:'Sul',concorrente:'',nome:'Bruno Ferreira',cargo:'Diretor',telefone:'41988887777',email:'b.ferreira@logbr.com',linkedin:'',produto:'easyfleet',veiculos:80,tipoOp:'Terceirizada',origem:'Inbound',dataEntrada:'2025-05-10',mensalidade:85,setup:3500,prazo:12,custoVar:33,custoFix:800,valorProposta:0,etapa:4,temp:'warm',prob:100,dataFech:'',cons:'Rafael Costa',followup:'',lembrete:'',statusCom:'Contrato assinado',obs:'Vencendo em 30 dias',waMsg:'',vigStart:'2025-07-01',vigEnd:'2026-06-30',vigAlert:'2026-05-31',demoStart:'',demoEnd:'',demoFollowup:'',visitas:3,fuCount:6,closedAt:'2025-06-01',interacoes:[]},
+  {id:11,empresa:'Revenda AutoPrime',cnpj:'34.567.890/0001-12',segmento:'Revenda Veicular',cidade:'São Paulo',estado:'SP',regiao:'Sudeste',concorrente:'Detran Digital',nome:'Thiago Santos',cargo:'Gerente Comercial',telefone:'11933334444',email:'t.santos@autoprime.com',linkedin:'',produto:'carrocheck',veiculos:0,tipoOp:'Revenda veicular',origem:'Inbound',dataEntrada:'2026-05-15',mensalidade:1200,setup:500,prazo:12,custoVar:0,custoFix:300,valorProposta:0,etapa:0,temp:'warm',prob:10,dataFech:'2026-07-01',cons:'Marina Souza',followup:'2026-05-28',lembrete:'Enviar demo',statusCom:'Em contato inicial',obs:'Interesse no plano básico',waMsg:'',vigStart:'',vigEnd:'',vigAlert:'',demoStart:'',demoEnd:'',demoFollowup:'',visitas:0,fuCount:1,closedAt:'',interacoes:[]},
+  {id:12,empresa:'MultiCar Veículos',cnpj:'45.678.901/0001-23',segmento:'Multimarcas',cidade:'Rio de Janeiro',estado:'RJ',regiao:'Sudeste',concorrente:'Serasa Veículos',nome:'Renata Oliveira',cargo:'Sócia',telefone:'21944445555',email:'r.oliveira@multicar.com',linkedin:'',produto:'carrocheck',veiculos:0,tipoOp:'Revenda veicular',origem:'LinkedIn',dataEntrada:'2026-04-20',mensalidade:2500,setup:1000,prazo:24,custoVar:0,custoFix:500,valorProposta:0,etapa:2,temp:'hot',prob:50,dataFech:'2026-06-01',cons:'Juliana Lima',followup:'2026-05-25',lembrete:'Follow-up da proposta',statusCom:'Aguardando decisão',obs:'Proposta enviada',waMsg:'',vigStart:'',vigEnd:'',vigAlert:'',demoStart:'',demoEnd:'',demoFollowup:'',visitas:1,fuCount:3,closedAt:'',interacoes:[{tipo:'Reunião online',data:'2026-05-02',dur:45,desc:'Demonstração do produto'}]},
+  {id:13,empresa:'AutoCenter Paraná',cnpj:'56.789.012/0001-34',segmento:'Revenda Veicular',cidade:'Curitiba',estado:'PR',regiao:'Sul',concorrente:'',nome:'Douglas Mendes',cargo:'Diretor',telefone:'41977778888',email:'d.mendes@autocenter.com',linkedin:'',produto:'carrocheck',veiculos:0,tipoOp:'Revenda veicular',origem:'Indicação',dataEntrada:'2026-03-01',mensalidade:1800,setup:800,prazo:12,custoVar:0,custoFix:400,valorProposta:0,etapa:4,temp:'hot',prob:100,dataFech:'',cons:'Rafael Costa',followup:'',lembrete:'',statusCom:'Contrato assinado',obs:'',waMsg:'',vigStart:'2026-04-01',vigEnd:'2027-03-31',vigAlert:'2027-03-01',demoStart:'',demoEnd:'',demoFollowup:'',visitas:2,fuCount:4,closedAt:'2026-04-01',interacoes:[]},
+  {id:14,empresa:'CarShop Sul',cnpj:'67.890.123/0001-45',segmento:'Multimarcas',cidade:'Porto Alegre',estado:'RS',regiao:'Sul',concorrente:'',nome:'Flávia Rocha',cargo:'CEO',telefone:'51988991122',email:'f.rocha@carshop.com',linkedin:'',produto:'carrocheck',veiculos:0,tipoOp:'Revenda veicular',origem:'Prospecção ativa',dataEntrada:'2026-02-01',mensalidade:3000,setup:1200,prazo:24,custoVar:0,custoFix:600,valorProposta:0,etapa:4,temp:'hot',prob:100,dataFech:'',cons:'Marina Souza',followup:'',lembrete:'',statusCom:'Contrato assinado',obs:'',waMsg:'',vigStart:'2026-03-15',vigEnd:'2028-03-14',vigAlert:'2028-02-12',demoStart:'',demoEnd:'',demoFollowup:'',visitas:3,fuCount:5,closedAt:'2026-03-15',interacoes:[]},
+  {id:15,empresa:'Distribuidora Norte',cnpj:'99.888.777/0001-66',segmento:'Distribuição',cidade:'Belém',estado:'PA',regiao:'Norte',concorrente:'Samsara',nome:'Geraldo Nunes',cargo:'Gerente de Frota',telefone:'91988887777',email:'g.nunes@distnorte.com',linkedin:'',produto:'easyfleet',veiculos:55,tipoOp:'Frota própria',origem:'Prospecção ativa',dataEntrada:'2026-03-15',mensalidade:80,setup:2500,prazo:12,custoVar:30,custoFix:550,valorProposta:0,etapa:5,temp:'cold',prob:0,dataFech:'',cons:'Rafael Costa',followup:'',lembrete:'',statusCom:'Perdido — concorrência',obs:'Escolheu Samsara pelo suporte local',waMsg:'',vigStart:'',vigEnd:'',vigAlert:'',demoStart:'',demoEnd:'',demoFollowup:'',visitas:2,fuCount:4,closedAt:'',interacoes:[]},
+];
+const DEMO_METAS={'Felipe Andrade':650000,'Marina Souza':500000,'Rafael Costa':400000,'Juliana Lima':550000};
+const DEMO_HIST=[
+  {icon:'✍️',titulo:'Contrato assinado — Petroquímica Sul',empresa:'Petroquímica Sul',cons:'Felipe Andrade',data:'10/04/2026 14:32'},
+  {icon:'📧',titulo:'Proposta enviada — Agro Nortec',empresa:'Agro Nortec',cons:'Felipe Andrade',data:'21/05/2026 09:15'},
+  {icon:'📞',titulo:'Ligação — Grupo Fortaleza',empresa:'Grupo Fortaleza',cons:'Felipe Andrade',data:'22/05/2026 10:00'},
+  {icon:'🤝',titulo:'Reunião online — Construções Meridional',empresa:'Construções Meridional',cons:'Marina Souza',data:'22/05/2026 11:30'},
+];
+const DEMO_PROPS=[
+  {id:1,num:'PROP-001',oppId:4,cons:'Felipe Andrade',valor:576000,dataEnvio:'2026-05-15',validade:'2026-05-30',status:'sent',desc:'200 veículos, 36 meses — Easy Fleet + videotelemetria',obs:'Aguardando diretoria financeira'},
+  {id:2,num:'PROP-002',oppId:5,cons:'Marina Souza',valor:199440,dataEnvio:'2026-05-08',validade:'2026-05-22',status:'negotiation',desc:'88 veículos, 24 meses — Easy Fleet',obs:'Revisão de escopo'},
+  {id:3,num:'PROP-003',oppId:6,cons:'Felipe Andrade',valor:486000,dataEnvio:'2026-04-01',validade:'2026-04-20',status:'approved',desc:'150 veículos, 36 meses — Easy Fleet',obs:'Assinado'},
+  {id:4,num:'PROP-004',oppId:7,cons:'Juliana Lima',valor:69120,dataEnvio:'2026-03-10',validade:'2026-03-25',status:'approved',desc:'72 veículos, 12 meses — Easy Fleet',obs:''},
+  {id:5,num:'PROP-005',oppId:12,cons:'Juliana Lima',valor:60000,dataEnvio:'2026-05-01',validade:'2026-05-25',status:'negotiation',desc:'24 meses — Carro Verificado',obs:'Pediu desconto'},
+  {id:6,num:'PROP-006',oppId:13,cons:'Rafael Costa',valor:21600,dataEnvio:'2026-04-01',validade:'2026-04-15',status:'approved',desc:'12 meses — Carro Verificado',obs:''},
+  {id:7,num:'PROP-007',oppId:14,cons:'Marina Souza',valor:72000,dataEnvio:'2026-03-15',validade:'2026-03-30',status:'approved',desc:'24 meses — Carro Verificado',obs:''},
+  {id:8,num:'PROP-008',oppId:2,cons:'Felipe Andrade',valor:237600,dataEnvio:'2026-05-10',validade:'2026-05-28',status:'negotiation',desc:'110 veículos, 24 meses — Easy Fleet',obs:'Pediu 5% de desconto'},
+  {id:9,num:'PROP-009',oppId:15,cons:'Rafael Costa',valor:60300,dataEnvio:'2026-04-15',validade:'2026-04-30',status:'rejected',desc:'55 veículos, 12 meses — Easy Fleet',obs:'Perdeu para concorrente'},
+];
+const DEMO_TASKS=[
+  {id:1,titulo:'Follow-up — Agro Nortec',tipo:'Follow-up',data:'2026-05-22',oppId:4,cons:'Felipe Andrade',desc:'Confirmar aprovação da diretoria financeira',done:false},
+  {id:2,titulo:'Negociação — Construções Meridional',tipo:'Reunião',data:'2026-05-23',oppId:5,cons:'Marina Souza',desc:'Fechar condições finais de contrato',done:false},
+  {id:3,titulo:'Ligação — Grupo Fortaleza',tipo:'Ligação',data:'2026-05-20',oppId:2,cons:'Felipe Andrade',desc:'Enviar proposta comercial',done:false},
+  {id:4,titulo:'Alerta renovação — LogBR',tipo:'Renovação',data:'2026-05-31',oppId:10,cons:'Rafael Costa',desc:'Contrato vence em 30 dias, iniciar renovação',done:false},
+];
+
+
+// ── STORAGE WRAPPER (funciona com e sem localStorage) ──
+const _store = {};
+const LS = {
+  get(k)    { try { return localStorage.getItem(k); } catch(e) { return _store[k]||null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch(e) { _store[k] = v; } },
+};
+// ═══ STATE ═══
+let opps=[],props=[],metas={},hist=[],tasks=[],charts={};
+let currentUser=null,editOppId=null,editPropIdx=null;
+let periods={dash:'month',rank:'month',leads:'month',prop:'month',forecast:'month'};
+let activeView='pipeline',viewMode='kanban';
+let autoAlerts=[],autoInt=null;
+
+// ═══ STORAGE ═══
+function load(){
+  try{opps=JSON.parse(LS.get('ef2_opps'))||DEMO_OPP.map(o=>({...o}))}catch(e){opps=DEMO_OPP.map(o=>({...o}))}
+  try{props=JSON.parse(LS.get('ef2_props'))||DEMO_PROPS.map(p=>({...p}))}catch(e){props=DEMO_PROPS.map(p=>({...p}))}
+  try{metas=JSON.parse(LS.get('ef2_metas'))||{...DEMO_METAS}}catch(e){metas={...DEMO_METAS}}
+  try{hist=JSON.parse(LS.get('ef2_hist'))||[...DEMO_HIST]}catch(e){hist=[...DEMO_HIST]}
+  try{tasks=JSON.parse(LS.get('ef2_tasks'))||DEMO_TASKS.map(t=>({...t}))}catch(e){tasks=DEMO_TASKS.map(t=>({...t}))}
+  initUsers();
+}
+function persist(){
+  LS.set('ef2_opps',JSON.stringify(opps));
+  LS.set('ef2_props',JSON.stringify(props));
+  LS.set('ef2_metas',JSON.stringify(metas));
+  LS.set('ef2_hist',JSON.stringify(hist));
+  LS.set('ef2_tasks',JSON.stringify(tasks));
+  const s=document.getElementById('savedInd');s.classList.add('on');setTimeout(()=>s.classList.remove('on'),2000);
+}
+
+// ═══ UTILS ═══
+const fmt=v=>'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:0});
+const fmtK=v=>{const n=Number(v||0);return n>=1e6?'R$'+Number(n/1e6).toFixed(1)+'M':n>=1000?'R$'+Number(n/1000).toFixed(0)+'K':'R$'+n.toFixed(0)};
+const fmtP=v=>Number(v||0).toFixed(1)+'%';
+const today=()=>new Date().toISOString().slice(0,10);
+const nowStr=()=>new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const daysLeft=d=>{if(!d)return null;return Math.ceil((new Date(d)-new Date(today()))/(864e5))};
+const cleanPhone=p=>(p||'').replace(/\D/g,'');
+const addMonths=(s,n)=>{const d=new Date(s);d.setMonth(d.getMonth()+n);return d.toISOString().slice(0,10)};
+const addDays=(s,n)=>{const d=new Date(s);d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+const calcMRR=o=>o.produto==='carrocheck'?(o.mensalidade||0):(o.veiculos||0)*(o.mensalidade||0);
+const calcTotal=o=>(calcMRR(o)*(o.prazo||0))+(o.setup||0);
+const calcCusto=o=>((o.veiculos||0)*(o.custoVar||0))+(o.custoFix||0);
+const calcMargem=o=>{const m=calcMRR(o);return m>0?((m-calcCusto(o))/m*100):0};
+const calcForecast=o=>calcTotal(o)*(o.prob||0)/100;
+const getCons=()=>{const s=new Set(opps.map(o=>o.cons).filter(Boolean));Object.keys(metas).forEach(k=>s.add(k));return[...s].sort()};
+const getVisible=()=>currentUser&&currentUser.perfil==='consultor'?opps.filter(o=>o.cons===currentUser.name):opps;
+function maskCNPJ(el){let v=el.value.replace(/\D/g,'').slice(0,14);v=v.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2');el.value=v;}
+function getFiltered(){
+  const q=(document.getElementById('searchQ')?.value||'').toLowerCase();
+  const fE=document.getElementById('fEtapa')?.value;
+  const fP=document.getElementById('fProd')?.value;
+  const fC=document.getElementById('fCons')?.value;
+  const fT=document.getElementById('fTemp')?.value;
+  return getVisible().filter(o=>
+    (!q||[o.empresa,o.nome,o.cnpj||'',o.cidade||'',o.segmento||'',o.cons||''].join(' ').toLowerCase().includes(q))&&
+    (fE===''||fE===undefined||o.etapa===+fE)&&(!fP||o.produto===fP)&&(!fC||o.cons===fC)&&(!fT||o.temp===fT));
+}
+function applyFilters(){renderPipeline(getFiltered());}
+function getPeriodRange(p){
+  const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  if(p==='month')return[`${y}-${String(m+1).padStart(2,'0')}-01`,today()];
+  if(p==='quarter'){const qs=Math.floor(m/3)*3;return[`${y}-${String(qs+1).padStart(2,'0')}-01`,today()];}
+  if(p==='semester')return[`${y}-${m<6?'01':'07'}-01`,today()];
+  return[`${y}-01-01`,today()];
+}
+function getPeriodLabel(p){
+  const now=new Date();
+  if(p==='month')return now.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  if(p==='quarter')return`${Math.floor(now.getMonth()/3)+1}º trimestre de ${now.getFullYear()}`;
+  if(p==='semester')return`${now.getMonth()<6?1:2}º semestre de ${now.getFullYear()}`;
+  return`Ano ${now.getFullYear()}`;
+}
+function inPeriod(d,p){if(!d)return p==='year';const[s,e]=getPeriodRange(p);return d>=s&&d<=e;}
+function setPeriod(view,p,el){
+  periods[view]=p;
+  const ids={dash:'dashPS',rank:'rankPS',leads:'leadsPS',prop:'propPS',forecast:'forecastPS'};
+  const sid=ids[view];if(sid)document.querySelectorAll(`#${sid} .pbtn`).forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const renders={dash:renderDash,rank:renderRanking,leads:renderLeads,prop:renderPropostas,forecast:renderForecast};
+  if(renders[view])renders[view]();
+}
+function getMonthLabels(n){const l=[];const now=new Date();for(let i=n-1;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);l.push(d.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}));}return l;}
+function getMonthKey(d){if(!d)return null;const dt=new Date(d);return`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`;}
+function getMonthKeys(n){const k=[];const now=new Date();for(let i=n-1;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);k.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return k;}
+function destroyChart(id){try{if(charts[id]){charts[id].destroy();delete charts[id];}}catch(e){delete charts[id];}}
+function safeChart(id, el, config){
+  destroyChart(id);
+  if(typeof Chart==='undefined'||!el)return;
+  try{charts[id]=new Chart(el,config);}catch(e){console.warn('Chart error:',id,e);}
+}
+
+// ═══ LOGIN ═══
+function renderLoginProfiles(){
+  document.getElementById('loginProfiles').innerHTML=USERS.map(u=>`
+    <div class="lp" id="lp_${u.id}" onclick="selUser('${u.id}')">
+      <div class="avatar lg" style="background:${u.color}">${u.name.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+      <div style="flex:1"><div class="lp-name">${u.name}</div><div class="lp-role">${u.role}</div><div class="lp-desc">${u.desc}</div></div>
+    </div>`).join('');
+}
+let selUser_=null;
+function selUser(id){selUser_=USERS.find(u=>u.id===id);document.querySelectorAll('.lp').forEach(e=>e.classList.remove('sel'));document.getElementById('lp_'+id).classList.add('sel');document.getElementById('pinInput').focus();document.getElementById('loginErr').style.display='none';}
+function doLogin(){
+  if(!selUser_){showLoginErr('Selecione um perfil.');return;}
+  if(document.getElementById('pinInput').value!==selUser_.pin){showLoginErr('PIN incorreto.');document.getElementById('pinInput').value='';return;}
+  currentUser=selUser_;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appWrap').classList.add('on');
+  document.getElementById('navAvatar').style.background=currentUser.color;
+  document.getElementById('navAvatar').textContent=currentUser.name.split(' ').map(n=>n[0]).slice(0,2).join('');
+  document.getElementById('navName').textContent=currentUser.name;
+  document.getElementById('navRole').textContent=currentUser.role;
+  buildNavTabs();buildConsFilter();
+  navTo('pipeline');
+  startAutomations();
+}
+function showLoginErr(m){const e=document.getElementById('loginErr');e.textContent=m;e.style.display='block';}
+function doLogout(){
+  currentUser=null;selUser_=null;clearInterval(autoInt);
+  document.getElementById('appWrap').classList.remove('on');
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('pinInput').value='';
+  document.querySelectorAll('.lp').forEach(e=>e.classList.remove('sel'));
+  Object.keys(charts).forEach(k=>{if(charts[k])charts[k].destroy();delete charts[k];});
+}
+function buildNavTabs(){
+  document.getElementById('navTabs').innerHTML=(currentUser.tabs||[]).map(tab=>`<button class="nav-tab" id="tab_${tab}" onclick="navTo('${tab}')">${TAB_LABELS[tab]||tab}</button>`).join('');
+}
+function buildConsFilter(){
+  document.getElementById('fCons').innerHTML='<option value="">Consultor</option>'+getCons().map(c=>`<option>${c}</option>`).join('');
+}
+function navTo(view){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const tab=document.getElementById('tab_'+view);if(tab)tab.classList.add('active');
+  const vEl=document.getElementById('view-'+view);if(vEl)vEl.classList.add('active');
+  activeView=view;
+  if(view==='pipeline')renderPipeline(getFiltered());
+  else if(view==='dashboard')renderDash();
+  else if(view==='ranking')renderRanking();
+  else if(view==='forecast')renderForecast();
+  else if(view==='leads')renderLeads();
+  else if(view==='propostas')renderPropostas();
+  else if(view==='vencimentos')renderVencimentos();
+  else if(view==='followup')renderFollowup();
+  else if(view==='historico')renderHistorico();
+  else if(view==='usuarios')renderUsuarios();
+  else if(view==='integracoes')renderIntegracoes();
+  else if(view==='ia')renderIA();
+}
+
+// ═══ AUTOMAÇÕES ═══
+function startAutomations(){runAutomations();autoInt=setInterval(runAutomations,30000);}
+function runAutomations(){
+  autoAlerts=[];const td=today();
+  getVisible().filter(o=>o.followup&&o.followup<td&&o.lembrete&&o.etapa<4&&o.etapa!==5).forEach(o=>{
+    autoAlerts.push({type:'r',icon:'⚠️',title:`Follow-up atrasado — ${o.empresa}`,sub:`${o.lembrete} · ${o.cons}`,oid:o.id});
+  });
+  getVisible().filter(o=>o.etapa<4&&o.etapa!==5).forEach(o=>{
+    const ul=o.interacoes?.length>0?o.interacoes[o.interacoes.length-1].data:o.dataEntrada;
+    if(ul&&daysLeft(ul)<-15)autoAlerts.push({type:'y',icon:'⏸️',title:`Oportunidade parada — ${o.empresa}`,sub:`Sem interação há ${Math.abs(daysLeft(ul))} dias · ${STAGES[o.etapa]}`,oid:o.id});
+  });
+  getVisible().filter(o=>o.vigEnd&&daysLeft(o.vigEnd)>=0&&daysLeft(o.vigEnd)<=30&&o.etapa===4).forEach(o=>{
+    autoAlerts.push({type:'y',icon:'📅',title:`Renovação urgente — ${o.empresa}`,sub:`Contrato vence em ${daysLeft(o.vigEnd)} dias`,oid:o.id});
+  });
+  getVisible().filter(o=>o.vigEnd&&daysLeft(o.vigEnd)<0&&o.etapa===4).forEach(o=>{
+    autoAlerts.push({type:'r',icon:'🔴',title:`Contrato vencido — ${o.empresa}`,sub:`Venceu há ${Math.abs(daysLeft(o.vigEnd))} dias`,oid:o.id});
+  });
+  tasks.filter(t=>!t.done&&t.data<td).forEach(t=>{
+    autoAlerts.push({type:'r',icon:'📋',title:`Tarefa atrasada — ${t.titulo}`,sub:`Venceu em ${t.data}`,oid:null});
+  });
+  getVisible().filter(o=>o.etapa===3&&calcTotal(o)>200000).forEach(o=>{
+    autoAlerts.push({type:'b',icon:'💰',title:`Alta oportunidade em negociação — ${o.empresa}`,sub:`${fmt(calcTotal(o))} · Acompanhamento estratégico`,oid:o.id});
+  });
+  // Forecast automático — atualiza prob se ainda no padrão da etapa
+  opps.forEach(o=>{if(o.prob===undefined||o.prob===null)o.prob=STAGE_PROBS[o.etapa||0];});
+  const badge=document.getElementById('autoBadge');
+  const crit=autoAlerts.filter(a=>a.type==='r').length;
+  badge.textContent=autoAlerts.length+' alerta'+(autoAlerts.length!==1?'s':'');
+  badge.style.background=crit>0?'#EF4444':'#F59E0B';
+  renderAutoPanel();
+  // Atualizar badge tab followup
+  const fuTab=document.getElementById('tab_followup');
+  if(fuTab){const old=fuTab.querySelector('.tbadge');if(old)old.remove();const at=tasks.filter(t=>!t.done&&t.data<td).length;if(at>0){const b=document.createElement('span');b.className='tbadge';b.textContent=at;fuTab.appendChild(b);}}
+}
+function renderAutoPanel(){
+  document.getElementById('apItems').innerHTML=autoAlerts.length===0?
+    '<div class="empty" style="padding:24px"><div class="eicon">✅</div><div class="etitle">Sem alertas ativos</div><div>Todas as oportunidades estão em dia.</div></div>':
+    autoAlerts.slice(0,8).map(a=>`<div class="ap-item"><div class="ap-icon ${a.type}">${a.icon}</div><div style="flex:1"><div class="ap-t">${a.title}</div><div class="ap-s">${a.sub}</div>${a.oid?`<span class="ap-a" onclick="toggleAP();openOppModal(${a.oid})">Abrir oportunidade →</span>`:'<span class="ap-a" onclick="toggleAP();navTo(\'followup\')">Ver tarefas →</span>'}</div></div>`).join('');
+}
+function toggleAP(){document.getElementById('autoPanel').classList.toggle('open');}
+
+// ═══ TOAST ═══
+function showToast(msg,type='info'){
+  const w=document.getElementById('toastWrap');const t=document.createElement('div');t.className=`toast ${type}`;
+  t.innerHTML=`<span>${msg}</span><button onclick="this.parentNode.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px">✕</button>`;
+  w.appendChild(t);setTimeout(()=>{t.style.animation='sOut .3s ease forwards';setTimeout(()=>t.remove(),300);},5000);
+}
+
+// ═══ PIPELINE ═══
+function swView(mode,el){
+  viewMode=mode;
+  document.getElementById('kanbanView').style.display=mode==='kanban'?'block':'none';
+  document.getElementById('listaView').style.display=mode==='lista'?'block':'none';
+  document.getElementById('vKanban').style.cssText=mode==='kanban'?'background:var(--accent3);color:var(--accent);border-color:var(--accent)':'';
+  document.getElementById('vLista').style.cssText=mode==='lista'?'background:var(--accent3);color:var(--accent);border-color:var(--accent)':'';
+  renderPipeline(getFiltered());
+}
+function renderPipeline(list){
+  document.getElementById('pipelineTitle').textContent=currentUser?.perfil==='consultor'?`Pipeline — ${currentUser.name}`:'Pipeline — Toda a equipe';
+  document.getElementById('pipelineSub').textContent=`${list.length} oportunidades · Volume: ${fmt(list.reduce((a,o)=>a+calcTotal(o),0))} · ${list.filter(o=>o.etapa<4).length} em aberto`;
+  if(viewMode==='kanban')renderKanban(list);else renderLista(list);
+}
+function renderKanban(list){
+  const board=document.getElementById('board');board.innerHTML='';
+  STAGES.forEach((s,i)=>{
+    const items=list.filter(o=>o.etapa===i);
+    const colVal=items.reduce((a,o)=>a+calcTotal(o),0);
+    const col=document.createElement('div');
+    col.innerHTML=`<div class="kcol-head"><span class="kcol-title">${s}</span><div class="kcol-meta"><span class="kcol-cnt">${items.length}</span><span class="kcol-val">${fmtK(colVal)}</span></div></div>`;
+    items.forEach(o=>{
+      const td=today();
+      const overdue=o.followup&&o.followup<td&&o.etapa<4;
+      const ul=o.interacoes?.length>0?o.interacoes[o.interacoes.length-1].data:o.dataEntrada;
+      const stale=ul&&daysLeft(ul)<-15&&o.etapa<4&&o.etapa!==5;
+      const prob=o.prob!=null?o.prob:STAGE_PROBS[i];
+      const pCls=prob>=70?'ph':prob>=40?'pm':'pl';
+      const card=document.createElement('div');
+      card.className=`ocard${overdue?' overdue':stale?' stale':''}`;
+      card.onclick=()=>openOppModal(o.id);
+      card.innerHTML=`${stale?`<div class="stale-badge">⏸ ${Math.abs(daysLeft(ul))}d parada</div>`:''}
+        <div class="ocard-name">${o.nome}</div>
+        <div class="ocard-co">${o.empresa}${o.veiculos>0?` · ${o.veiculos}v`:''}</div>
+        <div class="ocard-tags">
+          <span class="tag ${o.produto==='easyfleet'?'blue':'amber'}">${PROD_LABEL[o.produto]||'—'}</span>
+          ${o.temp==='hot'?'<span class="tag red">🔥</span>':o.temp==='warm'?'<span class="tag amber">🌡</span>':'<span class="tag navy">❄</span>'}
+          ${o.tipoContrato?`<span class="tag gray">${{novo:'Novo',renovacao:'Renov.',aditivo:'Aditivo'}[o.tipoContrato]||''}</span>`:''}
+          ${calcMRR(o)>0?`<span class="tag gray">MRR ${fmtK(calcMRR(o))}</span>`:''}
+        </div>
+        <div class="ocard-footer"><div class="ocard-val">${fmt(calcTotal(o))}</div><span class="oprob ${pCls}">${prob}%</span></div>
+        <div class="ocard-acts" onclick="event.stopPropagation()">
+          <button class="oact" onclick="openWACard(${opps.indexOf(o)})">💬 WA</button>
+          <button class="oact" onclick="openEmailCard(${opps.indexOf(o)})">✉️ Mail</button>
+          <button class="oact" onclick="openMapsCard(${opps.indexOf(o)})">📍 Maps</button>
+          <button class="oact" onclick="pdfCard(${opps.indexOf(o)})">📄 PDF</button>
+        </div>`;
+      col.appendChild(card);
+    });
+    board.appendChild(col);
+  });
+}
+function renderLista(list){
+  if(!list.length){document.getElementById('listaTable').innerHTML='<div class="empty"><div class="eicon">🔍</div><div class="etitle">Nenhum resultado</div></div>';return;}
+  document.getElementById('listaTable').innerHTML=`<table><thead><tr><th>Empresa</th><th>Contato</th><th>Produto</th><th>Etapa</th><th>Temp</th><th>Prob</th><th>MRR</th><th>Total</th><th>Consultor</th><th>Follow-up</th></tr></thead><tbody>${list.map(o=>{
+    const prob=o.prob!=null?o.prob:STAGE_PROBS[o.etapa];const pCls=prob>=70?'green':prob>=40?'amber':'red';
+    return`<tr onclick="openOppModal(${o.id})"><td><strong>${o.empresa}</strong><div style="font-size:10px;color:var(--text4)">${o.cidade||''}/${o.estado||''}</div></td><td>${o.nome}<div style="font-size:10px;color:var(--text4)">${o.cargo||''}</div></td><td><span class="tag ${o.produto==='easyfleet'?'blue':'amber'}">${PROD_LABEL[o.produto]||'—'}</span></td><td><span class="tag gray">${STAGES[o.etapa]}</span></td><td>${o.temp==='hot'?'🔥':o.temp==='warm'?'🌡':'❄'}</td><td><span class="tag ${pCls}">${prob}%</span></td><td class="mono">${fmt(calcMRR(o))}</td><td class="mono"><strong>${fmt(calcTotal(o))}</strong></td><td>${o.cons||'—'}</td><td class="mono" style="color:${o.followup&&o.followup<today()?'var(--danger)':'inherit'}">${o.followup||'—'}</td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+
+// ═══ DASHBOARD ═══
+function renderDash(){
+  const p=periods.dash;document.getElementById('dashPL').textContent=getPeriodLabel(p);
+  const list=getVisible(),fech=list.filter(o=>o.etapa===4),pipe=list.filter(o=>o.etapa<4&&o.etapa!==5);
+  const recFech=fech.reduce((a,o)=>a+calcTotal(o),0),recPrev=list.reduce((a,o)=>a+calcForecast(o),0);
+  const mrr=fech.reduce((a,o)=>a+calcMRR(o),0),conv=list.length?Math.round(fech.length/list.length*100):0;
+  const tmf=fech.filter(o=>o.closedAt&&o.dataEntrada).length;
+  document.getElementById('dashMetrics').innerHTML=`
+    <div class="mc acc"><div class="mc-label">Receita fechada</div><div class="mc-val">${fmtK(recFech)}</div><div class="mc-sub">${fech.length} contratos</div></div>
+    <div class="mc suc"><div class="mc-label">MRR recorrente</div><div class="mc-val">${fmtK(mrr)}</div><div class="mc-sub">ARR: ${fmtK(mrr*12)}</div></div>
+    <div class="mc war"><div class="mc-label">Receita prevista</div><div class="mc-val">${fmtK(recPrev)}</div><div class="mc-sub">Forecast ponderado</div></div>
+    <div class="mc inf"><div class="mc-label">Pipeline ativo</div><div class="mc-val">${fmtK(pipe.reduce((a,o)=>a+calcTotal(o),0))}</div><div class="mc-sub">${pipe.length} oportunidades</div></div>
+    <div class="mc pur"><div class="mc-label">Conversão</div><div class="mc-val">${conv}%</div><div class="mc-sub">${list.length} total · ${fech.length} fechados</div></div>`;
+  // Funil
+  const maxVal=Math.max(...STAGES.map((_,i)=>list.filter(o=>o.etapa===i).reduce((a,o)=>a+calcTotal(o),0)),1);
+  document.getElementById('funnelRows').innerHTML=STAGES.map((s,i)=>{
+    const items=list.filter(o=>o.etapa===i),val=items.reduce((a,o)=>a+calcTotal(o),0),pct=Math.round(val/maxVal*100);
+    return`<div class="funnel-row"><span class="fstage">${s}</span><div class="fbar-w"><div class="fbar" style="width:${pct}%;background:${STAGE_COLORS[i]}"></div></div><span class="fcnt">${items.length}</span><span class="fval">${fmtK(val)}</span></div>`;
+  }).join('');
+  // Charts
+  const mk6=getMonthKeys(6),ml6=getMonthLabels(6);
+  destroyChart('cForecast');safeChart('cForecast', document.getElementById('cForecast'),{type:'bar',data:{labels:ml6,datasets:[{label:'Realizado',data:mk6.map(k=>list.filter(o=>o.etapa===4&&getMonthKey(o.closedAt)===k).reduce((a,o)=>a+calcTotal(o),0)),backgroundColor:'#10B981',borderRadius:3,stack:'s'},{label:'Previsto',data:mk6.map(()=>recPrev/6),backgroundColor:'#93C5FD',borderRadius:3,stack:'s'}]},options:{plugins:{legend:{labels:{font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmt(ctx.raw)}`}}},scales:{x:{stacked:true,ticks:{font:{size:10}},grid:{display:false}},y:{stacked:true,ticks:{callback:v=>'R$'+Number(v/1000).toFixed(0)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}},maintainAspectRatio:false}});
+  destroyChart('cTemp');safeChart('cTemp', document.getElementById('cTemp'),{type:'doughnut',data:{labels:['🔥 Hot','🌡 Warm','❄ Cold'],datasets:[{data:['hot','warm','cold'].map(t=>list.filter(o=>o.temp===t).length),backgroundColor:['#EF4444','#F59E0B','#3B82F6'],borderWidth:0}]},options:{plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12}}},cutout:'68%',maintainAspectRatio:false}});
+  const cons=getCons();
+  destroyChart('cConvCons');safeChart('cConvCons', document.getElementById('cConvCons'),{type:'bar',data:{labels:cons.map(c=>c.split(' ')[0]),datasets:[{label:'Conv. %',data:cons.map(n=>{const t=list.filter(o=>o.cons===n).length,f=list.filter(o=>o.cons===n&&o.etapa===4).length;return t?Math.round(f/t*100):0;}),backgroundColor:CONS_COLORS,borderRadius:4}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw}%`}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}},maintainAspectRatio:false}});
+  const efF=fech.filter(o=>o.produto==='easyfleet'),cvF=fech.filter(o=>o.produto==='carrocheck');
+  destroyChart('cTicketProd');safeChart('cTicketProd', document.getElementById('cTicketProd'),{type:'bar',data:{labels:['Easy Fleet','Carro Verificado'],datasets:[{data:[efF.length?Math.round(efF.reduce((a,o)=>a+calcTotal(o),0)/efF.length):0,cvF.length?Math.round(cvF.reduce((a,o)=>a+calcTotal(o),0)/cvF.length):0],backgroundColor:['#0066CC','#B45309'],borderRadius:5,borderSkipped:false}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)}`}}},scales:{x:{ticks:{font:{size:11}},grid:{display:false}},y:{ticks:{callback:v=>'R$'+Number(v/1000).toFixed(0)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}},maintainAspectRatio:false}});
+  destroyChart('cMRRCons');safeChart('cMRRCons', document.getElementById('cMRRCons'),{type:'bar',data:{labels:cons.map(c=>c.split(' ')[0]),datasets:[{label:'MRR',data:cons.map(n=>list.filter(o=>o.cons===n&&o.etapa===4).reduce((a,o)=>a+calcMRR(o),0)),backgroundColor:'#0066CC',borderRadius:3},{label:'Pipeline',data:cons.map(n=>list.filter(o=>o.cons===n&&o.etapa<4).reduce((a,o)=>a+calcTotal(o),0)),backgroundColor:'#93C5FD',borderRadius:3}]},options:{plugins:{legend:{labels:{font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmt(ctx.raw)}`}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:v=>'R$'+Number(v/1000).toFixed(0)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}},maintainAspectRatio:false}});
+  const ef=list.filter(o=>o.produto==='easyfleet'),cv=list.filter(o=>o.produto==='carrocheck');
+  destroyChart('cProdEtapa');safeChart('cProdEtapa', document.getElementById('cProdEtapa'),{type:'bar',data:{labels:STAGES.slice(0,5).map(s=>s.slice(0,8)),datasets:[{label:'Easy Fleet',data:STAGES.slice(0,5).map((_,i)=>ef.filter(o=>o.etapa===i).length),backgroundColor:'#0066CC',borderRadius:3},{label:'Carro Verif.',data:STAGES.slice(0,5).map((_,i)=>cv.filter(o=>o.etapa===i).length),backgroundColor:'#B45309',borderRadius:3}]},options:{plugins:{legend:{labels:{font:{size:11},boxWidth:12}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}},maintainAspectRatio:false}});
+}
+
+// ═══ RANKING ═══
+function renderRanking(){
+  const list=getVisible(),fech=list.filter(o=>o.etapa===4),cons=getCons();
+  const ranked=cons.map(name=>{
+    const mf=fech.filter(o=>o.cons===name),mp=list.filter(o=>o.cons===name&&o.etapa<4);
+    const rf=mf.reduce((a,o)=>a+calcTotal(o),0),mrr=mf.reduce((a,o)=>a+calcMRR(o),0);
+    const meta=metas[name]||0,pct=meta?Math.round(rf/meta*100):0;
+    const conv=list.filter(o=>o.cons===name).length?Math.round(mf.length/list.filter(o=>o.cons===name).length*100):0;
+    const vis=list.filter(o=>o.cons===name).reduce((a,o)=>a+(o.visitas||0),0);
+    const fups=list.filter(o=>o.cons===name).reduce((a,o)=>a+(o.fuCount||0),0);
+    return{name,rf,mrr,meta,pct,conv,vis,fups,total:list.filter(o=>o.cons===name).length};
+  }).sort((a,b)=>b.rf-a.rf);
+  const totalFech=fech.reduce((a,o)=>a+calcTotal(o),0),totalMeta=Object.values(metas).reduce((a,v)=>a+v,0);
+  document.getElementById('rankMetrics').innerHTML=`
+    <div class="mc acc"><div class="mc-label">Receita total fechada</div><div class="mc-val">${fmtK(totalFech)}</div><div class="mc-sub">${fech.length} contratos</div></div>
+    <div class="mc suc"><div class="mc-label">Meta total equipe</div><div class="mc-val">${fmtK(totalMeta)}</div><div class="mc-sub">${totalMeta?Math.round(totalFech/totalMeta*100):0}% atingido</div></div>
+    <div class="mc war"><div class="mc-label">Conversão média</div><div class="mc-val">${list.length?Math.round(fech.length/list.length*100):0}%</div><div class="mc-sub">Do pipeline total</div></div>
+    <div class="mc inf"><div class="mc-label">MRR total</div><div class="mc-val">${fmtK(fech.reduce((a,o)=>a+calcMRR(o),0))}</div><div class="mc-sub">ARR: ${fmtK(fech.reduce((a,o)=>a+calcMRR(o),0)*12)}</div></div>`;
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('rankList').innerHTML=`<table><thead><tr><th>#</th><th>Consultor</th><th>Receita</th><th>Meta</th><th>Atingimento</th><th>Conv.</th><th>Visitas</th><th>FUs</th></tr></thead><tbody>${ranked.map((r,i)=>`<tr><td>${medals[i]||'·'}</td><td><strong>${r.name.split(' ')[0]}</strong></td><td class="mono"><strong>${fmt(r.rf)}</strong></td><td class="mono">${fmt(r.meta)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap" style="flex:1;height:4px"><div class="prog-bar" style="width:${Math.min(r.pct,100)}%;background:${r.pct>=100?'#10B981':r.pct>=60?'#F59E0B':'#EF4444'}"></div></div><span style="font-size:11px;font-weight:600;min-width:30px">${r.pct}%</span></div></td><td>${r.conv}%</td><td>${r.vis}</td><td>${r.fups}</td></tr>`).join('')}</tbody></table>`;
+  const pcts=ranked.map(r=>Math.min(r.pct,120));
+  destroyChart('cMetaAting');safeChart('cMetaAting', document.getElementById('cMetaAting'),{type:'bar',data:{labels:ranked.map(r=>r.name.split(' ')[0]),datasets:[{label:'Atingimento %',data:pcts,backgroundColor:pcts.map(p=>p>=100?'#10B981':p>=60?'#F59E0B':'#EF4444'),borderRadius:5,borderSkipped:false},{label:'Meta',data:pcts.map(()=>100),type:'line',borderColor:'rgba(0,0,0,.2)',borderDash:[4,4],pointRadius:0,borderWidth:1.5,fill:false}]},options:{plugins:{legend:{labels:{font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:ctx=>ctx.datasetIndex===0?` ${ctx.raw}%`:''}}},scales:{y:{max:Math.max(130,...pcts),ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}},maintainAspectRatio:false}});
+  const mk6=getMonthKeys(6),ml6=getMonthLabels(6);
+  destroyChart('cEvolucao');safeChart('cEvolucao', document.getElementById('cEvolucao'),{type:'line',data:{labels:ml6,datasets:cons.map((name,ci)=>({label:name.split(' ')[0],data:mk6.map(k=>getVisible().filter(o=>o.cons===name&&o.etapa===4&&getMonthKey(o.closedAt)===k).reduce((a,o)=>a+calcTotal(o),0)),borderColor:CONS_COLORS[ci%CONS_COLORS.length],backgroundColor:CONS_COLORS[ci%CONS_COLORS.length]+'20',tension:.4,fill:true,pointRadius:4,borderWidth:2}))},options:{plugins:{legend:{labels:{font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmt(ctx.raw)}`}}},scales:{y:{ticks:{callback:v=>'R$'+Number(v/1000).toFixed(0)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:10}},grid:{display:false}}},maintainAspectRatio:false}});
+}
+
+// ═══ FORECAST ═══
+function renderForecast(){
+  const p=periods.forecast;document.getElementById('forecastSub').textContent=getPeriodLabel(p);
+  const list=getVisible(),ativas=list.filter(o=>o.etapa<4&&o.etapa!==5);
+  const recPrev=ativas.reduce((a,o)=>a+calcForecast(o),0);
+  const alta=ativas.filter(o=>(o.prob||STAGE_PROBS[o.etapa])>=70).reduce((a,o)=>a+calcForecast(o),0);
+  const media=ativas.filter(o=>{const pr=o.prob||STAGE_PROBS[o.etapa];return pr>=40&&pr<70;}).reduce((a,o)=>a+calcForecast(o),0);
+  const baixa=ativas.filter(o=>(o.prob||STAGE_PROBS[o.etapa])<40).reduce((a,o)=>a+calcForecast(o),0);
+  document.getElementById('forecastMetrics').innerHTML=`
+    <div class="mc acc"><div class="mc-label">Receita prevista total</div><div class="mc-val">${fmtK(recPrev)}</div><div class="mc-sub">Ponderada por probabilidade</div></div>
+    <div class="mc suc"><div class="mc-label">Alta prob. (≥70%)</div><div class="mc-val">${fmtK(alta)}</div><div class="mc-sub">${ativas.filter(o=>(o.prob||STAGE_PROBS[o.etapa])>=70).length} oportunidades</div></div>
+    <div class="mc war"><div class="mc-label">Média prob. (40–70%)</div><div class="mc-val">${fmtK(media)}</div><div class="mc-sub">${ativas.filter(o=>{const pr=o.prob||STAGE_PROBS[o.etapa];return pr>=40&&pr<70;}).length} oportunidades</div></div>
+    <div class="mc dan"><div class="mc-label">Baixa prob. (&lt;40%)</div><div class="mc-val">${fmtK(baixa)}</div><div class="mc-sub">${ativas.filter(o=>(o.prob||STAGE_PROBS[o.etapa])<40).length} oportunidades</div></div>`;
+  destroyChart('cForecastEtapa');safeChart('cForecastEtapa', document.getElementById('cForecastEtapa'),{type:'bar',data:{labels:STAGES.slice(0,4),datasets:[{label:'Receita prevista',data:STAGES.slice(0,4).map((_,i)=>ativas.filter(o=>o.etapa===i).reduce((a,o)=>a+calcForecast(o),0)),backgroundColor:STAGE_COLORS.slice(0,4),borderRadius:5,borderSkipped:false}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)}`}}},scales:{y:{ticks:{callback:v=>'R$'+Number(v/1000).toFixed(0)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:10}},grid:{display:false}}},maintainAspectRatio:false}});
+  const ranges=['0–20%','21–40%','41–60%','61–80%','81–100%'];
+  destroyChart('cProbFech');safeChart('cProbFech', document.getElementById('cProbFech'),{type:'bar',data:{labels:ranges,datasets:[{data:ranges.map((_,i)=>ativas.filter(o=>{const pr=o.prob||STAGE_PROBS[o.etapa];return pr>=i*20&&pr<=(i+1)*20;}).length),backgroundColor:['#EF4444','#F97316','#F59E0B','#84CC16','#10B981'],borderRadius:5,borderSkipped:false}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:10}},grid:{display:false}}},maintainAspectRatio:false}});
+  document.getElementById('forecastTable').innerHTML=ativas.length===0?'<div class="empty"><div class="eicon">📊</div><div class="etitle">Sem oportunidades ativas</div></div>':`<table><thead><tr><th>Empresa</th><th>Etapa</th><th>Prob.</th><th>Valor total</th><th>Receita prevista</th><th>Data fechamento</th><th>Consultor</th></tr></thead><tbody>${ativas.sort((a,b)=>calcForecast(b)-calcForecast(a)).map(o=>{const prob=o.prob!=null?o.prob:STAGE_PROBS[o.etapa];const pCls=prob>=70?'green':prob>=40?'amber':'red';return`<tr onclick="openOppModal(${o.id})"><td><strong>${o.empresa}</strong></td><td><span class="tag gray">${STAGES[o.etapa]}</span></td><td><span class="tag ${pCls}">${prob}%</span></td><td class="mono">${fmt(calcTotal(o))}</td><td class="mono"><strong>${fmt(calcForecast(o))}</strong></td><td>${o.dataFech||'—'}</td><td>${o.cons||'—'}</td></tr>`;}).join('')}</tbody></table>`;
+}
+
+// ═══ LEADS ═══
+function renderLeads(){
+  const p=periods.leads;document.getElementById('leadsPL').textContent=getPeriodLabel(p);
+  const list=getVisible().filter(o=>inPeriod(o.dataEntrada||today(),p));
+  const total=list.length,fech=list.filter(o=>o.etapa===4),hot=list.filter(o=>o.temp==='hot').length;
+  const conv=total?Math.round(fech.length/total*100):0;
+  document.getElementById('leadsMetrics').innerHTML=`
+    <div class="mc suc"><div class="mc-label">Novos leads</div><div class="mc-val">${total}</div><div class="mc-sub">${getPeriodLabel(p)}</div></div>
+    <div class="mc acc"><div class="mc-label">Volume pipeline</div><div class="mc-val">${fmtK(list.reduce((a,o)=>a+calcTotal(o),0))}</div><div class="mc-sub">${total} contatos</div></div>
+    <div class="mc dan"><div class="mc-label">Hot leads</div><div class="mc-val">${hot}</div><div class="mc-sub">${total?Math.round(hot/total*100):0}% do total</div></div>
+    <div class="mc war"><div class="mc-label">Convertidos</div><div class="mc-val">${fech.length}</div><div class="mc-sub">${fmt(fech.reduce((a,o)=>a+calcTotal(o),0))}</div></div>
+    <div class="mc pur"><div class="mc-label">Conversão</div><div class="mc-val">${conv}%</div><div class="mc-sub">Lead → Fechado</div></div>`;
+  document.getElementById('leadsFunnel').innerHTML=STAGES.map((s,i)=>{const n=list.filter(o=>o.etapa===i).length,val=list.filter(o=>o.etapa===i).reduce((a,o)=>a+calcTotal(o),0),pct=total?Math.round(n/total*100):0;return`<div class="ccard" style="text-align:center"><div style="font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;margin-bottom:6px">${s}</div><div style="font-size:24px;font-weight:700;color:${STAGE_COLORS[i]}">${n}</div><div style="font-size:11px;color:var(--text4);margin-top:3px">${fmtK(val)}</div><span class="tag gray" style="margin-top:5px;display:inline-flex">${pct}%</span></div>`;}).join('');
+  const weeks=[];for(let i=5;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i*7);weeks.push(d.toISOString().slice(0,10));}
+  const wc=weeks.map((w,i)=>{const next=i<weeks.length-1?weeks[i+1]:addDays(today(),1);return list.filter(o=>{const d=o.dataEntrada||today();return d>=w&&d<next;}).length;});
+  destroyChart('cLeadsWeek');safeChart('cLeadsWeek', document.getElementById('cLeadsWeek'),{type:'line',data:{labels:weeks.map(w=>w.split('-').slice(1).reverse().join('/')),datasets:[{label:'Leads',data:wc,borderColor:'#0066CC',backgroundColor:'#0066CC22',tension:.4,fill:true,pointRadius:4,borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:10}},grid:{display:false}}},maintainAspectRatio:false}});
+  const origens=['Inbound','Indicação','Prospecção ativa','LinkedIn','Google Ads','Evento / Feira','WhatsApp','Outro'];
+  destroyChart('cLeadsOrigem');safeChart('cLeadsOrigem', document.getElementById('cLeadsOrigem'),{type:'doughnut',data:{labels:origens,datasets:[{data:origens.map(o=>list.filter(l=>l.origem===o).length),backgroundColor:['#10B981','#0066CC','#F59E0B','#3B82F6','#EF4444','#8B5CF6','#25D366','#6B7280'],borderWidth:0}]},options:{plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12}}},cutout:'60%',maintainAspectRatio:false}});
+}
+
+// ═══ PROPOSTAS ═══
+function getEffStatus(p){if(p.status==='approved'||p.status==='rejected')return p.status;if(p.validade&&p.validade<today())return'expired';return p.status;}
+function renderPropostas(){
+  const p=periods.prop;document.getElementById('propPL').textContent=getPeriodLabel(p);
+  const myProps=currentUser?.perfil==='consultor'?props.filter(pr=>pr.cons===currentUser.name):props;
+  const base=myProps.map(pr=>({...pr,eff:getEffStatus(pr)}));
+  const inPer=base.filter(pr=>inPeriod(pr.dataEnvio,p));
+  const won=inPer.filter(pr=>pr.eff==='approved'),open=inPer.filter(pr=>['sent','negotiation'].includes(pr.eff));
+  const lost=inPer.filter(pr=>pr.eff==='rejected'),total=inPer.length;
+  const wonVal=won.reduce((a,pr)=>a+pr.valor,0),openVal=open.reduce((a,pr)=>a+pr.valor,0),lostVal=lost.reduce((a,pr)=>a+pr.valor,0),sentVal=inPer.reduce((a,pr)=>a+pr.valor,0);
+  const cQ=total?Math.round(won.length/total*100):0,lQ=total?Math.round(lost.length/total*100):0,oQ=total?Math.round(open.length/total*100):0;
+  document.getElementById('propMetrics').innerHTML=`
+    <div class="mc acc"><div class="mc-label">Total enviadas</div><div class="mc-val">${total}</div><div class="mc-sub">${fmt(sentVal)}</div></div>
+    <div class="mc suc"><div class="mc-label">Ganhas</div><div class="mc-val">${won.length}</div><div class="mc-sub">${fmt(wonVal)} · ${cQ}%</div></div>
+    <div class="mc war"><div class="mc-label">Em aberto</div><div class="mc-val">${open.length}</div><div class="mc-sub">${fmt(openVal)}</div></div>
+    <div class="mc dan"><div class="mc-label">Perdidas</div><div class="mc-val">${lost.length}</div><div class="mc-sub">${fmt(lostVal)} · ${lQ}%</div></div>`;
+  const dd=[{label:'% Ganhas',pct:cQ,color:'#10B981'},{label:'% Em aberto',pct:oQ,color:'#F59E0B'},{label:'% Perdidas',pct:lQ,color:'#EF4444'}];
+  document.getElementById('propDonuts').innerHTML=dd.map((d,i)=>`<div class="ccard" style="display:flex;flex-direction:column;align-items:center"><div class="ctitle">${d.label}</div><div style="position:relative;width:110px;height:110px"><canvas id="pDnt${i}" width="110" height="110"></canvas><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none"><div style="font-size:22px;font-weight:700;color:${d.color}">${d.pct}%</div><div style="font-size:10px;color:var(--text4)">do total</div></div></div></div>`).join('');
+  dd.forEach((d,i)=>{safeChart('pDnt'+i, document.getElementById('pDnt'+i),{type:'doughnut',data:{datasets:[{data:[d.pct,100-d.pct],backgroundColor:[d.color,'#E5E7EB'],borderWidth:0}]},options:{cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}},maintainAspectRatio:false}});});
+  const mk6=getMonthKeys(6),ml6=getMonthLabels(6);
+  destroyChart('cPropEvolucao');safeChart('cPropEvolucao', document.getElementById('cPropEvolucao'),{type:'bar',data:{labels:ml6,datasets:[{label:'Ganhas',data:mk6.map(k=>base.filter(pr=>pr.eff==='approved'&&getMonthKey(pr.dataEnvio)===k).reduce((a,pr)=>a+pr.valor,0)),backgroundColor:'#10B981',borderRadius:3,stack:'s'},{label:'Em aberto',data:mk6.map(k=>base.filter(pr=>['sent','negotiation'].includes(pr.eff)&&getMonthKey(pr.dataEnvio)===k).reduce((a,pr)=>a+pr.valor,0)),backgroundColor:'#3B82F6',borderRadius:3,stack:'s'},{label:'Perdidas',data:mk6.map(k=>base.filter(pr=>pr.eff==='rejected'&&getMonthKey(pr.dataEnvio)===k).reduce((a,pr)=>a+pr.valor,0)),backgroundColor:'#EF4444',borderRadius:3,stack:'s'}]},options:{plugins:{legend:{labels:{font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmt(ctx.raw)}`}}},scales:{x:{stacked:true,ticks:{font:{size:10}},grid:{display:false}},y:{stacked:true,ticks:{callback:v=>'R$'+Number(v/1000).toFixed(0)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}},maintainAspectRatio:false}});
+  const sf=document.getElementById('propFilter')?.value||'';
+  const filtered=base.filter(pr=>!sf||pr.eff===sf);
+  document.getElementById('propTable').innerHTML=filtered.length===0?'<div class="empty"><div class="eicon">📋</div><div class="etitle">Nenhuma proposta encontrada</div></div>':`<table><thead><tr><th>Ref.</th><th>Cliente</th><th>Consultor</th><th>Valor</th><th>Status</th><th>Enviada</th><th>Validade</th><th></th></tr></thead><tbody>${filtered.map(pr=>{const ri=props.indexOf(pr);const dl=daysLeft(pr.validade);const opp=opps.find(o=>o.id===pr.oppId);let vT=pr.validade||'—',vS='';if(pr.eff==='expired'){vS='color:var(--danger);font-weight:600';}else if(dl!=null&&dl<=7&&dl>=0){vS='color:var(--warning);font-weight:600';vT+=` (${dl}d)`;}return`<tr onclick="openPropModal(${ri})"><td><strong>${pr.num}</strong></td><td>${opp?opp.empresa:'—'}</td><td>${pr.cons}</td><td class="mono"><strong>${fmt(pr.valor)}</strong></td><td><span class="tag ${PSTATUS_CLS[pr.eff]}">${PSTATUS_LABEL[pr.eff]}</span></td><td>${pr.dataEnvio||'—'}</td><td style="${vS}">${vT}</td><td><button class="btn xs" onclick="event.stopPropagation();pdfPropIdx(${ri})">PDF</button></td></tr>`;}).join('')}</tbody></table>`;
+}
+
+// ═══ VENCIMENTOS ═══
+function renderVencimentos(){
+  const active=getVisible().filter(o=>o.etapa===4&&o.vigEnd),td=today();
+  const groups=[{lbl:'Contratos vencidos',cls:'vb-e',f:o=>o.vigEnd<td},{lbl:'Vencendo em até 30 dias',cls:'vb-a',f:o=>{const dl=daysLeft(o.vigEnd);return dl!=null&&dl>=0&&dl<=30;}},{lbl:'3 a 6 meses',cls:'vb-w',f:o=>{const dl=daysLeft(o.vigEnd);return dl!=null&&dl>30&&dl<=180;}},{lbl:'6 a 12 meses',cls:'vb-s',f:o=>{const dl=daysLeft(o.vigEnd);return dl!=null&&dl>180&&dl<=365;}}];
+  const m=groups.map(g=>active.filter(g.f));
+  document.getElementById('vencMetrics').innerHTML=`
+    <div class="mc dan"><div class="mc-label">Vencidos</div><div class="mc-val">${m[0].length}</div><div class="mc-sub">${fmtK(m[0].reduce((a,o)=>a+calcTotal(o),0))}</div></div>
+    <div class="mc war"><div class="mc-label">Vence em 30 dias</div><div class="mc-val">${m[1].length}</div><div class="mc-sub">${fmtK(m[1].reduce((a,o)=>a+calcTotal(o),0))}</div></div>
+    <div class="mc acc"><div class="mc-label">3–6 meses</div><div class="mc-val">${m[2].length}</div><div class="mc-sub">${fmtK(m[2].reduce((a,o)=>a+calcTotal(o),0))}</div></div>
+    <div class="mc suc"><div class="mc-label">6–12 meses</div><div class="mc-val">${m[3].length}</div><div class="mc-sub">${fmtK(m[3].reduce((a,o)=>a+calcTotal(o),0))}</div></div>`;
+  document.getElementById('vencSections').innerHTML=groups.map((g,gi)=>{
+    const items=active.filter(g.f);
+    const rows=items.map(o=>{const dl=daysLeft(o.vigEnd);const dlT=dl==null?'—':dl<0?`Vencido há ${Math.abs(dl)}d`:dl+' dias';return`<tr onclick="openOppModal(${o.id})"><td><strong>${o.empresa}</strong></td><td>${o.nome}</td><td><span class="tag ${o.produto==='easyfleet'?'blue':'amber'}">${PROD_LABEL[o.produto]}</span></td><td>${o.cons}</td><td>${o.vigStart||'—'}</td><td><strong>${o.vigEnd||'—'}</strong></td><td class="mono">${fmt(calcTotal(o))}</td><td><span class="venc-badge ${g.cls}">${dlT}</span></td></tr>`;}).join('');
+    return`<div style="margin-bottom:14px"><div class="venc-badge ${g.cls}" style="font-size:12px;padding:6px 14px;border-radius:6px;margin-bottom:8px;display:inline-block">${g.lbl} — ${items.length} contrato${items.length!==1?'s':''}</div>${items.length?`<div class="twrap"><table><thead><tr><th>Empresa</th><th>Contato</th><th>Produto</th><th>Consultor</th><th>Início</th><th>Fim</th><th>Valor</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="empty" style="padding:12px"><div>Nenhum contrato nesta faixa.</div></div>`}</div>`;
+  }).join('');
+}
+
+// ═══ FOLLOW-UP ═══
+function renderFollowup(){
+  const td=today();
+  const myTasks=currentUser?.perfil==='consultor'?tasks.filter(t=>t.cons===currentUser.name):tasks;
+  const vigA=getVisible().filter(o=>o.vigAlert&&o.vigEnd>=td&&o.vigAlert<=td&&o.etapa===4).map(o=>({id:'v'+o.id,titulo:`⚠ Renovação urgente — ${o.empresa}`,tipo:'Renovação',data:o.vigAlert,cons:o.cons,desc:`Contrato vence em ${daysLeft(o.vigEnd)} dias. Iniciar processo de renovação.`,done:false,oppId:o.id}));
+  const demoA=getVisible().filter(o=>o.demoFollowup&&o.demoEnd).map(o=>({id:'d'+o.id,titulo:`🧪 Follow-up pós-demo — ${o.empresa}`,tipo:'Follow-up',data:o.demoFollowup,cons:o.cons,desc:`Demo encerrou em ${o.demoEnd}. Verificar interesse.`,done:false,oppId:o.id}));
+  const all=[...myTasks,...vigA,...demoA].sort((a,b)=>a.data.localeCompare(b.data));
+  const ov=all.filter(t=>!t.done&&t.data<td).length,hj=all.filter(t=>!t.done&&t.data===td).length;
+  const fut=all.filter(t=>!t.done&&t.data>td).length,done=myTasks.filter(t=>t.done).length;
+  document.getElementById('fuMetrics').innerHTML=`
+    <div class="mc dan"><div class="mc-label">Atrasadas</div><div class="mc-val">${ov}</div><div class="mc-sub">Ação imediata</div></div>
+    <div class="mc war"><div class="mc-label">Para hoje</div><div class="mc-val">${hj}</div><div class="mc-sub">Prioridade alta</div></div>
+    <div class="mc acc"><div class="mc-label">Futuras</div><div class="mc-val">${fut}</div><div class="mc-sub">Planejadas</div></div>
+    <div class="mc suc"><div class="mc-label">Concluídas</div><div class="mc-val">${done}</div><div class="mc-sub">Total</div></div>`;
+  if(!all.length){document.getElementById('fuList').innerHTML='<div class="empty"><div class="eicon">✅</div><div class="etitle">Nenhum follow-up</div><div>Tudo em dia!</div></div>';return;}
+  document.getElementById('fuList').innerHTML=`<div class="twrap"><table><thead><tr><th>Status</th><th>Tarefa</th><th>Tipo</th><th>Empresa</th><th>Consultor</th><th>Vencimento</th><th>Ações</th></tr></thead><tbody>${all.map((t,i)=>{
+    const st=t.done?'done':t.data<td?'overdue':t.data===td?'today':'upcoming';
+    const stTag={done:'<span class="tag green">✓</span>',overdue:'<span class="tag red">⚠ Atrasada</span>',today:'<span class="tag amber">📌 Hoje</span>',upcoming:'<span class="tag blue">🕐</span>'}[st];
+    const opp=t.oppId?opps.find(o=>o.id===t.oppId):null;
+    const isReal=typeof t.id==='number';
+    const rIdx=myTasks.indexOf(t);
+    return`<tr><td>${stTag}</td><td><strong>${t.titulo}</strong><div style="font-size:10px;color:var(--text4)">${t.desc||''}</div></td><td><span class="tag gray">${t.tipo}</span></td><td>${opp?opp.empresa:'—'}</td><td>${t.cons||'—'}</td><td style="color:${st==='overdue'?'var(--danger)':'inherit'};font-weight:${st==='overdue'?600:400}">${t.data||'—'}</td><td><div style="display:flex;gap:4px">${isReal&&!t.done?`<button class="btn xs success" onclick="doneTask(${rIdx})">✓</button>`:''}${opp?`<button class="btn xs" onclick="openOppModal(${opp.id})">Ver</button>`:''}${isReal?`<button class="btn xs danger" onclick="delTask(${rIdx})">🗑</button>`:''}</div></td></tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+function doneTask(i){if(tasks[i]){tasks[i].done=true;hist.unshift({icon:'✅',titulo:`Tarefa concluída: ${tasks[i].titulo}`,empresa:'—',cons:currentUser?.name||'—',data:nowStr()});persist();renderFollowup();runAutomations();}}
+function delTask(i){if(tasks[i]&&confirm('Excluir tarefa?')){tasks.splice(i,1);persist();renderFollowup();}}
+
+// ═══ HISTÓRICO ═══
+function renderHistorico(){
+  const list=currentUser?.perfil==='consultor'?hist.filter(h=>h.cons===currentUser.name):hist;
+  document.getElementById('histBody').innerHTML=list.slice(0,60).map(h=>`<tr><td><span style="margin-right:6px">${h.icon||'📌'}</span>${h.titulo}</td><td>${h.empresa||'—'}</td><td>${h.cons||'—'}</td><td>${h.data||'—'}</td></tr>`).join('');
+}
+
+// ═══ MODAL OPORTUNIDADE ═══
+let oppCurTab='dados';
+function switchTab(tab,el){
+  oppCurTab=tab;
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.mpane').forEach(p=>p.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const pane=document.getElementById('tab-'+tab);if(pane)pane.classList.add('active');
+  if(tab==='hist')renderIntHist();
+}
+function openOppModal(id){
+  editOppId=id||null;
+  document.getElementById('oCons').innerHTML=getCons().map(c=>`<option>${c}</option>`).join('');
+  document.getElementById('tOpp').innerHTML='<option value="">Nenhuma</option>'+opps.map(o=>`<option value="${o.id}">${o.empresa}</option>`).join('');
+  // reset tabs
+  document.querySelectorAll('.mtab').forEach((t,i)=>{t.classList.toggle('active',i===0);});
+  document.querySelectorAll('.mpane').forEach((p,i)=>{p.classList.toggle('active',i===0);});
+  oppCurTab='dados';
+  document.getElementById('oppDelBtn').style.display=id?'inline-flex':'none';
+  document.getElementById('calcGrid').style.display='none';
+  document.getElementById('vigBoxOpp').style.display='none';
+  document.getElementById('waPrev').style.display='none';
+  document.getElementById('oppTitle').textContent=id?'Editar oportunidade':'Nova oportunidade';
+  document.getElementById('cnpjStatus').textContent='';
+  if(id){
+    const o=opps.find(op=>op.id===id);if(!o)return;
+    const fv=(eid,val)=>{const el=document.getElementById(eid);if(el)el.value=val!=null?val:'';};
+    fv('oEmpresa',o.empresa);fv('oCNPJ',o.cnpj);fv('oSegmento',o.segmento);fv('oCidade',o.cidade);fv('oEstado',o.estado);fv('oRegiao',o.regiao);fv('oConcorrente',o.concorrente);
+    fv('oNome',o.nome);fv('oCargo',o.cargo);fv('oTelefone',o.telefone);fv('oEmail',o.email);fv('oLinkedIn',o.linkedin);
+    fv('oProduto',o.produto);fv('oVeiculos',o.veiculos);fv('oTipoOp',o.tipoOp);fv('oOrigem',o.origem);fv('oDataEntrada',o.dataEntrada);
+    fv('oTipoContrato',o.tipoContrato);fv('oMensalidade',o.mensalidade);fv('oSetup',o.setup);fv('oPrazo',o.prazo);fv('oCustoVar',o.custoVar);fv('oCustoFix',o.custoFix);fv('oValorProposta',o.valorProposta);
+    fv('oVigStart',o.vigStart);fv('oVigEnd',o.vigEnd);fv('oVigAlert',o.vigAlert);fv('oDemoStart',o.demoStart);fv('oDemoEnd',o.demoEnd);fv('oDemoFollowup',o.demoFollowup);
+    fv('oEtapa',o.etapa);fv('oTemp',o.temp||'warm');fv('oProb',o.prob!=null?o.prob:STAGE_PROBS[o.etapa||0]);fv('oDataFech',o.dataFech);fv('oCons',o.cons);fv('oFollowup',o.followup);fv('oLembrete',o.lembrete);fv('oStatusCom',o.statusCom);fv('oObs',o.obs);fv('oWaMsg',o.waMsg);fv('oVisitas',o.visitas||0);fv('oFUCount',o.fuCount||0);
+    if(o.waMsg){document.getElementById('waPrev').style.display='block';document.getElementById('waPrev').textContent=o.waMsg;}
+    if(o.vigStart)calcVigOpp();
+    calcOpp();
+  } else {
+    ['oEmpresa','oCNPJ','oSegmento','oCidade','oRegiao','oConcorrente','oNome','oCargo','oTelefone','oEmail','oLinkedIn','oProduto','oTipoOp','oOrigem','oTipoContrato','oVigStart','oVigEnd','oVigAlert','oDemoStart','oDemoEnd','oDemoFollowup','oObs','oWaMsg','oLembrete','oStatusCom','oValorProposta'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    ['oVeiculos','oMensalidade','oSetup','oPrazo','oCustoVar','oCustoFix'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('oEstado').value='';document.getElementById('oEtapa').value='0';document.getElementById('oTemp').value='warm';document.getElementById('oProb').value=10;document.getElementById('oDataEntrada').value=today();document.getElementById('oDataFech').value='';document.getElementById('oFollowup').value='';document.getElementById('oVisitas').value=0;document.getElementById('oFUCount').value=0;
+    if(currentUser?.perfil==='consultor')document.getElementById('oCons').value=currentUser.name;
+  }
+  document.getElementById('oppOverlay').classList.add('open');
+}
+function closeOppModal(){document.getElementById('oppOverlay').classList.remove('open');}
+function calcOpp(){
+  const v=parseInt(document.getElementById('oVeiculos').value)||0,m=parseFloat(document.getElementById('oMensalidade').value)||0;
+  const p=parseInt(document.getElementById('oPrazo').value)||0,s=parseFloat(document.getElementById('oSetup').value)||0;
+  const cv=parseFloat(document.getElementById('oCustoVar').value)||0,cf=parseFloat(document.getElementById('oCustoFix').value)||0;
+  const isCV=document.getElementById('oProduto').value==='carrocheck';
+  const mrr=isCV?m:v*m,custo=v*cv+cf,lucro=mrr-custo,marg=mrr>0?lucro/mrr*100:0,pay=lucro>0?Math.ceil(cf/lucro):null;
+  if(mrr>0){
+    document.getElementById('calcGrid').style.display='grid';
+    document.getElementById('cMRR').textContent=fmt(mrr)+'/mês';document.getElementById('cMRRano').textContent=fmt(mrr*12)+'/ano';document.getElementById('cSetup').textContent=fmt(s);document.getElementById('cTotal').textContent=p>0?fmt(mrr*p+s):'—';
+    document.getElementById('cCusto').textContent=fmt(custo)+'/mês';document.getElementById('cLucro').textContent=fmt(lucro)+'/mês';document.getElementById('cLucro').style.color=lucro>=0?'var(--success)':'var(--danger)';
+    document.getElementById('cMargem').textContent=fmtP(marg);document.getElementById('cMargem').style.color=marg>=40?'var(--success)':marg>=20?'var(--warning)':'var(--danger)';
+    document.getElementById('cPayback').textContent=pay?pay+' meses':'—';
+    if(p>0)calcVigOpp();
+  } else document.getElementById('calcGrid').style.display='none';
+}
+function calcVigOpp(){
+  const start=document.getElementById('oVigStart').value,p=parseInt(document.getElementById('oPrazo').value)||12;
+  if(!start){document.getElementById('vigBoxOpp').style.display='none';return;}
+  const end=addMonths(start,p),alert=addDays(end,-30);
+  document.getElementById('oVigEnd').value=end;document.getElementById('oVigAlert').value=alert;
+  const dl=daysLeft(end);
+  document.getElementById('vigBoxOpp').style.display='block';
+  document.getElementById('vigST').textContent=start.split('-').reverse().join('/');
+  document.getElementById('vigET').textContent=end.split('-').reverse().join('/');
+  document.getElementById('vigDT').textContent=dl!=null?(dl>0?dl+' dias':dl===0?'Hoje':'Vencido'):'—';
+  const tag=document.getElementById('vigTag');
+  if(dl==null)tag.innerHTML='';
+  else if(dl<0)tag.innerHTML='<span class="alert-tag at-r">⚠ Vencido</span>';
+  else if(dl<=30)tag.innerHTML=`<span class="alert-tag at-r">🔴 Vence em ${dl} dias</span>`;
+  else if(dl<=180)tag.innerHTML=`<span class="alert-tag at-a">🟡 Vence em ${dl} dias</span>`;
+  else tag.innerHTML='<span class="alert-tag at-g">🟢 Contrato vigente</span>';
+}
+function calcDemoOpp(){const s=document.getElementById('oDemoStart').value;if(!s)return;document.getElementById('oDemoEnd').value=addDays(s,30);document.getElementById('oDemoFollowup').value=addDays(addDays(s,30),-3);}
+function autoProb(){const e=parseInt(document.getElementById('oEtapa').value)||0;document.getElementById('oProb').value=STAGE_PROBS[e];}
+function updateWaPreview(){const msg=document.getElementById('oWaMsg').value,p=document.getElementById('waPrev');if(msg.trim()){p.style.display='block';p.textContent=msg;}else p.style.display='none';}
+function saveOpp(){
+  const etapa=parseInt(document.getElementById('oEtapa').value)||0;
+  const o={
+    empresa:document.getElementById('oEmpresa').value||'Sem nome',cnpj:document.getElementById('oCNPJ').value,segmento:document.getElementById('oSegmento').value,cidade:document.getElementById('oCidade').value,estado:document.getElementById('oEstado').value,regiao:document.getElementById('oRegiao').value,concorrente:document.getElementById('oConcorrente').value,
+    nome:document.getElementById('oNome').value,cargo:document.getElementById('oCargo').value,telefone:document.getElementById('oTelefone').value,email:document.getElementById('oEmail').value,linkedin:document.getElementById('oLinkedIn').value,
+    produto:document.getElementById('oProduto').value,veiculos:parseInt(document.getElementById('oVeiculos').value)||0,tipoOp:document.getElementById('oTipoOp').value,origem:document.getElementById('oOrigem').value,dataEntrada:document.getElementById('oDataEntrada').value||today(),
+    tipoContrato:document.getElementById('oTipoContrato').value,mensalidade:parseFloat(document.getElementById('oMensalidade').value)||0,setup:parseFloat(document.getElementById('oSetup').value)||0,prazo:parseInt(document.getElementById('oPrazo').value)||0,custoVar:parseFloat(document.getElementById('oCustoVar').value)||0,custoFix:parseFloat(document.getElementById('oCustoFix').value)||0,valorProposta:parseFloat(document.getElementById('oValorProposta').value)||0,
+    vigStart:document.getElementById('oVigStart').value,vigEnd:document.getElementById('oVigEnd').value,vigAlert:document.getElementById('oVigAlert').value,demoStart:document.getElementById('oDemoStart').value,demoEnd:document.getElementById('oDemoEnd').value,demoFollowup:document.getElementById('oDemoFollowup').value,
+    etapa,temp:document.getElementById('oTemp').value,prob:parseInt(document.getElementById('oProb').value)||STAGE_PROBS[etapa],dataFech:document.getElementById('oDataFech').value,cons:document.getElementById('oCons').value,followup:document.getElementById('oFollowup').value,lembrete:document.getElementById('oLembrete').value,statusCom:document.getElementById('oStatusCom').value,obs:document.getElementById('oObs').value,waMsg:document.getElementById('oWaMsg').value,
+    visitas:parseInt(document.getElementById('oVisitas').value)||0,fuCount:parseInt(document.getElementById('oFUCount').value)||0,
+    closedAt:etapa===4?(editOppId?opps.find(op=>op.id===editOppId)?.closedAt||today():today()):'',
+    interacoes:editOppId?opps.find(op=>op.id===editOppId)?.interacoes||[]:[]
+  };
+  if(editOppId){const idx=opps.findIndex(op=>op.id===editOppId);if(idx>=0){o.id=editOppId;opps[idx]=o;}hist.unshift({icon:'✏️',titulo:`Atualizado: ${o.empresa}`,empresa:o.empresa,cons:currentUser?.name||o.cons,data:nowStr()});}
+  else{o.id=Date.now();opps.unshift(o);hist.unshift({icon:'👤',titulo:`Novo lead: ${o.empresa}`,empresa:o.empresa,cons:currentUser?.name||o.cons,data:nowStr()});}
+  closeOppModal();persist();buildConsFilter();applyFilters();showToast(`"${o.empresa}" salvo com sucesso.`,'success');runAutomations();
+}
+function deleteOpp(){
+  if(!editOppId||!confirm('Excluir esta oportunidade?'))return;
+  const idx=opps.findIndex(op=>op.id===editOppId);if(idx<0)return;
+  const o=opps[idx];hist.unshift({icon:'🗑️',titulo:`Excluído: ${o.empresa}`,empresa:o.empresa,cons:currentUser?.name||'—',data:nowStr()});
+  opps.splice(idx,1);closeOppModal();persist();buildConsFilter();applyFilters();runAutomations();
+}
+
+// ═══ INTERAÇÕES ═══
+function renderIntHist(){
+  if(!editOppId)return;
+  const o=opps.find(op=>op.id===editOppId);if(!o)return;
+  const list=o.interacoes||[];
+  document.getElementById('intHistList').innerHTML=list.length===0?'<div class="empty" style="padding:20px"><div class="eicon">💬</div><div class="etitle">Nenhuma interação</div></div>':list.slice().reverse().map(int=>`<div class="hist-item"><div class="hist-icon">${TIPO_ICONS[int.tipo]||'📌'}</div><div><div class="hist-text"><strong>${int.tipo}</strong>${int.dur>0?` · ${int.dur}min`:''}<div style="font-size:12px;margin-top:2px">${int.desc}</div></div><div class="hist-meta">${int.data}${currentUser?' · '+currentUser.name:''}</div></div></div>`).join('');
+}
+function addInteracao(){
+  if(!editOppId)return;
+  const tipo=document.getElementById('intTipo').value,data=document.getElementById('intData').value||today(),dur=parseInt(document.getElementById('intDur').value)||0,desc=document.getElementById('intDesc').value;
+  const idx=opps.findIndex(op=>op.id===editOppId);if(idx<0)return;
+  if(!opps[idx].interacoes)opps[idx].interacoes=[];
+  opps[idx].interacoes.push({tipo,data,dur,desc});
+  opps[idx].fuCount=(opps[idx].fuCount||0)+1;
+  if(tipo==='Visita presencial')opps[idx].visitas=(opps[idx].visitas||0)+1;
+  document.getElementById('intDesc').value='';document.getElementById('intDur').value='';
+  hist.unshift({icon:TIPO_ICONS[tipo]||'📌',titulo:`${tipo} — ${opps[idx].empresa}`,empresa:opps[idx].empresa,cons:currentUser?.name||opps[idx].cons,data:nowStr()});
+  persist();renderIntHist();showToast('Interação registrada','success');
+}
+
+// ═══ CNPJ ═══
+async function consultarCNPJ(){
+  const raw=document.getElementById('oCNPJ').value.replace(/\D/g,''),st=document.getElementById('cnpjStatus'),btn=document.getElementById('cnpjTxt');
+  if(raw.length!==14){st.className='cnpj-err';st.textContent='CNPJ deve ter 14 dígitos.';return;}
+  btn.innerHTML='<span class="spin"></span>';document.getElementById('btnCNPJ').disabled=true;st.className='cnpj-loading';st.textContent='Consultando BrasilAPI...';
+  try{
+    const res=await fetch(`https://brasilapi.com.br/api/cnpj/v1/${raw}`);if(!res.ok)throw new Error('Não encontrado.');
+    const d=await res.json();
+    document.getElementById('oEmpresa').value=d.razao_social||'';document.getElementById('oSegmento').value=d.cnae_fiscal_descricao||'';document.getElementById('oCidade').value=d.municipio||'';document.getElementById('oEstado').value=d.uf||'';
+    const rM={PR:'Sul',SC:'Sul',RS:'Sul',SP:'Sudeste',RJ:'Sudeste',MG:'Sudeste',ES:'Sudeste',BA:'Nordeste',SE:'Nordeste',AL:'Nordeste',PE:'Nordeste',PB:'Nordeste',RN:'Nordeste',CE:'Nordeste',PI:'Nordeste',MA:'Nordeste',AM:'Norte',PA:'Norte',AC:'Norte',RO:'Norte',RR:'Norte',AP:'Norte',TO:'Norte',MT:'Centro-Oeste',MS:'Centro-Oeste',GO:'Centro-Oeste',DF:'Centro-Oeste'};
+    document.getElementById('oRegiao').value=rM[d.uf]||'';
+    st.className='cnpj-ok';st.textContent=`✓ ${d.razao_social} — ${d.municipio||''}/${d.uf||''}`;
+  }catch(e){st.className='cnpj-err';st.textContent='⚠ '+e.message;}
+  finally{btn.textContent='🔍';document.getElementById('btnCNPJ').disabled=false;}
+}
+
+// ═══ INTEGRAÇÕES ═══
+function getOppModal(){return editOppId?opps.find(o=>o.id===editOppId):null;}
+function openWhatsAppOpp(mode){
+  const o=getOppModal();if(!o)return;
+  const phone=cleanPhone(o.telefone);if(!phone){showToast('Telefone não cadastrado.','error');return;}
+  let msg=o.waMsg||`Olá, ${o.nome}! Aqui é da Easy Fleet.`;
+  if(mode==='proposta')msg=`Olá, ${o.nome}! Segue nossa proposta comercial para a ${o.empresa}. Estou à disposição para qualquer dúvida.`;
+  hist.unshift({icon:'💬',titulo:`WhatsApp — ${o.empresa}`,empresa:o.empresa,cons:currentUser?.name||o.cons,data:nowStr()});persist();
+  window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+function openWACard(ri){const o=opps[ri];if(!o)return;const ph=cleanPhone(o.telefone);if(!ph){showToast('Sem telefone.','error');return;}window.open(`https://wa.me/55${ph}?text=${encodeURIComponent(o.waMsg||`Olá, ${o.nome}! Sou da Easy Fleet.`)}`,'_blank');}
+function openMaps(){const o=getOppModal();if(!o)return;window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.empresa+' '+o.cidade+' '+o.estado)}`,'_blank');}
+function openMapsRoute(){const o=getOppModal();if(!o)return;window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(o.empresa+', '+o.cidade+' - '+o.estado)}`,'_blank');}
+function openMapsCard(ri){const o=opps[ri];window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((o.empresa||'')+' '+(o.cidade||'')+' '+(o.estado||''))}`,'_blank');}
+function openEmail(type){
+  const o=getOppModal();if(!o)return;
+  let sub=`Easy Fleet & Carro Verificado — ${o.empresa}`,body=`Olá, ${o.nome},`;
+  if(type==='followup'){sub=`Follow-up — Easy Fleet × ${o.empresa}`;body=`Olá, ${o.nome},\n\nGostaria de dar sequência à nossa conversa sobre a solução Easy Fleet para a ${o.empresa}.\n\nFico à disposição.\n\nAtenciosamente,\n${currentUser?.name||'Equipe Easy Fleet'}`;}
+  else if(type==='proposta'){sub=`Proposta Comercial — Easy Fleet × ${o.empresa}`;body=`Olá, ${o.nome},\n\nSegue em anexo nossa proposta comercial para a ${o.empresa}.\n\nEstou à disposição para qualquer esclarecimento.\n\nAtenciosamente,\n${currentUser?.name||'Equipe Easy Fleet'}`;}
+  window.open(`mailto:${o.email}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`,'_blank');
+}
+function openEmailCard(ri){const o=opps[ri];window.open(`mailto:${o.email}?subject=${encodeURIComponent(`Follow-up — Easy Fleet × ${o.empresa}`)}`,'_blank');}
+
+// ═══ PDF ═══
+function buildPDF(o,prop){
+  const mrr=calcMRR(o),total=prop?prop.valor:calcTotal(o);
+  const num=prop?prop.num:'PROP-'+String(props.length+1).padStart(3,'0');
+  const desc=prop?prop.desc:'';
+  return`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Proposta — ${o.empresa||'Easy Fleet & Carro Verificado'}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;color:#111;background:#fff;padding:48px;max-width:820px;margin:auto}.logo{font-size:22px;font-weight:700;color:#0066CC;margin-bottom:2px}.logo span{color:#374151;font-weight:300}.sub{font-size:11px;color:#9CA3AF;text-transform:uppercase;letter-spacing:.1em;margin-bottom:40px}.st{font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #E5E7EB;padding-bottom:6px;margin-bottom:14px;margin-top:24px}.row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #F9FAFB;font-size:13px}.lbl{color:#6B7280}.val{font-weight:600}.total-card{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;margin-top:24px}.total-lbl{font-size:14px;font-weight:600;color:#1D4ED8}.total-val{font-size:28px;font-weight:700;color:#0066CC}.footer{margin-top:56px;font-size:11px;color:#9CA3AF;border-top:1px solid #E5E7EB;padding-top:16px;text-align:center}@media print{.no-print{display:none}}</style></head>
+<body><div class="logo">Easy Fleet <span>&amp; Carro Verificado</span></div><div class="sub">Proposta Comercial</div>
+<div class="st">Identificação</div><div class="row"><span class="lbl">Número</span><span class="val">${num}</span></div><div class="row"><span class="lbl">Produto</span><span class="val">${{easyfleet:'Easy Fleet — Gestão de Frotas',carrocheck:'Carro Verificado — Histórico Veicular'}[o.produto]||'—'}</span></div><div class="row"><span class="lbl">Data de emissão</span><span class="val">${new Date().toLocaleDateString('pt-BR')}</span></div><div class="row"><span class="lbl">Consultor</span><span class="val">${currentUser?.name||o.cons||'—'}</span></div>
+<div class="st">Cliente</div><div class="row"><span class="lbl">Empresa</span><span class="val">${o.empresa||'—'}</span></div><div class="row"><span class="lbl">CNPJ</span><span class="val">${o.cnpj||'—'}</span></div><div class="row"><span class="lbl">Contato</span><span class="val">${o.nome||'—'}${o.cargo?' — '+o.cargo:''}</span></div><div class="row"><span class="lbl">E-mail</span><span class="val">${o.email||'—'}</span></div><div class="row"><span class="lbl">Cidade / UF</span><span class="val">${o.cidade||'—'} / ${o.estado||'—'}</span></div><div class="row"><span class="lbl">Segmento</span><span class="val">${o.segmento||'—'}</span></div><div class="row"><span class="lbl">Concorrente atual</span><span class="val">${o.concorrente||'—'}</span></div>
+<div class="st">Precificação</div>${o.veiculos>0?`<div class="row"><span class="lbl">Frota contratada</span><span class="val">${o.veiculos} veículos</span></div>`:''}<div class="row"><span class="lbl">Mensalidade${o.veiculos>0?' / veículo':''}</span><span class="val">R$ ${Number(o.mensalidade||0).toLocaleString('pt-BR')}</span></div><div class="row"><span class="lbl">MRR mensal</span><span class="val">R$ ${Number(mrr).toLocaleString('pt-BR')}/mês</span></div>${o.setup>0?`<div class="row"><span class="lbl">Setup / Implantação</span><span class="val">R$ ${Number(o.setup||0).toLocaleString('pt-BR')}</span></div>`:''}<div class="row"><span class="lbl">Prazo contratual</span><span class="val">${o.prazo||'—'} meses</span></div>${o.vigStart?`<div class="row"><span class="lbl">Vigência</span><span class="val">${(o.vigStart||'').split('-').reverse().join('/')} a ${(o.vigEnd||'').split('-').reverse().join('/')}</span></div>`:''}<div class="total-card"><span class="total-lbl">Valor total do contrato</span><span class="total-val">R$ ${Number(total||0).toLocaleString('pt-BR')}</span></div>
+${desc?`<div class="st">Escopo</div><p style="font-size:13px;color:#374151;line-height:1.6">${desc}</p>`:''}
+<div class="footer">Proposta válida por 30 dias a partir da emissão · Easy Fleet & Carro Verificado · contato@easyfleet.com.br</div>
+<br><button class="no-print" onclick="window.print()" style="padding:10px 24px;background:#0066CC;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">🖨️ Imprimir / Salvar PDF</button>
+</body></html>`;
+}
+function gerarPDFOpp(){const o=getOppModal()||{};const w=window.open('','_blank');w.document.write(buildPDF(o));w.document.close();}
+function pdfCard(ri){const w=window.open('','_blank');w.document.write(buildPDF(opps[ri]||{}));w.document.close();}
+function pdfPropIdx(ri){const p=props[ri],o=opps.find(op=>op.id===p?.oppId)||{};const w=window.open('','_blank');w.document.write(buildPDF(o,p));w.document.close();}
+function gerarPDFPropModal(){const oi=parseInt(document.getElementById('pOpp').value)||0;const o=opps.find(op=>op.id===oi)||{};const w=window.open('','_blank');w.document.write(buildPDF(o));w.document.close();}
+
+// ═══ MODAL PROPOSTA ═══
+function openPropModal(ri){
+  editPropIdx=ri!=null?ri:null;
+  document.getElementById('pOpp').innerHTML=opps.map(o=>`<option value="${o.id}">${o.empresa}</option>`).join('');
+  document.getElementById('pCons').innerHTML=getCons().map(c=>`<option>${c}</option>`).join('');
+  document.getElementById('propDelBtn').style.display=ri!=null?'inline-flex':'none';
+  if(ri!=null){const p=props[ri];document.getElementById('propTitle').textContent='Editar proposta';document.getElementById('pNum').value=p.num||'';document.getElementById('pOpp').value=p.oppId||'';document.getElementById('pCons').value=p.cons||'';document.getElementById('pValor').value=p.valor||'';document.getElementById('pDataEnvio').value=p.dataEnvio||'';document.getElementById('pValidade').value=p.validade||'';document.getElementById('pStatus').value=p.status||'draft';document.getElementById('pDesc').value=p.desc||'';document.getElementById('pObs').value=p.obs||'';}
+  else{document.getElementById('propTitle').textContent='Nova proposta';document.getElementById('pNum').value=`PROP-${String(props.length+1).padStart(3,'0')}`;['pValor','pDesc','pObs'].forEach(id=>document.getElementById(id).value='');document.getElementById('pDataEnvio').value=today();document.getElementById('pValidade').value='';document.getElementById('pStatus').value='draft';if(currentUser?.perfil==='consultor')document.getElementById('pCons').value=currentUser.name;}
+  document.getElementById('propOverlay').classList.add('open');
+}
+function closePropModal(){document.getElementById('propOverlay').classList.remove('open');}
+function saveProp(){
+  const p={num:document.getElementById('pNum').value||'PROP-?',oppId:parseInt(document.getElementById('pOpp').value)||0,cons:document.getElementById('pCons').value,valor:parseInt(document.getElementById('pValor').value)||0,dataEnvio:document.getElementById('pDataEnvio').value,validade:document.getElementById('pValidade').value,status:document.getElementById('pStatus').value,desc:document.getElementById('pDesc').value,obs:document.getElementById('pObs').value};
+  const opp=opps.find(o=>o.id===p.oppId);
+  if(editPropIdx!=null){p.id=props[editPropIdx].id;props[editPropIdx]=p;}else{p.id=Date.now();props.unshift(p);}
+  hist.unshift({icon:'📄',titulo:`Proposta ${p.num} — ${opp?opp.empresa:'—'}`,empresa:opp?opp.empresa:'—',cons:currentUser?.name||p.cons,data:nowStr()});
+  closePropModal();persist();renderPropostas();showToast('Proposta salva.','success');
+}
+function deleteProp(){if(editPropIdx==null||!confirm('Excluir?'))return;props.splice(editPropIdx,1);closePropModal();persist();renderPropostas();}
+
+// ═══ MODAL TAREFA ═══
+function openTaskModal(){
+  document.getElementById('tTitulo').value='';document.getElementById('tTipo').value='Follow-up';document.getElementById('tData').value=today();document.getElementById('tDesc').value='';
+  document.getElementById('tOpp').innerHTML='<option value="">Nenhuma</option>'+opps.map(o=>`<option value="${o.id}">${o.empresa}</option>`).join('');
+  document.getElementById('tCons').innerHTML=getCons().map(c=>`<option>${c}</option>`).join('');
+  if(currentUser?.perfil==='consultor')document.getElementById('tCons').value=currentUser.name;
+  document.getElementById('taskOverlay').classList.add('open');
+}
+function closeTaskModal(){document.getElementById('taskOverlay').classList.remove('open');}
+function saveTask(){
+  const t={id:Date.now(),titulo:document.getElementById('tTitulo').value||'Tarefa',tipo:document.getElementById('tTipo').value,data:document.getElementById('tData').value||today(),oppId:parseInt(document.getElementById('tOpp').value)||null,cons:document.getElementById('tCons').value,desc:document.getElementById('tDesc').value,done:false};
+  tasks.unshift(t);persist();closeTaskModal();renderFollowup();showToast('Tarefa criada.','success');runAutomations();
+}
+
+// ═══ CSV ═══
+function exportCSV(){
+  const h=['Empresa','CNPJ','Segmento','Cidade','Estado','Região','Contato','Cargo','Telefone','Email','Produto','Veículos','Tipo Op','Tipo Contrato','Mensalidade','Setup','Prazo','MRR','Total Contrato','Margem%','Concorrente','Etapa','Temperatura','Probabilidade%','Consultor','Origem','Data Entrada','Status Comercial','Visitas','Follow-ups'];
+  const rows=getVisible().map(o=>[o.empresa,o.cnpj,o.segmento,o.cidade,o.estado,o.regiao,o.nome,o.cargo,o.telefone,o.email,PROD_LABEL[o.produto]||'',o.veiculos,o.tipoOp,o.tipoContrato,o.mensalidade,o.setup,o.prazo,calcMRR(o),calcTotal(o),calcMargem(o).toFixed(1),o.concorrente,STAGES[o.etapa],o.temp,o.prob!=null?o.prob:STAGE_PROBS[o.etapa],o.cons,o.origem,o.dataEntrada,o.statusCom,o.visitas,o.fuCount].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const csv='\uFEFF'+[h.join(','),...rows].join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='easyfleet_crm.csv';a.click();showToast('CSV exportado.','success');
+}
+
+// ═══════════════════════════════════════════
+// GESTÃO DE USUÁRIOS — ADMIN
+// ═══════════════════════════════════════════
+
+const AVATAR_COLORS = [
+  '#0066CC','#15803D','#B45309','#6D28D9','#B91C1C','#0891B2',
+  '#7C3AED','#065F46','#92400E','#1E3A5F','#831843','#134E4A',
+  '#1D4ED8','#166534','#DC2626','#7E22CE','#0369A1','#047857',
+];
+
+const PERFIL_TABS = {
+  gestor:    ['pipeline','dashboard','ranking','forecast','leads','propostas','vencimentos','followup','historico','usuarios','integracoes','ia'],
+  consultor: ['pipeline','leads','propostas','followup','historico','ia'],
+  diretoria: ['dashboard','ranking','forecast','vencimentos','ia'],
+  admin:     ['pipeline','dashboard','ranking','forecast','leads','propostas','vencimentos','followup','historico','usuarios','integracoes','ia'],
+};
+
+const PERFIL_DESC = {
+  gestor:    'Acesso completo — Dashboard, Forecast, Relatórios, Metas, Ranking',
+  consultor: 'Acesso operacional — Leads, Oportunidades, Propostas, Follow-ups',
+  diretoria: 'Visão estratégica — Receita total, Pipeline, Projeções, Performance',
+  admin:     'Administrador — acesso total incluindo gestão de usuários',
+};
+
+const MODULOS_PERM = [
+  {key:'pipeline',   label:'Pipeline / Kanban'},
+  {key:'dashboard',  label:'Dashboard Executivo'},
+  {key:'ranking',    label:'Ranking & Metas'},
+  {key:'forecast',   label:'Forecast'},
+  {key:'leads',      label:'Leads'},
+  {key:'propostas',  label:'Propostas'},
+  {key:'vencimentos',label:'Vencimentos'},
+  {key:'followup',   label:'Follow-ups'},
+  {key:'historico',  label:'Histórico'},
+  {key:'usuarios',   label:'Gestão de Usuários'},
+  {key:'exportar',   label:'Exportar CSV'},
+  {key:'excluir',    label:'Excluir registros'},
+];
+
+let editUserId = null;
+
+// ── STORAGE DE USUÁRIOS ──
+function loadUsers() {
+  try {
+    const stored = JSON.parse(LS.get('ef2_users'));
+    if (stored && stored.length > 0) return stored;
+  } catch(e) {}
+  // Seed dos usuários padrão a partir de USERS
+  return USERS.map(u => ({
+    id:       u.id,
+    nome:     u.name,
+    email:    u.id + '@easyfleet.com.br',
+    telefone: '',
+    cpf:      '',
+    nascimento: '',
+    cargo:    u.role,
+    depto:    'Comercial',
+    regiao:   'Nacional',
+    admissao: '2025-01-01',
+    perfil:   u.perfil,
+    status:   'active',
+    pin:      u.pin,
+    color:    u.color,
+    obs:      '',
+    permissoes: PERFIL_TABS[u.perfil] || [],
+    createdAt: '2025-01-01',
+    createdBy: 'Sistema',
+  }));
+}
+
+function saveUsers(users) {
+  LS.set('ef2_users', JSON.stringify(users));
+  // Sincronizar USERS runtime para login funcionar
+  syncRuntimeUsers(users);
+  const s = document.getElementById('savedInd');
+  s.classList.add('on'); setTimeout(() => s.classList.remove('on'), 2000);
+}
+
+function syncRuntimeUsers(users) {
+  // Atualizar array USERS global com dados do localStorage
+  USERS.length = 0;
+  users.filter(u => u.status === 'active').forEach(u => {
+    USERS.push({
+      id:      u.id,
+      name:    u.nome,
+      role:    u.cargo,
+      pin:     u.pin,
+      color:   u.color,
+      perfil:  u.perfil,
+      tabs:    u.permissoes || PERFIL_TABS[u.perfil] || [],
+      desc:    PERFIL_DESC[u.perfil] || '',
+    });
+  });
+}
+
+// ── RENDER VIEW USUÁRIOS ──
+function renderUsuarios() {
+  if (!currentUser || currentUser.perfil !== 'gestor' && currentUser.perfil !== 'admin') {
+    document.getElementById('userGrid').innerHTML = '<div class="empty"><div class="eicon">🔒</div><div class="etitle">Acesso restrito</div><div>Apenas gestores e administradores podem gerenciar usuários.</div></div>';
+    return;
+  }
+  const users = loadUsers();
+  const ativos   = users.filter(u => u.status === 'active').length;
+  const inativos = users.filter(u => u.status === 'inactive').length;
+  const gestores = users.filter(u => u.perfil === 'gestor' || u.perfil === 'admin').length;
+  const consult  = users.filter(u => u.perfil === 'consultor').length;
+
+  document.getElementById('userMetrics').innerHTML = `
+    <div class="mc suc"><div class="mc-label">Usuários ativos</div><div class="mc-val">${ativos}</div><div class="mc-sub">De ${users.length} cadastrados</div></div>
+    <div class="mc dan"><div class="mc-label">Inativos</div><div class="mc-val">${inativos}</div><div class="mc-sub">Sem acesso ao sistema</div></div>
+    <div class="mc acc"><div class="mc-label">Gestores / Admins</div><div class="mc-val">${gestores}</div><div class="mc-sub">Acesso total</div></div>
+    <div class="mc pur"><div class="mc-label">Consultores</div><div class="mc-val">${consult}</div><div class="mc-sub">Acesso operacional</div></div>
+  `;
+
+  document.getElementById('userGrid').innerHTML = users.map(u => {
+    const initials = u.nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    const perfilCls = {gestor:'perf-gestor',consultor:'perf-consultor',diretoria:'perf-diretoria',admin:'perf-admin'}[u.perfil] || 'perf-consultor';
+    const perfilLabel = {gestor:'Gestor',consultor:'Consultor',diretoria:'Diretoria',admin:'Admin'}[u.perfil] || u.perfil;
+    const statusHtml = u.status === 'active'
+      ? '<span class="status-active">● Ativo</span>'
+      : '<span class="status-inactive">● Inativo</span>';
+    return `
+    <div class="ucard">
+      <div class="ucard-header">
+        <div class="avatar lg" style="background:${u.color};width:44px;height:44px;font-size:15px">${initials}</div>
+        <div class="ucard-info">
+          <div class="ucard-name">${u.nome}</div>
+          <div class="ucard-role">${u.cargo || '—'}</div>
+          <div class="ucard-email">${u.email || '—'}</div>
+        </div>
+      </div>
+      <div class="ucard-body">
+        <div class="ucard-row"><span class="ucard-label">Perfil</span><span class="perf-badge ${perfilCls}">${perfilLabel}</span></div>
+        <div class="ucard-row"><span class="ucard-label">Região</span><span class="ucard-value">${u.regiao || '—'}</span></div>
+        <div class="ucard-row"><span class="ucard-label">Departamento</span><span class="ucard-value">${u.depto || '—'}</span></div>
+        <div class="ucard-row"><span class="ucard-label">Admissão</span><span class="ucard-value">${u.admissao ? u.admissao.split('-').reverse().join('/') : '—'}</span></div>
+        <div class="ucard-row"><span class="ucard-label">Módulos</span><span class="ucard-value">${(u.permissoes||[]).length} acessos</span></div>
+        <div class="ucard-row"><span class="ucard-label">Status</span>${statusHtml}</div>
+      </div>
+      <div class="ucard-footer">
+        <button class="btn sm primary" onclick="openUserModal('${u.id}')">✏️ Editar</button>
+        <button class="btn sm" onclick="quickToggleStatus('${u.id}')">${u.status==='active'?'⏸ Desativar':'▶ Ativar'}</button>
+        <button class="btn sm danger" onclick="confirmDeleteUser('${u.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── MODAL USUÁRIO ──
+function openUserModal(userId) {
+  editUserId = userId || null;
+  buildAvatarPicker();
+  buildPermissoesGrid();
+  document.getElementById('userDelBtn').style.display  = userId ? 'inline-flex' : 'none';
+  document.getElementById('userDeactBtn').style.display = userId ? 'inline-flex' : 'none';
+  document.getElementById('userModalTitle').textContent = userId ? 'Editar usuário' : 'Novo usuário';
+  document.getElementById('pinStrength').textContent = '';
+  document.getElementById('pinMatch').textContent = '';
+
+  if (userId) {
+    const users = loadUsers();
+    const u = users.find(us => us.id === userId);
+    if (!u) return;
+    document.getElementById('uNome').value       = u.nome || '';
+    document.getElementById('uCPF').value        = u.cpf || '';
+    document.getElementById('uEmail').value      = u.email || '';
+    document.getElementById('uTelefone').value   = u.telefone || '';
+    document.getElementById('uNascimento').value = u.nascimento || '';
+    document.getElementById('uCargo').value      = u.cargo || '';
+    document.getElementById('uDepto').value      = u.depto || '';
+    document.getElementById('uRegiao').value     = u.regiao || '';
+    document.getElementById('uAdmissao').value   = u.admissao || '';
+    document.getElementById('uPerfil').value     = u.perfil || '';
+    document.getElementById('uStatus').value     = u.status || 'active';
+    document.getElementById('uPIN').value        = u.pin || '';
+    document.getElementById('uPINConfirm').value = u.pin || '';
+    document.getElementById('uColor').value      = u.color || '#0066CC';
+    document.getElementById('uObs').value        = u.obs || '';
+    document.getElementById('userDeactBtn').textContent = u.status === 'active' ? '⏸ Desativar' : '▶ Reativar';
+    selectAvatarColor(u.color || '#0066CC');
+    updatePerfilDesc();
+    loadPermissoesGrid(u.permissoes || []);
+    updateAvatarPreview();
+  } else {
+    ['uNome','uCPF','uEmail','uTelefone','uNascimento','uCargo','uDepto','uObs','uPIN','uPINConfirm'].forEach(id => {
+      const el = document.getElementById(id); if(el) el.value = '';
+    });
+    document.getElementById('uPerfil').value  = '';
+    document.getElementById('uStatus').value  = 'active';
+    document.getElementById('uRegiao').value  = '';
+    document.getElementById('uAdmissao').value = today();
+    document.getElementById('uColor').value   = '#0066CC';
+    selectAvatarColor('#0066CC');
+    document.getElementById('perfilDesc').textContent = '';
+    loadPermissoesGrid([]);
+    updateAvatarPreview();
+  }
+  document.getElementById('userOverlay').classList.add('open');
+}
+
+function closeUserModal() {
+  document.getElementById('userOverlay').classList.remove('open');
+}
+
+// ── VALIDAÇÕES ──
+function maskCPF(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1-$2');
+  el.value = v;
+}
+function maskTelUser(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/^(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d{4})$/,'$1-$2').replace(/(\d{4})(\d{4})$/,'$1-$2');
+  el.value = v;
+}
+function checkPINStrength() {
+  const pin = document.getElementById('uPIN').value;
+  const el = document.getElementById('pinStrength');
+  if (!pin) { el.textContent = ''; return; }
+  const seqAsc  = '0123456789';
+  const seqDesc = '9876543210';
+  const allSame = pin.split('').every(c => c === pin[0]);
+  const isSeq   = seqAsc.includes(pin) || seqDesc.includes(pin);
+  if (pin.length < 4) { el.style.color = 'var(--danger)'; el.textContent = '⚠ PIN deve ter 4 dígitos'; }
+  else if (allSame)   { el.style.color = 'var(--danger)'; el.textContent = '⚠ PIN muito fraco — dígitos iguais'; }
+  else if (isSeq)     { el.style.color = 'var(--warning)'; el.textContent = '⚠ PIN fraco — sequência óbvia'; }
+  else                { el.style.color = 'var(--success)'; el.textContent = '✓ PIN válido'; }
+  checkPINMatch();
+}
+function checkPINMatch() {
+  const p1 = document.getElementById('uPIN').value;
+  const p2 = document.getElementById('uPINConfirm').value;
+  const el = document.getElementById('pinMatch');
+  if (!p2) { el.textContent = ''; return; }
+  if (p1 === p2) { el.style.color = 'var(--success)'; el.textContent = '✓ PINs coincidem'; }
+  else           { el.style.color = 'var(--danger)';  el.textContent = '✕ PINs não coincidem'; }
+}
+
+function updatePerfilDesc() {
+  const p = document.getElementById('uPerfil').value;
+  document.getElementById('perfilDesc').textContent = PERFIL_DESC[p] || '';
+  loadPermissoesGrid(PERFIL_TABS[p] || []);
+  updateAvatarPreview();
+}
+
+function updateAvatarPreview() {
+  const nomeEl = document.getElementById('uNome');
+  if (!nomeEl) return;
+  const nome   = nomeEl.value || 'Nome do usuário';
+  const cargo  = (document.getElementById('uCargo')?.value) || '';
+  const perfil = (document.getElementById('uPerfil')?.value) || '';
+  const color  = (document.getElementById('uColor')?.value) || '#0066CC';
+  const initials = nome.split(' ').filter(Boolean).map(n=>n[0]).slice(0,2).join('').toUpperCase() || '??';
+  const prev = document.getElementById('userAvatarPreview');
+  if (prev) { prev.style.background = color; prev.textContent = initials; }
+  const np = document.getElementById('userNamePreview');
+  if (np) np.textContent = nome;
+  const rp = document.getElementById('userRolePreview');
+  if (rp) rp.textContent = cargo || ({gestor:'Gestor Comercial',consultor:'Consultor Comercial',diretoria:'Diretoria',admin:'Administrador'}[perfil] || 'Sem perfil definido');
+}
+
+// ── AVATAR PICKER ──
+function buildAvatarPicker() {
+  document.getElementById('avatarPicker').innerHTML = AVATAR_COLORS.map(c =>
+    `<div class="avatar-color" style="background:${c}" onclick="selectAvatarColor('${c}')" title="${c}"></div>`
+  ).join('');
+}
+function selectAvatarColor(color) {
+  document.getElementById('uColor').value = color;
+  document.querySelectorAll('.avatar-color').forEach(el => {
+    el.classList.toggle('selected', el.style.background === color || el.style.backgroundColor === color);
+  });
+  updateAvatarPreview();
+}
+
+// ── PERMISSÕES ──
+function buildPermissoesGrid() {
+  document.getElementById('permissoesGrid').innerHTML = MODULOS_PERM.map(m =>
+    `<label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--r);background:var(--surface2)">
+      <input type="checkbox" id="perm_${m.key}" value="${m.key}" style="width:14px;height:14px;accent-color:var(--accent);flex-shrink:0">
+      <span style="color:var(--text2)">${m.label}</span>
+    </label>`
+  ).join('');
+}
+function loadPermissoesGrid(permissoes) {
+  MODULOS_PERM.forEach(m => {
+    const el = document.getElementById('perm_' + m.key);
+    if (el) el.checked = permissoes.includes(m.key);
+  });
+}
+function getPermissoesGrid() {
+  return MODULOS_PERM.filter(m => {
+    const el = document.getElementById('perm_' + m.key);
+    return el && el.checked;
+  }).map(m => m.key);
+}
+
+// ── SAVE USUÁRIO ──
+function saveUser() {
+  const nome   = document.getElementById('uNome').value.trim();
+  const perfil = document.getElementById('uPerfil').value;
+  const pin    = document.getElementById('uPIN').value;
+  const pin2   = document.getElementById('uPINConfirm').value;
+  const email  = document.getElementById('uEmail').value.trim();
+
+  if (!nome)   { showToast('Informe o nome completo.', 'error'); return; }
+  if (!perfil) { showToast('Selecione um perfil de acesso.', 'error'); return; }
+  if (!email)  { showToast('Informe o e-mail corporativo.', 'error'); return; }
+  if (!pin || pin.length < 4) { showToast('PIN deve ter 4 dígitos.', 'error'); return; }
+  if (pin !== pin2) { showToast('PINs não coincidem. Verifique.', 'error'); return; }
+
+  const users = loadUsers();
+
+  // Verificar PIN duplicado (exceto ao editar o próprio)
+  const pinDuplicate = users.find(u => u.pin === pin && u.id !== editUserId);
+  if (pinDuplicate) { showToast(`PIN já utilizado por "${pinDuplicate.nome}". Escolha outro.`, 'error'); return; }
+
+  const permissoes = getPermissoesGrid();
+
+  const userData = {
+    id:         editUserId || 'u' + Date.now(),
+    nome,
+    cpf:        document.getElementById('uCPF').value,
+    email,
+    telefone:   document.getElementById('uTelefone').value,
+    nascimento: document.getElementById('uNascimento').value,
+    cargo:      document.getElementById('uCargo').value,
+    depto:      document.getElementById('uDepto').value,
+    regiao:     document.getElementById('uRegiao').value,
+    admissao:   document.getElementById('uAdmissao').value,
+    perfil,
+    status:     document.getElementById('uStatus').value,
+    pin,
+    color:      document.getElementById('uColor').value || '#0066CC',
+    obs:        document.getElementById('uObs').value,
+    permissoes,
+    createdAt:  editUserId ? (users.find(u=>u.id===editUserId)?.createdAt || today()) : today(),
+    createdBy:  editUserId ? (users.find(u=>u.id===editUserId)?.createdBy || currentUser?.name) : currentUser?.name,
+    updatedAt:  today(),
+    updatedBy:  currentUser?.name,
+  };
+
+  if (editUserId) {
+    const idx = users.findIndex(u => u.id === editUserId);
+    if (idx >= 0) users[idx] = userData;
+  } else {
+    users.push(userData);
+  }
+
+  saveUsers(users);
+  hist.unshift({
+    icon: editUserId ? '✏️' : '👤',
+    titulo: `${editUserId ? 'Usuário atualizado' : 'Novo usuário criado'}: ${nome}`,
+    empresa: '—',
+    cons: currentUser?.name || '—',
+    data: nowStr(),
+  });
+  persist();
+  closeUserModal();
+  renderUsuarios();
+  buildConsFilter();
+  showToast(`Usuário "${nome}" salvo com sucesso.`, 'success');
+}
+
+// ── DELETE / TOGGLE STATUS ──
+function deleteUser() {
+  if (!editUserId || !confirm('Excluir permanentemente este usuário? Esta ação não pode ser desfeita.')) return;
+  const users = loadUsers();
+  const u = users.find(us => us.id === editUserId);
+  if (!u) return;
+  if (u.id === currentUser?.id) { showToast('Você não pode excluir seu próprio usuário.', 'error'); return; }
+  const idx = users.findIndex(us => us.id === editUserId);
+  users.splice(idx, 1);
+  saveUsers(users);
+  hist.unshift({icon:'🗑️', titulo:`Usuário excluído: ${u.nome}`, empresa:'—', cons:currentUser?.name||'—', data:nowStr()});
+  persist();
+  closeUserModal();
+  renderUsuarios();
+  buildConsFilter();
+  showToast(`Usuário "${u.nome}" excluído.`, 'warning');
+}
+
+function confirmDeleteUser(userId) {
+  editUserId = userId;
+  deleteUser();
+}
+
+function toggleUserStatus() {
+  if (!editUserId) return;
+  const users = loadUsers();
+  const u = users.find(us => us.id === editUserId);
+  if (!u) return;
+  if (u.id === currentUser?.id) { showToast('Você não pode desativar seu próprio usuário.', 'error'); return; }
+  u.status = u.status === 'active' ? 'inactive' : 'active';
+  saveUsers(users);
+  hist.unshift({icon: u.status==='active'?'▶':'⏸', titulo:`Usuário ${u.status==='active'?'reativado':'desativado'}: ${u.nome}`, empresa:'—', cons:currentUser?.name||'—', data:nowStr()});
+  persist();
+  closeUserModal();
+  renderUsuarios();
+  buildConsFilter();
+  showToast(`Usuário "${u.nome}" ${u.status==='active'?'reativado':'desativado'}.`, u.status==='active'?'success':'warning');
+}
+
+function quickToggleStatus(userId) {
+  const users = loadUsers();
+  const u = users.find(us => us.id === userId);
+  if (!u) return;
+  if (u.id === currentUser?.id) { showToast('Você não pode alterar seu próprio status.', 'error'); return; }
+  u.status = u.status === 'active' ? 'inactive' : 'active';
+  saveUsers(users);
+  renderUsuarios();
+  showToast(`"${u.nome}" ${u.status==='active'?'reativado':'desativado'}.`, u.status==='active'?'success':'warning');
+}
+
+// ═══════════════════════════════════════════
+// INTEGRAÇÕES & IA COMERCIAL
+// ═══════════════════════════════════════════
+
+function getAIConfig(){try{return JSON.parse(LS.get('ef2_ai_config'))||{};}catch(e){return{};}}
+function saveAIConfig(cfg){LS.set('ef2_ai_config',JSON.stringify(cfg));}
+function getWebhookConfig(){try{return JSON.parse(LS.get('ef2_webhook_config'))||{};}catch(e){return{};}}
+
+function getModelOptions(provider,selected){
+  const m=provider==='anthropic'
+    ?[{v:'claude-haiku-4-5-20251001',l:'Claude Haiku (rápido, econômico)'},{v:'claude-sonnet-4-6',l:'Claude Sonnet (balanceado)'},{v:'claude-opus-4-7',l:'Claude Opus (mais poderoso)'}]
+    :[{v:'gpt-4o-mini',l:'GPT-4o Mini (rápido, econômico)'},{v:'gpt-4o',l:'GPT-4o (balanceado)'},{v:'gpt-4-turbo',l:'GPT-4 Turbo (mais poderoso)'}];
+  return m.map(x=>`<option value="${x.v}"${selected===x.v?' selected':''}>${x.l}</option>`).join('');
+}
+
+function renderIntegracoes(){
+  const cfg=getAIConfig(),wh=getWebhookConfig();
+  const waToken=JSON.parse(LS.get('ef2_wa_config')||'{}').token||'';
+  const cfgOk=!!cfg.apiKey;
+  document.getElementById('integracoesContent').innerHTML=`
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
+    <div class="int-section">
+      <div class="int-section-title">🤖 IA Comercial — Token de Acesso</div>
+      <div class="fg" style="margin-bottom:11px">
+        <div class="fl">Provedor</div>
+        <select class="fi" id="aiProvider" onchange="document.getElementById('aiModel').innerHTML=getModelOptions(this.value)">
+          <option value="openai"${(cfg.provider||'openai')==='openai'?' selected':''}>OpenAI (GPT)</option>
+          <option value="anthropic"${cfg.provider==='anthropic'?' selected':''}>Anthropic (Claude)</option>
+        </select>
+      </div>
+      <div class="fg" style="margin-bottom:11px">
+        <div class="fl">API Key</div>
+        <input class="fi" id="aiApiKey" type="password" placeholder="sk-... ou sk-ant-..." value="${cfg.apiKey||''}" autocomplete="new-password">
+      </div>
+      <div class="fg" style="margin-bottom:14px">
+        <div class="fl">Modelo</div>
+        <select class="fi" id="aiModel">${getModelOptions(cfg.provider||'openai',cfg.model)}</select>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn primary sm" onclick="saveAIToken()">Salvar token</button>
+        <button class="btn sm" onclick="testAIConnection()">Testar conexão</button>
+        <span class="${cfgOk?'api-status-ok':'api-status-err'}">${cfgOk?'✓ Configurado':'⚠ Não configurado'}</span>
+      </div>
+      <div id="aiTestResult" style="font-size:11px;margin-top:8px;color:var(--text3)"></div>
+      <div class="int-note">O token fica salvo apenas no localStorage do seu navegador. Nunca passa por servidores da Easy Fleet — vai diretamente à API do provedor escolhido.</div>
+    </div>
+
+    <div class="int-section">
+      <div class="int-section-title">🔗 Webhook de Eventos</div>
+      <div class="fg" style="margin-bottom:11px">
+        <div class="fl">URL (Zapier, n8n, Make, Power Automate...)</div>
+        <input class="fi" id="whUrl" type="url" placeholder="https://hooks.zapier.com/..." value="${wh.url||''}">
+      </div>
+      <div class="fg" style="margin-bottom:14px">
+        <div class="fl">Disparar nos eventos</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">
+          ${['Nova oportunidade','Oportunidade fechada','Proposta enviada','Contrato vencendo'].map(e=>`
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer">
+            <input type="checkbox" value="${e}" class="wh-event"${(wh.events||[]).includes(e)?' checked':''}> ${e}
+          </label>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn primary sm" onclick="saveWebhook()">Salvar webhook</button>
+        <button class="btn sm" onclick="testWebhook()">Enviar teste</button>
+      </div>
+      <div id="whTestResult" style="font-size:11px;margin-top:8px;color:var(--text3)"></div>
+      <div class="int-note">Payload enviado em JSON com os campos: event, data, timestamp, sistema.</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+    <div class="int-section">
+      <div class="int-section-title">🏛 BrasilAPI — CNPJ</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Preenche razão social, segmento, cidade e UF automaticamente ao digitar o CNPJ em qualquer oportunidade.</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="api-status-ok">✓ Ativo</span>
+        <span style="font-size:11px;color:var(--text4)">Sem autenticação necessária</span>
+      </div>
+      <button class="btn sm" onclick="testBrasilAPI()">Testar (CNPJ Petrobras)</button>
+      <div id="brasilAPITest" style="font-size:11px;margin-top:8px;color:var(--text3)"></div>
+    </div>
+
+    <div class="int-section">
+      <div class="int-section-title">📮 ViaCEP — Endereço por CEP</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Consulte endereços por CEP para enriquecer dados de clientes.</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input class="fi" id="cepTest" placeholder="01310-100" style="height:32px;font-size:12px">
+        <button class="btn sm" onclick="testViaCEP()">Consultar</button>
+      </div>
+      <div id="cepResult" style="font-size:11px;color:var(--text3)"></div>
+    </div>
+
+    <div class="int-section">
+      <div class="int-section-title">💬 WhatsApp Business API</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Integração atual usa wa.me (WhatsApp Web). Para envio programático via API oficial, insira o token abaixo.</div>
+      <div class="fg" style="margin-bottom:8px">
+        <input class="fi" id="waToken" type="password" placeholder="Bearer token da Meta..." value="${waToken}" style="height:32px;font-size:12px">
+      </div>
+      <button class="btn sm" onclick="saveWAToken()">Salvar</button>
+      <div class="int-note">Em desenvolvimento — wa.me funciona sem custo para uso individual.</div>
+    </div>
+  </div>`;
+}
+
+function saveAIToken(){
+  const cfg={provider:document.getElementById('aiProvider').value,apiKey:document.getElementById('aiApiKey').value.trim(),model:document.getElementById('aiModel').value};
+  saveAIConfig(cfg);showToast('Token de IA salvo com sucesso.','success');renderIntegracoes();
+}
+
+async function testAIConnection(){
+  const cfg=getAIConfig();
+  if(!cfg.apiKey){showToast('Insira o API Key antes de testar.','error');return;}
+  const el=document.getElementById('aiTestResult');
+  el.style.color='var(--text3)';el.textContent='Testando conexão...';
+  try{
+    const resp=await callAI([{role:'system',content:'Você é um assistente.'},{role:'user',content:'Responda apenas: Conexão OK'}]);
+    el.style.color='var(--success)';el.textContent='✓ '+resp.slice(0,80);
+  }catch(e){el.style.color='var(--danger)';el.textContent='⚠ '+e.message;}
+}
+
+function saveWebhook(){
+  const events=[...document.querySelectorAll('.wh-event:checked')].map(e=>e.value);
+  LS.set('ef2_webhook_config',JSON.stringify({url:document.getElementById('whUrl').value.trim(),events}));
+  showToast('Webhook salvo.','success');
+}
+
+async function testWebhook(){
+  const url=document.getElementById('whUrl').value.trim();
+  if(!url){showToast('Insira a URL do webhook.','error');return;}
+  const el=document.getElementById('whTestResult');el.textContent='Enviando...';
+  try{
+    await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:'teste',sistema:'EasyFleet CRM',timestamp:new Date().toISOString()})});
+    el.style.color='var(--success)';el.textContent='✓ Enviado com sucesso';
+  }catch(e){el.style.color='var(--danger)';el.textContent='⚠ '+e.message;}
+}
+
+async function fireWebhook(eventName,payload){
+  const cfg=getWebhookConfig();
+  if(!cfg.url||!(cfg.events||[]).includes(eventName))return;
+  try{await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:eventName,data:payload,timestamp:new Date().toISOString(),sistema:'EasyFleet CRM'})});}catch(e){}
+}
+
+async function testBrasilAPI(){
+  const el=document.getElementById('brasilAPITest');el.textContent='Consultando...';
+  try{
+    const r=await fetch('https://brasilapi.com.br/api/cnpj/v1/33000167000101');const d=await r.json();
+    el.style.color='var(--success)';el.textContent='✓ '+d.razao_social+' — '+d.municipio+'/'+d.uf;
+  }catch(e){el.style.color='var(--danger)';el.textContent='⚠ '+e.message;}
+}
+
+async function testViaCEP(){
+  const cep=document.getElementById('cepTest').value.replace(/\D/g,'');
+  const el=document.getElementById('cepResult');
+  if(!cep){el.textContent='Digite um CEP.';return;}el.textContent='Consultando...';
+  try{
+    const r=await fetch(`https://viacep.com.br/ws/${cep}/json/`);const d=await r.json();
+    if(d.erro)throw new Error('CEP não encontrado');
+    el.style.color='var(--success)';el.textContent=`✓ ${d.logradouro}, ${d.bairro}, ${d.localidade}-${d.uf}`;
+  }catch(e){el.style.color='var(--danger)';el.textContent='⚠ '+e.message;}
+}
+
+function saveWAToken(){LS.set('ef2_wa_config',JSON.stringify({token:document.getElementById('waToken').value}));showToast('Token WhatsApp salvo.','success');}
+
+// ── MOTOR DE IA ──
+async function callAI(messages){
+  const cfg=getAIConfig();
+  if(!cfg.apiKey)throw new Error('Token de IA não configurado. Acesse Integrações.');
+  const provider=cfg.provider||'openai';
+  if(provider==='openai'){
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},
+      body:JSON.stringify({model:cfg.model||'gpt-4o-mini',messages,max_tokens:1800})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'Erro OpenAI '+res.status);}
+    const d=await res.json();return d.choices[0].message.content;
+  } else {
+    const sys=messages.find(m=>m.role==='system')?.content||'';
+    const msgs=messages.filter(m=>m.role!=='system');
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},
+      body:JSON.stringify({model:cfg.model||'claude-haiku-4-5-20251001',max_tokens:1800,system:sys,messages:msgs})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'Erro Anthropic '+res.status);}
+    const d=await res.json();return d.content[0].text;
+  }
+}
+
+function buildCRMContext(){
+  const activeOpps=opps.filter(o=>o.etapa<4&&o.etapa!==5);
+  const closedMonth=opps.filter(o=>o.etapa===4&&inPeriod(o.closedAt,'month'));
+  const lostOpps=opps.filter(o=>o.etapa===5);
+  const expiringContracts=opps.filter(o=>{if(!o.vigAlert)return false;const dl=daysLeft(o.vigAlert);return dl!==null&&dl>=0&&dl<=60;});
+  const overdueTasks=tasks.filter(t=>!t.done&&t.data<today());
+  const todayTasks=tasks.filter(t=>!t.done&&t.data===today());
+  return `CONTEXTO DO CRM — Easy Fleet & Carro Verificado
+Data: ${new Date().toLocaleDateString('pt-BR')} | Usuário: ${currentUser?.name||'N/A'} (${currentUser?.role||'N/A'})
+
+PIPELINE ATIVO (${activeOpps.length} oportunidades):
+${activeOpps.slice(0,20).map(o=>`- ${o.empresa}: ${STAGES[o.etapa]}, temp:${o.temp}, prob:${o.prob}%, MRR:R$${calcMRR(o).toLocaleString('pt-BR')}, consultor:${o.cons}, concorrente:${o.concorrente||'nenhum'}, follow-up:${o.followup||'sem data'}, lembrete:${o.lembrete||'—'}, status:${o.statusCom||'—'}`).join('\n')}
+
+FECHAMENTOS ESTE MÊS: ${closedMonth.length} | MRR gerado: R$${closedMonth.reduce((s,o)=>s+calcMRR(o),0).toLocaleString('pt-BR')}
+PERDAS HISTÓRICAS: ${lostOpps.length} | Motivos: ${lostOpps.map(o=>o.statusCom||o.obs||'—').filter(Boolean).join(', ')}
+
+CONTRATOS VENCENDO EM 60 DIAS (${expiringContracts.length}):
+${expiringContracts.map(o=>`- ${o.empresa}: vence ${o.vigEnd}, ${daysLeft(o.vigEnd)} dias restantes`).join('\n')||'Nenhum'}
+
+TAREFAS VENCIDAS: ${overdueTasks.length} | TAREFAS HOJE: ${todayTasks.length}
+${todayTasks.map(t=>`- [${t.tipo}] ${t.titulo} — ${t.cons}`).join('\n')||'Nenhuma para hoje'}
+
+METAS & ATINGIMENTO:
+${Object.entries(metas).map(([c,m])=>{const closed=opps.filter(o=>o.etapa===4&&o.cons===c);const mrr=closed.reduce((s,o)=>s+calcMRR(o),0);return`- ${c}: meta R$${m.toLocaleString('pt-BR')}, realizado R$${mrr.toLocaleString('pt-BR')} (${m>0?Math.round(mrr/m*100):0}%)`;}).join('\n')}`;
+}
+
+// ── VIEW IA COMERCIAL ──
+let iaHistory=[];
+
+function renderIA(){
+  const cfg=getAIConfig();const cfgOk=!!cfg.apiKey;
+  const statusEl=document.getElementById('iaConfigStatus');
+  if(statusEl){
+    if(cfgOk)statusEl.innerHTML=`<span style="font-size:11px;font-weight:600;color:var(--success)">✓ ${cfg.provider==='anthropic'?'Claude':'OpenAI'} · ${cfg.model}</span>`;
+    else statusEl.innerHTML=`<button class="btn warning sm" onclick="navTo('integracoes')">⚙️ Configurar token de IA</button>`;
+  }
+  document.getElementById('iaContent').innerHTML=`
+  ${!cfgOk?`<div style="background:var(--warning2);border:1px solid #FDE68A;border-radius:var(--rlg);padding:18px 20px;margin-bottom:18px;display:flex;gap:14px;align-items:flex-start">
+    <div style="font-size:24px">⚙️</div>
+    <div><div style="font-weight:700;margin-bottom:4px">Token de IA não configurado</div>
+    <div style="font-size:12px;color:var(--text3)">Configure seu API Key na aba Integrações para usar o assistente. Funciona com OpenAI (GPT-4o) ou Anthropic (Claude).</div>
+    <button class="btn primary sm" style="margin-top:10px" onclick="navTo('integracoes')">Ir para Integrações →</button></div></div>`:''}
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start">
+    <div>
+      <div class="ccard" style="margin-bottom:0">
+        <div class="ctitle">💬 Chat com contexto do CRM</div>
+        <div class="ia-chat" id="iaChat"></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <textarea id="iaInput" placeholder="Pergunte sobre pipeline, clientes, metas... (Ctrl+Enter para enviar)" rows="2" style="height:60px;resize:none;flex:1" onkeydown="if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();sendIAMessage();}"></textarea>
+          <button class="btn primary" id="iaSendBtn" onclick="sendIAMessage()" style="align-self:flex-end;height:60px;padding:0 16px;flex-direction:column;gap:2px">
+            <span>Enviar</span><span style="font-size:9px;opacity:.6">Ctrl+Enter</span>
+          </button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          ${['Quais clientes precisam de follow-up urgente?','Qual consultor tem maior taxa de conversão?','Quais oportunidades estão estagnadas?','Gere um briefing executivo do pipeline'].map(q=>`<span style="font-size:10px;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px" onclick="setIAInput(\`${q}\`)">${q}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="ccard">
+        <div class="ctitle">⚡ Análises Rápidas</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <button class="btn ia-action-btn" onclick="iaAction('briefing')"><div class="ia-btn-title">☀️ Briefing do Dia</div><div class="ia-btn-sub">Prioridades e ações para hoje</div></button>
+          <button class="btn ia-action-btn" onclick="iaAction('pipeline')"><div class="ia-btn-title">🎯 Análise do Pipeline</div><div class="ia-btn-sub">Riscos, oportunidades e recomendações</div></button>
+          <button class="btn ia-action-btn" onclick="iaAction('perdas')"><div class="ia-btn-title">📉 Análise de Perdas</div><div class="ia-btn-sub">Padrões e estratégias para reverter</div></button>
+          <button class="btn ia-action-btn" onclick="iaAction('forecast')"><div class="ia-btn-title">📊 Forecast IA</div><div class="ia-btn-sub">Projeção realista de fechamento</div></button>
+          <button class="btn ia-action-btn" onclick="iaAction('renovacoes')"><div class="ia-btn-title">🔄 Plano de Renovações</div><div class="ia-btn-sub">Contratos vencendo — quem contatar primeiro</div></button>
+          <button class="btn ia-action-btn" onclick="iaAction('consultor')"><div class="ia-btn-title">👤 Performance por Consultor</div><div class="ia-btn-sub">Quem precisa de suporte ou coaching</div></button>
+        </div>
+      </div>
+      <div class="ccard">
+        <div class="ctitle" style="margin-bottom:8px">💡 Como usar</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.6">O assistente recebe <strong>todo o contexto do seu pipeline</strong> automaticamente: oportunidades, etapas, metas, tarefas vencidas, contratos a vencer e histórico de perdas.<br><br>Faça perguntas em linguagem natural. O histórico da conversa é mantido durante a sessão.</div>
+      </div>
+    </div>
+  </div>`;
+  if(iaHistory.length===0){
+    appendIAMsg('system','Olá! Tenho acesso completo ao seu pipeline. Posso analisar oportunidades, sugerir prioridades, identificar riscos, gerar mensagens personalizadas e muito mais. O que você precisa?');
+  } else {
+    iaHistory.forEach(m=>appendIAMsg(m.role,m.content));
+  }
+}
+
+function setIAInput(text){const el=document.getElementById('iaInput');if(el){el.value=text;el.focus();}}
+
+function appendIAMsg(role,content){
+  const chat=document.getElementById('iaChat');if(!chat)return;
+  const isUser=role==='user',isSystem=role==='system';
+  const div=document.createElement('div');
+  div.className='ia-bubble'+(isUser?' user':isSystem?' system':'');
+  const icon=isUser?(currentUser?.name?.split(' ').map(n=>n[0]).slice(0,2).join('')||'EU'):(isSystem?'💬':'🤖');
+  const bg=isUser?(currentUser?.color||'var(--accent)'):(isSystem?'var(--bg3)':'#1B2A47');
+  const isEmoji=!isUser&&(isSystem);
+  div.innerHTML=`<div class="ia-avatar" style="background:${bg};font-size:${isEmoji?'14px':'10px'}">${icon}</div>
+    <div class="ia-text">${content}</div>`;
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
+}
+
+async function sendIAMessage(){
+  const input=document.getElementById('iaInput');
+  const msg=input?.value.trim();if(!msg)return;
+  const cfg=getAIConfig();
+  if(!cfg.apiKey){showToast('Configure o token de IA primeiro.','error');navTo('integracoes');return;}
+  input.value='';
+  appendIAMsg('user',msg);iaHistory.push({role:'user',content:msg});
+  const btn=document.getElementById('iaSendBtn');
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span>';}
+  const loadDiv=document.createElement('div');
+  loadDiv.className='ia-bubble system';
+  loadDiv.innerHTML=`<div class="ia-avatar" style="background:var(--bg3);font-size:14px">💬</div><div class="ia-text" style="color:var(--text4);display:flex;align-items:center;gap:8px"><span class="spin"></span> Analisando...</div>`;
+  document.getElementById('iaChat')?.appendChild(loadDiv);
+  document.getElementById('iaChat').scrollTop=99999;
+  try{
+    const sysPrompt=`Você é um assistente comercial especializado em vendas B2B de tecnologia para gestão de frotas (Easy Fleet) e histórico veicular (Carro Verificado). Analise os dados do CRM e responda de forma prática e orientada a ações. Use bullet points ao listar itens. Seja conciso e direto. Sempre em português brasileiro.\n\n${buildCRMContext()}`;
+    const msgs=[{role:'system',content:sysPrompt},...iaHistory.slice(-10)];
+    const response=await callAI(msgs);
+    loadDiv.remove();
+    appendIAMsg('assistant',response);
+    iaHistory.push({role:'assistant',content:response});
+  }catch(e){
+    loadDiv.remove();
+    appendIAMsg('system','⚠ Erro: '+e.message);
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML='<span>Enviar</span><span style="font-size:9px;opacity:.6">Ctrl+Enter</span>';}
+  }
+}
+
+function iaAction(type){
+  const prompts={
+    briefing:'Gere um briefing matinal completo para hoje. Liste: 1) Top 3 prioridades com ações específicas, 2) Oportunidades em risco que precisam de atenção urgente, 3) Contratos vencendo que precisam de contato imediato, 4) Tarefas em atraso. Seja direto e acionável.',
+    pipeline:'Faça análise completa do pipeline. Identifique: 1) As 3 oportunidades com maior probabilidade de fechar este mês, 2) Deals estagnados ou em risco de perda, 3) Qual consultor precisa de suporte, 4) Recomendações estratégicas para aumentar a taxa de conversão.',
+    perdas:'Analise os padrões de perdas. Identifique: 1) Principais motivos de perda, 2) Em qual etapa perdemos mais clientes, 3) Quais concorrentes nos vencem mais e por quê, 4) 3 estratégias concretas para reverter esse cenário nos próximos 30 dias.',
+    forecast:'Gere um forecast realista. Calcule: 1) Receita esperada este mês (baseada em prob de fechamento), 2) Cenário pessimista e otimista, 3) Quais deals precisam avançar de etapa para bater a meta, 4) Recomendação de foco para a equipe.',
+    renovacoes:'Analise os contratos com vencimento próximo. Para cada um: urgência do contato, estratégia de renovação recomendada, sinal de risco de churn e quem deve fazer o contato. Priorize do mais urgente ao menos urgente.',
+    consultor:'Analise a performance individual dos consultores. Para cada um: pipeline atual, taxa de conversão estimada, atingimento de meta, pontos fortes e onde precisa de suporte ou coaching. Sugira ações de gestão específicas.'
+  };
+  setIAInput(prompts[type]||'');sendIAMessage();
+}
+
+// ── GERAR MENSAGEM WA COM IA ──
+async function gerarMsgWAComIA(){
+  const o=getOppModal();if(!o){showToast('Salve a oportunidade antes de gerar.','error');return;}
+  const cfg=getAIConfig();
+  if(!cfg.apiKey){showToast('Configure o token de IA em Integrações.','error');return;}
+  const btn=document.getElementById('btnGerarMsgIA');
+  if(btn){btn.disabled=true;btn.textContent='Gerando...';}
+  try{
+    const lastInt=o.interacoes&&o.interacoes.length>0?o.interacoes[o.interacoes.length-1]:null;
+    const prompt=`Escreva uma mensagem de WhatsApp profissional e personalizada para o cliente abaixo. A mensagem deve ser natural, cordial e objetiva — máximo 4 linhas. Não use emojis em excesso. Inclua o nome do cliente e mencione o produto de forma relevante.
+
+Cliente: ${o.nome} (${o.cargo}) — ${o.empresa}
+Produto: ${o.produto==='easyfleet'?'Easy Fleet — Gestão de Frotas':'Carro Verificado — Histórico Veicular'}
+Etapa: ${STAGES[o.etapa]} | Temperatura: ${o.temp}
+Status: ${o.statusCom||'—'}
+Lembrete: ${o.lembrete||'—'}
+${lastInt?`Última interação: ${lastInt.tipo} em ${lastInt.data} — ${lastInt.desc}`:'Sem interações registradas'}
+Consultor: ${currentUser?.name||o.cons}
+
+Retorne APENAS o texto da mensagem, sem aspas, sem explicações.`;
+    const msg=await callAI([{role:'user',content:prompt}]);
+    document.getElementById('oWaMsg').value=msg.trim();
+    updateWaPreview();showToast('Mensagem gerada com sucesso!','success');
+  }catch(e){showToast('Erro ao gerar: '+e.message,'error');}
+  finally{if(btn){btn.disabled=false;btn.textContent='✨ Gerar com IA';}}
+}
+
+// Inicializar usuários na carga — executado em load()
+function initUsers() {
+  const stored = loadUsers();
+  syncRuntimeUsers(stored);
+}
+
+// ═══ INIT ═══
+load();
+renderLoginProfiles();
+document.getElementById('intData').value=new Date().toISOString().slice(0,10);
+</script>
+</body>
+</html>

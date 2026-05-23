@@ -17,13 +17,25 @@ Repositório de referência da organização. Documenta a arquitetura, os produt
 
 | Repositório | Produto | Responsabilidade |
 |---|---|---|
-| `easyfleet_app` | EasyFleet | Aplicativo mobile |
-| `easyfleet_web` | EasyFleet | Portal web do gestor |
-| `easyfleet_backend` | EasyFleet | API REST e integrações |
-| `carro_verificado_app` | Carro Verificado | Aplicativo mobile |
-| `carro_verificado_web` | Carro Verificado | Portal web do consumidor |
-| `carro_verificado_backend` | Carro Verificado | API REST e motor de consultas |
-| `ffkd_mcp` | EasyFleet + Carro Verificado | Servidor MCP unificado |
+| [`easy_fleet`](https://github.com/ffkd-org/easy_fleet) | EasyFleet | Monorepo — API, microserviço, web e mobile |
+| [`carro_verificado_app`](https://github.com/ffkd-org/carro_verificado_app) | Carro Verificado | Aplicativo mobile |
+| [`carro_verificado_web`](https://github.com/ffkd-org/carro_verificado_web) | Carro Verificado | Portal web do consumidor |
+| [`carro_verificado_backend`](https://github.com/ffkd-org/carro_verificado_backend) | Carro Verificado | API REST e motor de consultas |
+| [`ffkd_mcp`](https://github.com/ffkd-org/ffkd_mcp) | EasyFleet + Carro Verificado | Servidor MCP unificado |
+
+### Estrutura do monorepo `easy_fleet`
+
+```
+apps/
+  api/        — API Gateway (NestJS · Prisma · JWT · Swagger)
+  service/    — Microserviço de integração (NestJS · RabbitMQ · Redis)
+  web/        — Portal web do gestor (React + Vite)
+  mobile/     — Aplicativo mobile (React Native + Expo)
+packages/
+  contracts/  — Tipos e eventos compartilhados entre apps
+  tsconfig/   — Configuração TypeScript base
+  eslint-config/ — Regras ESLint compartilhadas
+```
 
 ---
 
